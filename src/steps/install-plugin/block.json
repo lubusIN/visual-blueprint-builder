@@ -1,0 +1,52 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/install-plugin",
+	"version": "0.1.0",
+	"title": "Install Plugin",
+	"category": "steps",
+	"icon": "admin-plugins",
+	"description": "Installs a WordPress plugin in the Playground",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "install-plugin"
+		},
+		"pluginZipFile": {
+			"type": "object",
+			"default": {
+				"resource": "url",
+				"url": ""
+			},
+			"properties": {
+				"resource": {
+					"type": "string",
+					"enum": [
+						"url",
+						"wordpress.org/plugins",
+						"vfs"
+					]
+				}
+			}
+		},
+		"options": {
+			"type": "object",
+			"default": {
+				"activate": true
+			},
+			"properties": {
+				"activate": {
+					"type": "boolean"
+				}
+			}
+		}
+	},
+	"textdomain": "install-plugin",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

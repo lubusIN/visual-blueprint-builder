@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/login",
+	"version": "0.1.0",
+	"title": "Login",
+	"category": "steps",
+	"description": "Logs in to Playground",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "login"
+		},
+		"username": {
+			"type": "string",
+			"default": ""
+		},
+		"password": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "login",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
