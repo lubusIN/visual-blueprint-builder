@@ -108,7 +108,7 @@ function BlueprintVersionControl() {
                     variant="secondary"
                     icon={download}
                     href={''}
-                    onClick={handleDownloadClick}
+                    onClick={()=>{}}
                 >
                 </Button>
             </HStack>
