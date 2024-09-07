@@ -4,127 +4,143 @@
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/editor';
-import { __experimentalInspectorPopoverHeader as InspectorPopoverHeader } from '@wordpress/block-editor';
-import {
-    Dropdown,
-    Button,
-    SelectControl,
-    __experimentalHStack as HStack,
-    __experimentalVStack as VStack,
-    __experimentalText as Text
-} from '@wordpress/components';
 import { copy, download, globe } from '@wordpress/icons';
-import { useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { store as noticesStore } from '@wordpress/notices';
+import { useCopyToClipboard } from '@wordpress/compose';
+import { downloadBlob } from '@wordpress/blob';
+import { DataForm } from '@wordpress/dataviews';
+import {
+    Button,
+    __experimentalHStack as HStack,
+} from '@wordpress/components';
 
 /**
  * PHP and WordPress version options for dropdowns.
  */
 const PHP_VERSIONS = [
     { label: 'Latest', value: 'latest' },
+    { label: '8.3', value: '8.3' },
     { label: '8.2', value: '8.2' },
     { label: '8.1', value: '8.1' },
     { label: '8.0', value: '8.0' },
     { label: '7.4', value: '7.4' },
+    { label: '7.3', value: '7.3' },
+    { label: '7.2', value: '7.2' },
+    { label: '7.1', value: '7.1' },
+    { label: '7.0', value: '7.0' },
 ];
 
 const WP_VERSIONS = [
-    { label: 'Latest', value: 'latest' },
-    { label: '6.2', value: '6.2' },
-    { label: '6.1', value: '6.1' },
-    { label: '6.0', value: '6.0' },
-    { label: '5.6', value: '5.6' },
+    { label: 'Wordpress nightly', value: 'nightly' },
+    { label: '6.6', value: '6.1' },
+    { label: '6.5', value: '6.1' },
+    { label: '6.4', value: '6.2' },
+    { label: '6.3', value: '6.1' },
 ];
-
-/**
- * Reusable Dropdown component for version control.
- * @param {string} label - The label for the dropdown.
- * @param {Array} versions - List of versions for the dropdown.
- * @param {string} defaultValue - The default selected version.
- */
-const DropdownVersionControl = ({ label, versions, defaultValue }) => (
-    <HStack justify='left'>
-        <Text style={{ width: '30%' }}>{label}</Text>
-        <Dropdown
-            popoverProps={{
-                placement: 'left-start',
-                offset: 118,
-                shift: true,
-            }}
-            renderToggle={({ isOpen, onToggle }) => (
-                <Button
-                    variant="tertiary"
-                    onClick={onToggle}
-                    aria-expanded={isOpen}
-                >
-                    {defaultValue}
-                </Button>
-            )}
-            renderContent={({ onClose }) => (
-                <VStack style={{ minWidth: '240px', margin: '8px' }} spacing={0}>
-                    <InspectorPopoverHeader
-                        title={__(label)}
-                        onClose={onClose}
-                    />
-                    <SelectControl
-                        label={label}
-                        hideLabelFromVision
-                        value={defaultValue}
-                        options={versions}
-                        onChange={() => { }} // Placeholder for actual change handling
-                    />
-                </VStack>
-            )}
-        />
-    </HStack>
-);
 
 /**
  * Main component for displaying version control in post status info.
  */
 function BlueprintVersionControl() {
-    // const playgroundBase = "https://playground.wordpress.net/#";
+    const { createNotice } = useDispatch(noticesStore);
+    const { editPost } = useDispatch('core/editor');
 
-    // const blocks = useSelect((select) => select('core/block-editor').getBlocks(), []);
+    const blocks = useSelect((select) => select('core/block-editor').getBlocks(), []);
+    const blueprint_config = useSelect((select) => {
+        return select('core/editor').getEditedPostAttribute('meta')['_blueprint_config'] || {}
+    });
 
-    // const handleDownloadClick = () => {
-    //     const blockAttributes = blocks.map(block => ({
-    //         name: block.name,
-    //         attributes: block.attributes,
-    //     }));
-    //     console.log(blockAttributes);
-    // };
+    const playgroundBase = "https://playground.wordpress.net/#";
+
+    const schema = {
+        $schema: "https://playground.wordpress.net/blueprint-schema.json",
+        landingPage: blueprint_config.landing_page,
+        preferredVersions: {
+            php: blueprint_config.php_version,
+            wp: blueprint_config.wp_version
+        },
+        steps: []
+    };
+
+    // Function to prepare the schema
+    const prepareSchema = () => {
+        const blockAttributes = blocks.map(block => block.attributes);
+        schema.steps = [...blockAttributes];
+        return JSON.stringify(schema, null, 2);
+    };
+
+    const handleDownload = () => {
+        const preparedSchema = prepareSchema();
+        if (preparedSchema) {
+            downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
+            createNotice('success', __('Blueprint downloaded successfully!'));
+        }
+    };
+
+    const handleCopy = useCopyToClipboard(prepareSchema, () => {
+        createNotice('success', __('Blueprint Schema Copied!'), { type: 'snackbar' });
+    });
+
+    const handleBlueprintConfig = (value) => {
+        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...value } } });
+    };
 
     return (
         <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
             <HStack justify='left'>
-                <Button variant="secondary" icon={globe} href={''} target='_new'>
-                </Button>
                 <Button
                     variant="secondary"
+                    icon={globe}
+                    href={playgroundBase + prepareSchema()}
+                    target='_new'
+                />
+                <Button
+                    variant="secondary"
+                    ref={handleCopy}
                     icon={copy}
-                    onClick={() => { }}>
-                </Button>
+                />
                 <Button
                     variant="secondary"
                     icon={download}
-                    href={''}
-                    onClick={()=>{}}
-                >
-                </Button>
+                    onClick={handleDownload}
+                />
             </HStack>
-            <VStack spacing={1} style={{ width: '100%' }}>
-                <DropdownVersionControl
-                    label="PHP version"
-                    versions={PHP_VERSIONS}
-                    defaultValue="8.0"
-                />
-                <DropdownVersionControl
-                    label="WP version"
-                    versions={WP_VERSIONS}
-                    defaultValue="Latest"
-                />
-            </VStack>
-        </PluginDocumentSettingPanel>
+            <DataForm
+                data={{
+                    php_version: blueprint_config.php_version,
+                    wp_version: blueprint_config.wp_version,
+                    landing_page: blueprint_config.landing_page,
+                }}
+                fields={[
+                    {
+                        elements: PHP_VERSIONS,
+                        id: 'php_version',
+                        label: 'PHP Version',
+                        type: 'text'
+                    },
+                    {
+                        elements: WP_VERSIONS,
+                        id: 'wp_version',
+                        label: 'WP Version',
+                        type: 'text'
+                    },
+                    {
+                        id: 'landing_page',
+                        label: 'Landing Page',
+                        type: 'text'
+                    },
+                ]}
+                form={{
+                    fields: [
+                        'php_version',
+                        'wp_version',
+                        'landing_page',
+                    ],
+                }}
+                onChange={handleBlueprintConfig}
+            />
+        </PluginDocumentSettingPanel >
     );
 };
 

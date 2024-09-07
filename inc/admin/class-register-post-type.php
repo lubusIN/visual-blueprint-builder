@@ -52,7 +52,7 @@ class BlueprintPostType
             'has_archive' => false,
             'hierarchical' => false,
             'menu_icon' => 'dashicons-format-aside',
-            'supports' => ['title', 'author', 'editor'],
+            'supports' => ['title', 'author', 'editor', 'custom-fields'],
         ];
 
         register_post_type('blueprint', $args);

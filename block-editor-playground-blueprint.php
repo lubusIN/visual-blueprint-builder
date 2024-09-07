@@ -15,9 +15,12 @@
 
 namespace Lubus\BlockEditorForPlaygroundBlueprint;
 
-use Lubus\Admin\BlockEditorForPlaygroundBlueprint\BlueprintPostType;
-use Lubus\Admin\BlockEditorForPlaygroundBlueprint\BlueprintSteps;
-use Lubus\Admin\BlockEditorForPlaygroundBlueprint\EnqueueScripts;
+use Lubus\Admin\BlockEditorForPlaygroundBlueprint\{
+    BlueprintPostType,
+    BlueprintSteps,
+    EnqueueScripts,
+    RegisterCustomMeta
+};
 
 defined('ABSPATH') || exit;
 
@@ -96,9 +99,10 @@ if (!class_exists('BlockEditorForPlaygroundBlueprint')) {
          */
         private function bootstrap()
         {
+            new EnqueueScripts();
             new BlueprintPostType();
             new BlueprintSteps();
-            new EnqueueScripts();
+            new RegisterCustomMeta();
         }
     }
 }
