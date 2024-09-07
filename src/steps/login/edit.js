@@ -2,8 +2,9 @@
  * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
+import { login } from '@wordpress/icons';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, TextControl} from '@wordpress/components';
+import { Placeholder, PanelBody, TextControl} from '@wordpress/components';
 
 /**
  * Internal dependencies.
@@ -47,7 +48,12 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 
 			<p {...useBlockProps()}>
-				{__('Login Step', 'login')}
+				<Placeholder 
+					icon={login} 
+					label="Login"
+					instructions={
+						`${username} : ${password}`
+					} />
 			</p>
 		</>
 	);
