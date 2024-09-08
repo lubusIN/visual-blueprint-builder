@@ -2,11 +2,13 @@
  * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
+import { plugins } from '@wordpress/icons';
 import {
 	InspectorControls,
 	useBlockProps
 } from '@wordpress/block-editor';
 import {
+	Placeholder,
 	PanelBody,
 	TextControl,
 	ToggleControl,
@@ -58,6 +60,17 @@ export default function Edit({ attributes, setAttributes }) {
 		});
 	};
 
+	const getResourceInfo = (resource) => {
+		switch (resource) {
+			case 'url':
+				return url;
+			case 'vfs':
+				return path;
+			default:
+				return slug;
+		}
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -106,7 +119,12 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 
 			<div {...useBlockProps()}>
-				{__('Install Plugin Step', 'install-plugin')}
+				<Placeholder
+					icon={plugins}
+					label="Install Plugin"
+					instructions={
+						`${resource} > ${getResourceInfo(resource)} > ${activate? 'Activate' : 'Install and keep Inactive'}`
+					} />
 			</div>
 		</>
 	);
