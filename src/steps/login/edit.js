@@ -12,6 +12,7 @@ import {
 	CardBody,
 	__experimentalText as Text,
 	__experimentalHStack as HStack,
+	__experimentalVStack as VStack,
 } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
@@ -42,41 +43,37 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 			}
 			{isSelected && (
 				<Card>
-					<CardHeader>
-						<HStack expanded={false} spacing={1}>
+					<CardBody>
+						<HStack alignment="left" style={{marginBottom: '10px'}}>
 							<Icon icon={login}></Icon>
 							<Text weight={600}>Login</Text>
 						</HStack>
-					</CardHeader>
-					<CardBody>
-						<CardBody size="xSmall">
-							<DataForm
+						<DataForm
 
-								data={{
-									username,
-									password
-								}}
-								fields={[
-									{
-										id: 'username',
-										label: 'Username',
-										type: 'text'
-									},
-									{
-										id: 'password',
-										label: 'Password',
-										type: 'text'
-									},
-								]}
-								form={{
-									fields: [
-										'username',
-										'password'
-									]
-								}}
-								onChange={setAttributes}
-							/>
-						</CardBody>
+							data={{
+								username,
+								password
+							}}
+							fields={[
+								{
+									id: 'username',
+									label: 'Username',
+									type: 'text'
+								},
+								{
+									id: 'password',
+									label: 'Password',
+									type: 'text'
+								},
+							]}
+							form={{
+								fields: [
+									'username',
+									'password'
+								]
+							}}
+							onChange={setAttributes}
+						/>
 					</CardBody>
 				</Card>
 			)}
