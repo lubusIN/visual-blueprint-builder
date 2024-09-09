@@ -9,6 +9,7 @@
 	"example": {},
 	"supports": {
 		"html": false,
+		"customClassName": false,
 		"multiple": false
 	},
 	"attributes": {
