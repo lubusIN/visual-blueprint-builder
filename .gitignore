@@ -129,5 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-/vendor/
-/build
+/vendor/*
+!vendor/autoload.php
+!vendor/composer/
+!vendor/composer/*.php
