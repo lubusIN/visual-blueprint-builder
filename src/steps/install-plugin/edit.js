@@ -8,12 +8,18 @@ import {
 	useBlockProps
 } from '@wordpress/block-editor';
 import {
+	Icon,
+	Card,
+	CardHeader,
+	CardBody,
 	Placeholder,
 	PanelBody,
 	TextControl,
 	ToggleControl,
+	__experimentalText as Text,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	__experimentalHStack as HStack,
 } from '@wordpress/components';
 
 /**
@@ -27,7 +33,7 @@ import './editor.scss';
  * @param {Object} props Component properties.
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes }) {
+export default function Edit({ attributes, setAttributes, isSelected }) {
 	const { pluginZipFile, options } = attributes;
 	const { resource, path, url, slug } = pluginZipFile;
 	const { activate } = options;
@@ -119,12 +125,70 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 
 			<div {...useBlockProps()}>
-				<Placeholder
-					icon={plugins}
-					label="Install Plugin"
-					instructions={
-						`${resource} > ${getResourceInfo(resource)} > ${activate? 'Activate' : 'Install and keep Inactive'}`
-					} />
+				{!isSelected && (
+					<Placeholder
+						icon={plugins}
+						label="Install Plugin"
+						instructions={
+							`${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
+						} />
+				)
+				}
+
+				{isSelected && (
+					<Card>
+						<CardHeader>
+							<HStack expanded={false} spacing={1}>
+								<Icon icon={plugins}></Icon>
+								<Text weight={600}>Install Plugin</Text>
+							</HStack>
+						</CardHeader>
+						<CardBody>
+							<CardBody size="xSmall">
+								<ToggleGroupControl
+									label="Resource"
+									value={resource}
+									isBlock
+									onChange={handleResourceChange}
+								>
+									<ToggleGroupControlOption value="url" label="URL" />
+									<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
+									<ToggleGroupControlOption value="vfs" label="VFS" />
+								</ToggleGroupControl>
+
+								{resource === 'vfs' && (
+									<TextControl
+										label={__('Path', 'install-plugin')}
+										value={path}
+										onChange={(newPath) => handleInputChange('path', newPath)}
+									/>
+								)}
+								{resource === 'url' && (
+									<TextControl
+										label={__('Url', 'install-plugin')}
+										value={url}
+										onChange={(newPath) => handleInputChange('url', newPath)}
+									/>
+								)}
+								{resource === 'wordpress.org/plugins' && (
+									<TextControl
+										label={__('Slug', 'install-plugin')}
+										value={slug}
+										onChange={(newPath) => handleInputChange('slug', newPath)}
+									/>
+								)}
+
+								<ToggleControl
+									label="Activate"
+									checked={activate}
+									onChange={() => setAttributes({
+										options: { activate: !activate }
+									})}
+								/>
+							</CardBody>
+						</CardBody>
+					</Card>
+				)}
 			</div>
 		</>
 	);

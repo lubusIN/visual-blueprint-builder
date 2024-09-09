@@ -9,13 +9,10 @@ import {
 	PanelBody,
 	TextControl,
 	Icon,
-	Button,
 	Card,
 	CardHeader,
 	CardBody,
 	__experimentalText as Text,
-	__experimentalHeading as Heading,
-	__experimentalVStack as VStack,
 	__experimentalHStack as HStack,
 } from '@wordpress/components';
 
