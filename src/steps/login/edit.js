@@ -9,15 +9,13 @@ import {
 	PanelBody,
 	TextControl,
 	Icon,
-	Button,
 	Card,
 	CardHeader,
 	CardBody,
 	__experimentalText as Text,
-	__experimentalHeading as Heading,
-	__experimentalVStack as VStack,
 	__experimentalHStack as HStack,
 } from '@wordpress/components';
+import { DataForm } from '@wordpress/dataviews';
 
 /**
  * Internal dependencies.
@@ -68,7 +66,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 						instructions={
 							`${username} : ${password}`
 						} />
-				)	
+				)
 				}
 				{isSelected && (
 					<Card>
@@ -80,25 +78,31 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 						</CardHeader>
 						<CardBody>
 							<CardBody size="xSmall">
-								<TextControl
-									label={__(
-										'Username',
-										'login'
-									)}
-									value={username || ''}
-									onChange={(value) =>
-										setAttributes({ username: value })
-									}
-								/>
-								<TextControl
-									label={__(
-										'Password',
-										'login'
-									)}
-									value={password || ''}
-									onChange={(value) =>
-										setAttributes({ password: value })
-									}
+								<DataForm
+
+									data={{
+										username,
+										password
+									}}
+									fields={[
+										{
+											id: 'username',
+											label: 'Username',
+											type: 'text'
+										},
+										{
+											id: 'password',
+											label: 'Password',
+											type: 'text'
+										},
+									]}
+									form={{
+										fields: [
+											'username',
+											'password'
+										]
+									}}
+									onChange={setAttributes}
 								/>
 							</CardBody>
 						</CardBody>
