@@ -8,11 +8,9 @@ import {
 	Placeholder,
 	Icon,
 	Card,
-	CardHeader,
 	CardBody,
 	__experimentalText as Text,
 	__experimentalHStack as HStack,
-	__experimentalVStack as VStack,
 } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
@@ -49,7 +47,6 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<Text weight={600}>Login</Text>
 						</HStack>
 						<DataForm
-
 							data={{
 								username,
 								password
