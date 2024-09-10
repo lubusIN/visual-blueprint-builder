@@ -8,7 +8,8 @@ module.exports = {
         ...getWebpackEntryPoints(),
         'settings': './src/settings/index.js',
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
-        'steps/login/index': './src/steps/login/index.js'
+        'steps/login/index': './src/steps/login/index.js',
+        'steps/enable-multisite/index': './src/steps/enable-multisite/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'build'),
