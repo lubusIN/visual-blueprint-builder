@@ -32,18 +32,41 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
 }
 add_filter('allowed_block_types_all', 'example_allowed_block_types', 10000, 2);
 
+/**
+ * Adds a custom block category 'Steps' to the block editor.
+ *
+ * @param array $block_categories Array of block categories.
+ * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ *
+ * @return array Modified array of block categories with the 'Steps' category added.
+ */
 function add_new_block_category($block_categories, $block_editor_context)
 {
-    // Unshift the new category to the beginning of the array
-    array_unshift(
-        $block_categories,
-        [
-            'slug'  => 'steps',
-            'title' => esc_html__('Steps', 'text-domain'),
-        ]
-    );
+    $new_category = [
+        'slug'  => 'steps',
+        'title' => esc_html__('Steps', 'text-domain'),
+    ];
+
+    // Add the new category at the beginning of the list.
+    array_unshift($block_categories, $new_category);
 
     return $block_categories;
 }
-
 add_filter('block_categories_all', 'add_new_block_category', 10, 2);
+
+/**
+ * Disables the template mode for the block editor if the post type is 'blueprint'.
+ *
+ * @param array $settings The block editor settings.
+ *
+ * @return array Modified block editor settings.
+ */
+function disable_template_mode($settings)
+{
+    if (get_current_screen()->post_type === 'blueprint') {
+        $settings['supportsTemplateMode'] = false;
+    }
+
+    return $settings;
+}
+add_filter('block_editor_settings_all', 'disable_template_mode');
