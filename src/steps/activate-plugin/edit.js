@@ -2,7 +2,7 @@
  * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { login } from '@wordpress/icons';
+import { plugins } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -22,37 +22,34 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { username, password } = attributes;
+	const { pluginName, pluginPath } = attributes;
 
 	return (
 		<p {...useBlockProps()}>
 			<Placeholder
-				icon={login}
-				label="Login"
-				instructions={!isSelected && `${username} : ${password}`}>
+				icon={plugins}
+				label="Activate Plugin"
+				instructions={!isSelected && `${pluginName || 'Plugin Name'} > ${pluginPath || 'Plugin Path'}`}>
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>
 						<DataForm
-							data={{
-								username,
-								password
-							}}
+							data={attributes}
 							fields={[
 								{
-									id: 'username',
-									label: 'Username',
+									id: 'pluginName',
+									label: 'Plugin Name',
 									type: 'text'
 								},
 								{
-									id: 'password',
-									label: 'Password',
+									id: 'pluginPath',
+									label: 'Plugin Path',
 									type: 'text'
 								},
 							]}
 							form={{
 								fields: [
-									'username',
-									'password'
+									'pluginName',
+									'pluginPath'
 								]
 							}}
 							onChange={setAttributes}

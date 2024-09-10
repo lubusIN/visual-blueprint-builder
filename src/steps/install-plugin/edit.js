@@ -3,15 +3,12 @@
  */
 import { __ } from '@wordpress/i18n';
 import { plugins } from '@wordpress/icons';
-import {
-	InspectorControls,
-	useBlockProps
-} from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
-	PanelBody,
 	TextControl,
 	ToggleControl,
+	__experimentalVStack as VStack,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
@@ -27,7 +24,7 @@ import './editor.scss';
  * @param {Object} props Component properties.
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes }) {
+export default function Edit({ attributes, setAttributes, isSelected }) {
 	const { pluginZipFile, options } = attributes;
 	const { resource, path, url, slug } = pluginZipFile;
 	const { activate } = options;
@@ -72,60 +69,58 @@ export default function Edit({ attributes, setAttributes }) {
 	}
 
 	return (
-		<>
-			<InspectorControls>
-				<PanelBody title={__('Install Plugin Step', 'install-plugin')}>
-					<ToggleGroupControl
-						label="Resource"
-						value={resource}
-						isBlock
-						onChange={handleResourceChange}
-					>
-						<ToggleGroupControlOption value="url" label="URL" />
-						<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
-						<ToggleGroupControlOption value="vfs" label="VFS" />
-					</ToggleGroupControl>
+		<div {...useBlockProps()}>
+			<Placeholder
+				icon={plugins}
+				label="Install Plugin"
+				instructions={
+					!isSelected && `${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
+				} >
+				{isSelected && (
+					<VStack style={{ width: '100%' }}>
+						<ToggleGroupControl
+							label="Resource"
+							value={resource}
+							isBlock
+							onChange={handleResourceChange}
+						>
+							<ToggleGroupControlOption value="url" label="URL" />
+							<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
+							<ToggleGroupControlOption value="vfs" label="VFS" />
+						</ToggleGroupControl>
 
-					{resource === 'vfs' && (
-						<TextControl
-							label={__('Path', 'install-plugin')}
-							value={path}
-							onChange={(newPath) => handleInputChange('path', newPath)}
-						/>
-					)}
-					{resource === 'url' && (
-						<TextControl
-							label={__('Url', 'install-plugin')}
-							value={url}
-							onChange={(newPath) => handleInputChange('url', newPath)}
-						/>
-					)}
-					{resource === 'wordpress.org/plugins' && (
-						<TextControl
-							label={__('Slug', 'install-plugin')}
-							value={slug}
-							onChange={(newPath) => handleInputChange('slug', newPath)}
-						/>
-					)}
+						{resource === 'vfs' && (
+							<TextControl
+								label={__('Path', 'install-plugin')}
+								value={path}
+								onChange={(newPath) => handleInputChange('path', newPath)}
+							/>
+						)}
+						{resource === 'url' && (
+							<TextControl
+								label={__('Url', 'install-plugin')}
+								value={url}
+								onChange={(newPath) => handleInputChange('url', newPath)}
+							/>
+						)}
+						{resource === 'wordpress.org/plugins' && (
+							<TextControl
+								label={__('Slug', 'install-plugin')}
+								value={slug}
+								onChange={(newPath) => handleInputChange('slug', newPath)}
+							/>
+						)}
 
-					<ToggleControl
-						label="Activate"
-						checked={activate}
-						onChange={() => setAttributes({
-							options: { activate: !activate }
-						})}
-					/>
-				</PanelBody>
-			</InspectorControls>
-
-			<div {...useBlockProps()}>
-				<Placeholder
-					icon={plugins}
-					label="Install Plugin"
-					instructions={
-						`${resource} > ${getResourceInfo(resource)} > ${activate? 'Activate' : 'Install and keep Inactive'}`
-					} />
-			</div>
-		</>
+						<ToggleControl
+							label="Activate"
+							checked={activate}
+							onChange={() => setAttributes({
+								options: { activate: !activate }
+							})}
+						/>
+					</VStack>
+				)}
+			</Placeholder>
+		</div>
 	);
 }

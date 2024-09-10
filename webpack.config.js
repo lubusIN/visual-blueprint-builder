@@ -9,6 +9,7 @@ module.exports = {
         'settings': './src/settings/index.js',
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
         'steps/install-theme/index': './src/steps/install-theme/index.js',
+        'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
