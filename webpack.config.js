@@ -10,6 +10,8 @@ module.exports = {
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
         'steps/login/index': './src/steps/login/index.js',
         'steps/enable-multisite/index': './src/steps/enable-multisite/index.js'
+        'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
+        'steps/login/index': './src/steps/login/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'build'),
