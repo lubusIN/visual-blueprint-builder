@@ -26,10 +26,10 @@ import './editor.scss';
  * @param {Object} props Component properties.
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes, isSelected}) {
+export default function Edit({ attributes, setAttributes, isSelected }) {
 	const { themeZipFile, options } = attributes;
 	const { resource, path, url, slug } = themeZipFile;
-	const { activate } = options;
+	const { activate, importStarterContent } = options;
 
 	const handleResourceChange = (newResource) => {
 		let newAttributes = {
@@ -76,7 +76,7 @@ export default function Edit({ attributes, setAttributes, isSelected}) {
 				icon={brush}
 				label="Install Theme"
 				instructions={
-					!isSelected && `${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
+					!isSelected && `${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? 'Activate' : 'Install and keep Inactive'} > ${importStarterContent ? 'with' : 'without'} starter content`
 				}>
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>
@@ -117,7 +117,21 @@ export default function Edit({ attributes, setAttributes, isSelected}) {
 							label="Activate"
 							checked={activate}
 							onChange={() => setAttributes({
-								options: { activate: !activate }
+								options: { 
+									...options,
+									activate: !activate
+								}
+							})}
+						/>
+
+						<ToggleControl
+							label="Import Starter Content"
+							checked={importStarterContent}
+							onChange={() => setAttributes({
+								options: { 
+									...options,
+									importStarterContent: !importStarterContent 
+								}
 							})}
 						/>
 					</VStack>

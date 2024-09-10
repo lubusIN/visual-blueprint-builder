@@ -35,10 +35,14 @@
 		"options": {
 			"type": "object",
 			"default": {
-				"activate": true
+				"activate": true,
+				"importStarterContent": false
 			},
 			"properties": {
 				"activate": {
+					"type": "boolean"
+				},
+				"importStarterContent": {
 					"type": "boolean"
 				}
 			}
