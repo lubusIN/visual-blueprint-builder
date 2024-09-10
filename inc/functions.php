@@ -55,18 +55,20 @@ function add_new_block_category($block_categories, $block_editor_context)
 add_filter('block_categories_all', 'add_new_block_category', 10, 2);
 
 /**
- * Disables the template mode for the block editor if the post type is 'blueprint'.
+ * Customizes the block editor settings for the 'blueprint' post type.
+ * Disables template mode and changes the title placeholder.
  *
  * @param array $settings The block editor settings.
  *
  * @return array Modified block editor settings.
  */
-function disable_template_mode($settings)
+function customize_editor_for_blueprint($settings)
 {
     if (get_current_screen()->post_type === 'blueprint') {
         $settings['supportsTemplateMode'] = false;
+        $settings['titlePlaceholder'] = "Add blueprint title";
     }
 
     return $settings;
 }
-add_filter('block_editor_settings_all', 'disable_template_mode');
+add_filter('block_editor_settings_all', 'customize_editor_for_blueprint');
