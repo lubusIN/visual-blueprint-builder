@@ -23,6 +23,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/copy-file',
             'lubus/activate-theme',
             'lubus/activate-plugin',
+            'lubus/import-wordpress-files',
         ];
 
         return $allowed_block_types;
