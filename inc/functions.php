@@ -17,6 +17,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
         $allowed_block_types = [
             'lubus/login',
             'lubus/install-plugin',
+            'lubus/install-theme',
         ];
 
         return $allowed_block_types;

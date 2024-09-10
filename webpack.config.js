@@ -8,6 +8,7 @@ module.exports = {
         ...getWebpackEntryPoints(),
         'settings': './src/settings/index.js',
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
+        'steps/install-theme/index': './src/steps/install-theme/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
