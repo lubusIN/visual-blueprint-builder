@@ -15,7 +15,7 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "install-plugin"
+			"default": "installPlugin"
 		},
 		"pluginZipFile": {
 			"type": "object",

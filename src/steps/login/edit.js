@@ -3,18 +3,16 @@
  */
 import { __ } from '@wordpress/i18n';
 import { login } from '@wordpress/icons';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
-	PanelBody,
-	TextControl,
 	Icon,
 	Card,
-	CardHeader,
 	CardBody,
 	__experimentalText as Text,
 	__experimentalHStack as HStack,
 } from '@wordpress/components';
+import { DataForm } from '@wordpress/dataviews';
 
 /**
  * Internal dependencies.
@@ -31,77 +29,39 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	const { username, password } = attributes;
 
 	return (
-		<>
-			<InspectorControls>
-				<PanelBody title={__('Login Step', 'login')}>
-					<TextControl
-						label={__(
-							'Username',
-							'login'
-						)}
-						value={username || ''}
-						onChange={(value) =>
-							setAttributes({ username: value })
-						}
-					/>
-					<TextControl
-						label={__(
-							'Password',
-							'login'
-						)}
-						value={password || ''}
-						onChange={(value) =>
-							setAttributes({ password: value })
-						}
-					/>
-				</PanelBody>
-			</InspectorControls>
-
-			<p {...useBlockProps()}>
-				{!isSelected && (
-					<Placeholder
-						icon={login}
-						label="Login"
-						instructions={
-							`${username} : ${password}`
-						} />
-				)	
-				}
+		<p {...useBlockProps()}>
+			<Placeholder
+				icon={login}
+				label="Login"
+				instructions={!isSelected && `${username} : ${password}`}>
 				{isSelected && (
-					<Card>
-						<CardHeader>
-							<HStack expanded={false} spacing={1}>
-								<Icon icon={login}></Icon>
-								<Text weight={600}>Login</Text>
-							</HStack>
-						</CardHeader>
-						<CardBody>
-							<CardBody size="xSmall">
-								<TextControl
-									label={__(
-										'Username',
-										'login'
-									)}
-									value={username || ''}
-									onChange={(value) =>
-										setAttributes({ username: value })
-									}
-								/>
-								<TextControl
-									label={__(
-										'Password',
-										'login'
-									)}
-									value={password || ''}
-									onChange={(value) =>
-										setAttributes({ password: value })
-									}
-								/>
-							</CardBody>
-						</CardBody>
-					</Card>
+					<DataForm
+						data={{
+							username,
+							password
+						}}
+						fields={[
+							{
+								id: 'username',
+								label: 'Username',
+								type: 'text'
+							},
+							{
+								id: 'password',
+								label: 'Password',
+								type: 'text'
+							},
+						]}
+						form={{
+							fields: [
+								'username',
+								'password'
+							]
+						}}
+						onChange={setAttributes}
+					/>
 				)}
-			</p>
-		</>
+			</Placeholder>
+		</p>
 	);
 }

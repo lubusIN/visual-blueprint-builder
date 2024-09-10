@@ -7,8 +7,8 @@ import { login } from '@wordpress/icons';
 /**
  * Internal dependencies.
  */
-import Edit from './edit';
 import metadata from './block.json';
+import Edit from './edit';
 
 /**
  * Every block starts by registering a new block type definition.

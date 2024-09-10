@@ -5,10 +5,11 @@
 	"version": "0.1.0",
 	"title": "Login",
 	"category": "steps",
-	"description": "Logs in to Playground",
+	"description": "Logs in to Playground. Under the hood, this function submits the wp-login.php form just like a user would.",
 	"example": {},
 	"supports": {
 		"html": false,
+		"customClassName": false,
 		"multiple": false
 	},
 	"attributes": {
