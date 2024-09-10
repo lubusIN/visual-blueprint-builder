@@ -9,7 +9,8 @@
 	"description": "Installs a WordPress plugin in the Playground",
 	"example": {},
 	"supports": {
-		"html": false
+		"html": false,
+		"customClassName": false
 	},
 	"attributes": {
 		"step": {
