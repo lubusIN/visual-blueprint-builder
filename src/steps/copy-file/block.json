@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/copy-file",
+	"version": "0.1.0",
+	"title": "Copy File",
+	"category": "steps",
+	"description": "Copies a file from one path to another.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "cp"
+		},
+		"fromPath": {
+			"type": "string",
+			"default": ""
+		},
+		"toPath": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "activate-plugin",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
