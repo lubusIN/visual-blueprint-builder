@@ -5,16 +5,12 @@ import { __ } from '@wordpress/i18n';
 import { plugins } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
-	Icon,
-	Card,
-	CardBody,
 	Placeholder,
 	TextControl,
 	ToggleControl,
-	__experimentalText as Text,
+	__experimentalVStack as VStack,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	__experimentalHStack as HStack,
 } from '@wordpress/components';
 
 /**
@@ -74,23 +70,14 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 
 	return (
 		<div {...useBlockProps()}>
-			{!isSelected && (
-				<Placeholder
-					icon={plugins}
-					label="Install Plugin"
-					instructions={
-						`${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
-					} />
-			)
-			}
-
-			{isSelected && (
-				<Card>
-					<CardBody>
-						<HStack alignment="left" style={{ marginBottom: '10px' }}>
-							<Icon icon={plugins}></Icon>
-							<Text weight={600}>Install Plugin</Text>
-						</HStack>
+			<Placeholder
+				icon={plugins}
+				label="Install Plugin"
+				instructions={
+					!isSelected && `${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
+				} >
+				{isSelected && (
+					<VStack style={{ width: '100%' }}>
 						<ToggleGroupControl
 							label="Resource"
 							value={resource}
@@ -131,9 +118,9 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								options: { activate: !activate }
 							})}
 						/>
-					</CardBody>
-				</Card>
-			)}
+					</VStack>
+				)}
+			</Placeholder>
 		</div>
 	);
 }
