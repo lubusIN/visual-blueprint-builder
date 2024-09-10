@@ -32,5 +32,6 @@ class BlueprintSteps
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/define-site-url');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/activate-theme');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/activate-plugin');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-wxr');
     }
 }
