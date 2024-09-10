@@ -6,11 +6,7 @@ import { login } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
-	Icon,
-	Card,
-	CardBody,
-	__experimentalText as Text,
-	__experimentalHStack as HStack,
+	__experimentalVStack as VStack,
 } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
@@ -35,31 +31,33 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				label="Login"
 				instructions={!isSelected && `${username} : ${password}`}>
 				{isSelected && (
-					<DataForm
-						data={{
-							username,
-							password
-						}}
-						fields={[
-							{
-								id: 'username',
-								label: 'Username',
-								type: 'text'
-							},
-							{
-								id: 'password',
-								label: 'Password',
-								type: 'text'
-							},
-						]}
-						form={{
-							fields: [
-								'username',
-								'password'
-							]
-						}}
-						onChange={setAttributes}
-					/>
+					<VStack style={{ width: '100%' }}>
+						<DataForm
+							data={{
+								username,
+								password
+							}}
+							fields={[
+								{
+									id: 'username',
+									label: 'Username',
+									type: 'text'
+								},
+								{
+									id: 'password',
+									label: 'Password',
+									type: 'text'
+								},
+							]}
+							form={{
+								fields: [
+									'username',
+									'password'
+								]
+							}}
+							onChange={setAttributes}
+						/>
+					</VStack>
 				)}
 			</Placeholder>
 		</p>
