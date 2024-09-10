@@ -30,50 +30,38 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 
 	return (
 		<p {...useBlockProps()}>
-			{!isSelected && (
-				<Placeholder
-					icon={login}
-					label="Login"
-					instructions={
-						`${username} : ${password}`
-					} />
-			)
-			}
-			{isSelected && (
-				<Card>
-					<CardBody>
-						<HStack alignment="left" style={{marginBottom: '10px'}}>
-							<Icon icon={login}></Icon>
-							<Text weight={600}>Login</Text>
-						</HStack>
-						<DataForm
-							data={{
-								username,
-								password
-							}}
-							fields={[
-								{
-									id: 'username',
-									label: 'Username',
-									type: 'text'
-								},
-								{
-									id: 'password',
-									label: 'Password',
-									type: 'text'
-								},
-							]}
-							form={{
-								fields: [
-									'username',
-									'password'
-								]
-							}}
-							onChange={setAttributes}
-						/>
-					</CardBody>
-				</Card>
-			)}
+			<Placeholder
+				icon={login}
+				label="Login"
+				instructions={!isSelected && `${username} : ${password}`}>
+				{isSelected && (
+					<DataForm
+						data={{
+							username,
+							password
+						}}
+						fields={[
+							{
+								id: 'username',
+								label: 'Username',
+								type: 'text'
+							},
+							{
+								id: 'password',
+								label: 'Password',
+								type: 'text'
+							},
+						]}
+						form={{
+							fields: [
+								'username',
+								'password'
+							]
+						}}
+						onChange={setAttributes}
+					/>
+				)}
+			</Placeholder>
 		</p>
 	);
 }
