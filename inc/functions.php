@@ -18,6 +18,8 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/login',
             'lubus/install-plugin',
             'lubus/enable-multisite',
+            'lubus/copy-file',
+            'lubus/activate-theme',
             'lubus/activate-plugin',
         ];
 
