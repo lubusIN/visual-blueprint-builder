@@ -22,6 +22,6 @@
 		}
 	},
 	"textdomain": "remove-dir",
-	"editorScript": "dir:./index.js",
-	"editorStyle": "dir:./index.css"
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
 }
