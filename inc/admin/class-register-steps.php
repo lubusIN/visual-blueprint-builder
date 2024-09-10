@@ -24,6 +24,7 @@ class BlueprintSteps
     public function register_blueprint_steps()
     {
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/login');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/copy-file');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/install-plugin');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/activate-theme');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/activate-plugin');
