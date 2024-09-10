@@ -7,10 +7,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Icon,
 	Card,
-	CardHeader,
 	CardBody,
 	Placeholder,
-	PanelBody,
 	TextControl,
 	ToggleControl,
 	__experimentalText as Text,
@@ -88,55 +86,51 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 
 			{isSelected && (
 				<Card>
-					<CardHeader>
-						<HStack expanded={false} spacing={1}>
+					<CardBody>
+						<HStack alignment="left" style={{ marginBottom: '10px' }}>
 							<Icon icon={plugins}></Icon>
 							<Text weight={600}>Install Plugin</Text>
 						</HStack>
-					</CardHeader>
-					<CardBody>
-						<CardBody size="xSmall">
-							<ToggleGroupControl
-								label="Resource"
-								value={resource}
-								isBlock
-								onChange={handleResourceChange}
-							>
-								<ToggleGroupControlOption value="url" label="URL" />
-								<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
-								<ToggleGroupControlOption value="vfs" label="VFS" />
-							</ToggleGroupControl>
+						<ToggleGroupControl
+							label="Resource"
+							value={resource}
+							isBlock
+							onChange={handleResourceChange}
+						>
+							<ToggleGroupControlOption value="url" label="URL" />
+							<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
+							<ToggleGroupControlOption value="vfs" label="VFS" />
+						</ToggleGroupControl>
 
-							{resource === 'vfs' && (
-								<TextControl
-									label={__('Path', 'install-plugin')}
-									value={path}
-									onChange={(newPath) => handleInputChange('path', newPath)}
-								/>
-							)}
-							{resource === 'url' && (
-								<TextControl
-									label={__('Url', 'install-plugin')}
-									value={url}
-									onChange={(newPath) => handleInputChange('url', newPath)}
-								/>
-							)}
-							{resource === 'wordpress.org/plugins' && (
-								<TextControl
-									label={__('Slug', 'install-plugin')}
-									value={slug}
-									onChange={(newPath) => handleInputChange('slug', newPath)}
-								/>
-							)}
-
-							<ToggleControl
-								label="Activate"
-								checked={activate}
-								onChange={() => setAttributes({
-									options: { activate: !activate }
-								})}
+						{resource === 'vfs' && (
+							<TextControl
+								label={__('Path', 'install-plugin')}
+								value={path}
+								onChange={(newPath) => handleInputChange('path', newPath)}
 							/>
-						</CardBody>
+						)}
+						{resource === 'url' && (
+							<TextControl
+								label={__('Url', 'install-plugin')}
+								value={url}
+								onChange={(newPath) => handleInputChange('url', newPath)}
+							/>
+						)}
+						{resource === 'wordpress.org/plugins' && (
+							<TextControl
+								label={__('Slug', 'install-plugin')}
+								value={slug}
+								onChange={(newPath) => handleInputChange('slug', newPath)}
+							/>
+						)}
+
+						<ToggleControl
+							label="Activate"
+							checked={activate}
+							onChange={() => setAttributes({
+								options: { activate: !activate }
+							})}
+						/>
 					</CardBody>
 				</Card>
 			)}
