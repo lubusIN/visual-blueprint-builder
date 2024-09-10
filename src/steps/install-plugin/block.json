@@ -5,7 +5,6 @@
 	"version": "0.1.0",
 	"title": "Install Plugin",
 	"category": "steps",
-	"icon": "admin-plugins",
 	"description": "Installs a WordPress plugin in the Playground",
 	"example": {},
 	"supports": {
