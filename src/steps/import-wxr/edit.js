@@ -48,7 +48,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'url',
 									label: 'Url',
-									type: 'text'
+									type: 'text',
+									placeholder: 'e.g, https://your-site.com/starter-content.wxr'
 								}
 							]}
 							form={{

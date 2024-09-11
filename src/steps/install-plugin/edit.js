@@ -93,6 +93,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Path', 'install-plugin')}
 								value={path}
+								placeholder='Enter the file path for the plugin ZIP'
 								onChange={(newPath) => handleInputChange('path', newPath)}
 							/>
 						)}
@@ -100,6 +101,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Url', 'install-plugin')}
 								value={url}
+								placeholder='Enter the URL of the plugin ZIP file'
 								onChange={(newPath) => handleInputChange('url', newPath)}
 							/>
 						)}
@@ -107,6 +109,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Slug', 'install-plugin')}
 								value={slug}
+								placeholder='Enter the plugin slug from WordPress.org (e.g., "contact-form-7")'
 								onChange={(newPath) => handleInputChange('slug', newPath)}
 							/>
 						)}

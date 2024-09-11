@@ -38,12 +38,14 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'fromPath',
 									label: 'From Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the current path of the file or directory'
 								},
 								{
 									id: 'toPath',
 									label: 'To Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the new path where the file or directory should be moved'
 								},
 							]}
 							form={{

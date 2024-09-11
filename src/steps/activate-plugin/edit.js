@@ -38,12 +38,14 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'pluginName',
 									label: 'Plugin Name',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter plugin name'
 								},
 								{
 									id: 'pluginPath',
 									label: 'Plugin Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the full path to the plugin'
 								},
 							]}
 							form={{

@@ -33,12 +33,13 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>
 						<DataForm
-							data={attributes}	
+							data={attributes}
 							fields={[
 								{
 									id: 'path',
 									label: 'File Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the directory path to remove (e.g., /wp-content/uploads/old-files)',
 								}
 							]}
 							form={{

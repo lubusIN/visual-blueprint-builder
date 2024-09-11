@@ -95,6 +95,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Path', 'install-theme')}
 								value={path}
+								placeholder='Enter the file path for the theme ZIP'
 								onChange={(newPath) => handleInputChange('path', newPath)}
 							/>
 						)}
@@ -102,6 +103,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Url', 'install-theme')}
 								value={url}
+								placeholder='Enter the URL of the theme ZIP file'
 								onChange={(newPath) => handleInputChange('url', newPath)}
 							/>
 						)}
@@ -109,6 +111,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<TextControl
 								label={__('Slug', 'install-theme')}
 								value={slug}
+								placeholder='Enter the theme slug from WordPress.org (e.g., "twentytwentyfour")'
 								onChange={(newPath) => handleInputChange('slug', newPath)}
 							/>
 						)}
@@ -117,7 +120,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							label="Activate"
 							checked={activate}
 							onChange={() => setAttributes({
-								options: { 
+								options: {
 									...options,
 									activate: !activate
 								}
@@ -128,9 +131,9 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							label="Import Starter Content"
 							checked={importStarterContent}
 							onChange={() => setAttributes({
-								options: { 
+								options: {
 									...options,
-									importStarterContent: !importStarterContent 
+									importStarterContent: !importStarterContent
 								}
 							})}
 						/>
