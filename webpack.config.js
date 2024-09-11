@@ -17,6 +17,8 @@ module.exports = {
         'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
         'steps/login/index': './src/steps/login/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js'
+        'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/login/index': './src/steps/login/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'build'),
