@@ -24,6 +24,10 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/activate-theme',
             'lubus/activate-plugin',
             'lubus/reset-data',
+            'lubus/move',
+            'lubus/make-dir',
+            'lubus/import-wxr',
+            'lubus/import-theme-starter-content',
         ];
 
         return $allowed_block_types;
