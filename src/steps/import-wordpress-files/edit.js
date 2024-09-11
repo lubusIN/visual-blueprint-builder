@@ -26,8 +26,7 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { wordPressFilesZip } = attributes;
-	const { url } = wordPressFilesZip;
+	const { wordPressFilesZip: { url } } = attributes;
 
 	const handleInputChange = (value) => {
 		setAttributes({
