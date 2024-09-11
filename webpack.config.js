@@ -16,6 +16,10 @@ module.exports = {
         'steps/activate-theme/index': './src/steps/activate-theme/index.js',
         'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
         'steps/move/index': './src/steps/move/index.js',
+        'steps/make-dir/index': './src/steps/make-dir/index.js',
+        'steps/login/index': './src/steps/login/index.js',
+        'steps/import-wxr/index': './src/steps/import-wxr/index.js',
+        'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
