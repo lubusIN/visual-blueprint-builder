@@ -42,13 +42,13 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									id: 'username',
 									label: 'Username',
 									type: 'text',
-									placeholder: 'Enter your username'
+									placeholder: 'Enter username'
 								},
 								{
 									id: 'password',
 									label: 'Password',
 									type: 'text',
-									placeholder: 'Enter your password'
+									placeholder: 'Enter password'
 								},
 							]}
 							form={{
