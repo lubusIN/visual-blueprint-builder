@@ -16,6 +16,13 @@ module.exports = {
         'steps/activate-theme/index': './src/steps/activate-theme/index.js',
         'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
         'steps/import-wordpress-files/index': './src/steps/import-wordpress-files/index.js',
+        'steps/remove-dir/index': './src/steps/remove-dir/index.js',
+        'steps/remove-file/index': './src/steps/remove-file/index.js',
+        'steps/reset-data/index': './src/steps/reset-data/index.js',
+        'steps/move/index': './src/steps/move/index.js',
+        'steps/make-dir/index': './src/steps/make-dir/index.js',
+        'steps/login/index': './src/steps/login/index.js',
+        'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },

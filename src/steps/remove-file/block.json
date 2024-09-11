@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/remove-file",
+	"version": "0.1.0",
+	"title": "Remove File",
+	"category": "steps",
+	"description": "Removes a file at the specified path.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "rm"
+		},
+		"path": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "remove-file",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}
