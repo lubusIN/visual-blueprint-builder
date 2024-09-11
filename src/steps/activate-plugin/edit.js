@@ -39,7 +39,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									id: 'pluginName',
 									label: 'Plugin Name',
 									type: 'text',
-									placeholder: 'Enter plugin name here'
+									placeholder: 'Enter plugin name'
 								},
 								{
 									id: 'pluginPath',
