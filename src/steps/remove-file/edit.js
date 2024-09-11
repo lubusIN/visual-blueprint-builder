@@ -38,7 +38,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'path',
 									label: 'File Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the file path to remove (e.g., /wp-content/plugins/index.php)',
 								}
 							]}
 							form={{

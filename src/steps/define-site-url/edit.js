@@ -33,12 +33,13 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>
 						<DataForm
-							data={attributes}	
+							data={attributes}
 							fields={[
 								{
 									id: 'siteUrl',
 									label: 'Site Url',
-									type: 'text'
+									type: 'text',
+									placeholder: 'e.g., https://example.com'
 								}
 							]}
 							form={{

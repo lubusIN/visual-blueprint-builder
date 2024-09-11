@@ -52,7 +52,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'url',
 									label: 'Url',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter the URL of the zip file'
 								}
 							]}
 							form={{

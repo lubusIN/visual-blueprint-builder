@@ -38,7 +38,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'themeFolderName',
 									label: 'Theme Folder Name',
-									type: 'text'
+									type: 'text',
+									placeholder: 'The name of the theme folder located in wp-content/themes/'
 								}
 							]}
 							form={{

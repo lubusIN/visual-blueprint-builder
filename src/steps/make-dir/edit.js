@@ -33,12 +33,13 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>
 						<DataForm
-							data={attributes}	
+							data={attributes}
 							fields={[
 								{
 									id: 'path',
 									label: 'Directory Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'e.g., /wp-content/plugins/new-directory'
 								}
 							]}
 							form={{

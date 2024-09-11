@@ -41,12 +41,14 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'username',
 									label: 'Username',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter your username'
 								},
 								{
 									id: 'password',
 									label: 'Password',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter your password'
 								},
 							]}
 							form={{

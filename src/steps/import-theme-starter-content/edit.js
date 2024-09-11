@@ -38,7 +38,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'themeSlug',
 									label: 'Theme Slug',
-									type: 'text'
+									type: 'text',
+									placeholder: 'e.g., twentytwentyfour'
 								}
 							]}
 							form={{

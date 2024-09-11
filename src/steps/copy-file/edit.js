@@ -38,12 +38,14 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								{
 									id: 'fromPath',
 									label: 'From Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter source path'
 								},
 								{
 									id: 'toPath',
 									label: 'To Path',
-									type: 'text'
+									type: 'text',
+									placeholder: 'Enter destination path'
 								},
 							]}
 							form={{
