@@ -29,8 +29,12 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/reset-data',
             'lubus/write-file',
             'lubus/move',
+            'lubus/wp-cli',
+            'lubus/run-php',
+            'lubus/unzip',
             'lubus/make-dir',
             'lubus/import-wxr',
+            'lubus/set-site-language',
             'lubus/import-theme-starter-content',
         ];
 
