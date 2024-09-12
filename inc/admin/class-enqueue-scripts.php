@@ -42,7 +42,7 @@ class EnqueueScripts
 
         wp_enqueue_script(
             'blueprint-editor',
-            BEPB_PLUGIN_URL . 'build/settings.js',
+            BEPB_PLUGIN_URL . 'build/editor.js',
             $assetFile['dependencies'],
             $assetFile['version'],
             true
@@ -56,7 +56,7 @@ class EnqueueScripts
      */
     private function get_asset_file()
     {
-        $assetFilePath = BEPB_PLUGIN_DIR . 'build/settings.asset.php';
+        $assetFilePath = BEPB_PLUGIN_DIR . 'build/editor.asset.php';
 
         if (file_exists($assetFilePath)) {
             return require $assetFilePath;
