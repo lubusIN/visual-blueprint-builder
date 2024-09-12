@@ -10,7 +10,6 @@ module.exports = {
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
         'steps/install-theme/index': './src/steps/install-theme/index.js',
         'steps/define-site-url/index': './src/steps/define-site-url/index.js',
-        'steps/login/index': './src/steps/login/index.js',
         'steps/enable-multisite/index': './src/steps/enable-multisite/index.js',
         'steps/copy-file/index': './src/steps/copy-file/index.js',
         'steps/activate-theme/index': './src/steps/activate-theme/index.js',
@@ -21,10 +20,11 @@ module.exports = {
         'steps/reset-data/index': './src/steps/reset-data/index.js',
         'steps/move/index': './src/steps/move/index.js',
         'steps/make-dir/index': './src/steps/make-dir/index.js',
-        'steps/login/index': './src/steps/login/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
         'steps/run-php/index': './src/steps/run-php/index.js',
+        'steps/unzip/index': './src/steps/unzip/index.js',
+        'steps/set-site-language/index': './src/steps/set-site-language/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
