@@ -24,6 +24,7 @@ module.exports = {
         'steps/login/index': './src/steps/login/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/set-site-language/index': './src/steps/set-site-language/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {

@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/set-site-language",
+	"version": "0.1.0",
+	"title": "Set Site Language",
+	"category": "steps",
+	"description": "Sets the site language and download translations.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "setSiteLanguage"
+		},
+		"language": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "set-site-language",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

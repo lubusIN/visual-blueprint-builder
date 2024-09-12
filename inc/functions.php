@@ -30,6 +30,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/move',
             'lubus/make-dir',
             'lubus/import-wxr',
+            'lubus/set-site-language',
             'lubus/import-theme-starter-content',
         ];
 
