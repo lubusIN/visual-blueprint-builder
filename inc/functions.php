@@ -28,6 +28,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/remove-file',
             'lubus/reset-data',
             'lubus/move',
+            'lubus/unzip',
             'lubus/make-dir',
             'lubus/import-wxr',
             'lubus/set-site-language',
