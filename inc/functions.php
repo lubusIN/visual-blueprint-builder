@@ -28,6 +28,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/remove-file',
             'lubus/reset-data',
             'lubus/move',
+            'lubus/define-wp-config-consts',
             'lubus/make-dir',
             'lubus/import-wxr',
             'lubus/import-theme-starter-content',

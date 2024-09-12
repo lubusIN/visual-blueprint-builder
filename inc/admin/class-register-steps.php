@@ -37,6 +37,7 @@ class BlueprintSteps
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/remove-file');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/reset-data');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/move');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/define-wp-config-consts');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/make-dir');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-wxr');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-theme-starter-content');

@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lubus/define-wp-config-consts",
+	"version": "0.1.0",
+	"title": "WP Config",
+	"category": "steps",
+	"description": "Defines constants in a wp-config.php file. This step can be called multiple times, and the constants will be merged.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "defineWpConfigConsts"
+		},
+		"consts": {
+			"type": "object"
+		}
+	},
+	"textdomain": "define-wp-config-consts",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
+}

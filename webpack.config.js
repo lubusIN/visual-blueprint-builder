@@ -24,6 +24,7 @@ module.exports = {
         'steps/login/index': './src/steps/login/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/define-wp-config-consts/index': './src/steps/define-wp-config-consts/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
