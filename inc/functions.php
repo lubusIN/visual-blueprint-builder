@@ -27,6 +27,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/remove-dir',
             'lubus/remove-file',
             'lubus/reset-data',
+            'lubus/write-file',
             'lubus/move',
             'lubus/wp-cli',
             'lubus/run-php',
