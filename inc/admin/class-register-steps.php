@@ -38,8 +38,11 @@ class BlueprintSteps
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/reset-data');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/move');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/wp-cli');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/run-php');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/make-dir');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-wxr');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/unzip');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/set-site-language');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-theme-starter-content');
     }
 }
