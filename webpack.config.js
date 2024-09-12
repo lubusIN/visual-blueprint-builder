@@ -22,6 +22,7 @@ module.exports = {
         'steps/make-dir/index': './src/steps/make-dir/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/run-php/index': './src/steps/run-php/index.js',
         'steps/unzip/index': './src/steps/unzip/index.js',
         'steps/set-site-language/index': './src/steps/set-site-language/index.js',
         'steps/login/index': './src/steps/login/index.js'
