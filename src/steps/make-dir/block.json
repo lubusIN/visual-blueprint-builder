@@ -4,7 +4,7 @@
 	"name": "lubus/make-dir",
 	"version": "0.1.0",
 	"title": "Make Directory",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Creates a directory at the specified path.",
 	"example": {},
 	"supports": {

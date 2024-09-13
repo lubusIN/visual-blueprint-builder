@@ -4,7 +4,7 @@
 	"name": "lubus/install-plugin",
 	"version": "0.1.0",
 	"title": "Install Plugin",
-	"category": "steps",
+	"category": "extend",
 	"description": "Installs a WordPress plugin in the Playground",
 	"example": {},
 	"supports": {

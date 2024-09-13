@@ -4,7 +4,7 @@
 	"name": "lubus/move",
 	"version": "0.1.0",
 	"title": "Move File/Dir",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Moves a file or directory from one path to another.",
 	"example": {},
 	"supports": {

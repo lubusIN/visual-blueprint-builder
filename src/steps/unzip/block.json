@@ -4,7 +4,7 @@
 	"name": "lubus/unzip",
 	"version": "0.1.0",
 	"title": "Unzip",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Unzip a zip file.",
 	"example": {},
 	"supports": {
