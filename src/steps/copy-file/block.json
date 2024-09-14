@@ -4,7 +4,7 @@
 	"name": "lubus/copy-file",
 	"version": "0.1.0",
 	"title": "Copy File",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Copies a file from one path to another.",
 	"example": {},
 	"supports": {

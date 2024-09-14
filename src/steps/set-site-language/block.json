@@ -4,7 +4,7 @@
 	"name": "lubus/set-site-language",
 	"version": "0.1.0",
 	"title": "Set Site Language",
-	"category": "steps",
+	"category": "config",
 	"description": "Sets the site language and download translations.",
 	"example": {},
 	"supports": {

@@ -4,7 +4,7 @@
 	"name": "lubus/activate-plugin",
 	"version": "0.1.0",
 	"title": "Activate plugin",
-	"category": "steps",
+	"category": "extend",
 	"description": "Activates a WordPress plugin (if it's installed).",
 	"example": {},
 	"supports": {

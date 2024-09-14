@@ -4,7 +4,7 @@
 	"name": "lubus/write-file",
 	"version": "0.1.0",
 	"title": "Write File",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Writes data to a file at the specified path.",
 	"example": {},
 	"supports": {

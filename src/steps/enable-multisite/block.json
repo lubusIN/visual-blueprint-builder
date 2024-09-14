@@ -4,7 +4,7 @@
 	"name": "lubus/enable-multisite",
 	"version": "0.1.0",
 	"title": "Enable Multisite",
-	"category": "steps",
+	"category": "config",
 	"description": "Defines the Multisite constants in a wp-config.php file.",
 	"example": {},
 	"supports": {

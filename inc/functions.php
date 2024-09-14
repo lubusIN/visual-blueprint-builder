@@ -55,13 +55,33 @@ add_filter('allowed_block_types_all', 'example_allowed_block_types', 10000, 2);
  */
 function add_new_block_category($block_categories, $block_editor_context)
 {
-    $new_category = [
-        'slug'  => 'steps',
-        'title' => esc_html__('Steps', 'text-domain'),
+    $steps_categories = [
+        [
+            'slug'  => 'config',
+            'title' => esc_html__('Config', 'text-domain')
+        ],
+        [
+            'slug'  => 'extend',
+            'title' => esc_html__('Extend', 'text-domain'),
+        ],
+        [
+            'slug'  => 'file-system',
+            'title' => esc_html__('File System', 'text-domain')
+        ],
+        [
+            'slug'  => 'data',
+            'title' => esc_html__('Data', 'text-domain')
+        ],
+        [
+            'slug'  => 'scripts',
+            'title' => esc_html__('Scripts', 'text-domain')
+        ],
     ];
 
-    // Add the new category at the beginning of the list.
-    array_unshift($block_categories, $new_category);
+
+    foreach ($steps_categories as $step_category) {
+        array_push($block_categories, $step_category);
+    }
 
     return $block_categories;
 }

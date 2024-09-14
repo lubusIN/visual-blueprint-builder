@@ -4,7 +4,7 @@
 	"name": "lubus/remove-file",
 	"version": "0.1.0",
 	"title": "Remove File",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Removes a file at the specified path.",
 	"example": {},
 	"supports": {

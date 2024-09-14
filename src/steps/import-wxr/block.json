@@ -4,7 +4,7 @@
 	"name": "lubus/import-wxr",
 	"version": "0.1.0",
 	"title": "Import Wxr",
-	"category": "steps",
+	"category": "data",
 	"description": "Imports a WXR file into WordPress.",
 	"example": {},
 	"supports": {

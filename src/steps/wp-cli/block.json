@@ -4,7 +4,7 @@
 	"name": "lubus/wp-cli",
 	"version": "0.1.0",
 	"title": "wp-cli",
-	"category": "steps",
+	"category": "scripts",
 	"description": "Runs PHP code using WP-CLI.",
 	"example": {},
 	"supports": {
