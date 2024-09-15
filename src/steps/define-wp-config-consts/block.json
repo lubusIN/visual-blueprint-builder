@@ -17,7 +17,8 @@
 			"default": "defineWpConfigConsts"
 		},
 		"consts": {
-			"type": "object"
+			"type": "object",
+			"default": {}
 		}
 	},
 	"textdomain": "define-wp-config-consts",

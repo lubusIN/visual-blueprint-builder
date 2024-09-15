@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies.
  */
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { cog, plus, trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
@@ -30,20 +30,58 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [configName, setConfigName] = useState('');
 	const [configValue, setConfigValue] = useState('');
+	const [configList, updateConfigList] = useState(Object.entries(consts));
+	const [selectedConfig, setSelectedConfig] = useState(undefined);
+
+	useEffect(() => {
+		setAttributes({
+			consts: Object.fromEntries(configList)
+		});
+	}, [configList]);
+
+	const addConfig = () => {
+		// Update list
+		updateConfigList([
+			...configList,
+			[configName, configValue]
+		]);
+
+		// Clear add form
+		setConfigName('');
+		setConfigValue('');
+	};
+
+	const updateConfig = (index, field, fieldValue) => {
+		const updated = configList.map(([key, value], i) => {
+			if (i === index) {
+				if ('key' === field) {
+					return [fieldValue, value]
+				}
+
+				if ('value' === field) {
+					return [key, fieldValue]
+				}
+			} else {
+				return [key, value];
+			}
+		});
+
+		updateConfigList(updated);
+	};
 
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
 				icon={cog}
 				label="WP Config">
-				{!isSelected && ( <pre>{JSON.stringify(consts, null, " ")}</pre> ||`{config consts}`)}
+				{!isSelected && (<pre>{JSON.stringify(consts, null, " ")}</pre> || `{config consts}`)}
 				{isSelected && (
 					<VStack>
 						<HStack alignment='bottom'>
 							<InputControl
 								label="Name"
 								value={configName}
-								onChange={(value) => setConfigName(value)}
+								onChange={(value) => { setConfigName(value) }}
 							/>
 							<InputControl
 								label="Value"
@@ -53,34 +91,28 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							<Button
 								icon={plus}
 								label="Add Config"
-								onClick={() => {
-									setAttributes({
-										consts: {
-											...consts,
-											[configName]: configValue
-										}
-									})
-								}}
+								onClick={addConfig}
 							/>
 						</HStack>
-						{consts && Object.entries(consts).map(([key, value]) => {
+						{consts && configList.map(([key, value], index) => {
 							return (
-								<HStack key={key} alignment='bottom'>
+								<HStack key={index} alignment='bottom'>
 									<InputControl
 										label="Key"
 										value={key}
-										onChange={() => alert('test')}
+										onChange={(value) => updateConfig(index,'key', value)}
 									/>
 									<InputControl
 										label="Value"
 										value={value}
-										onChange={() => alert('test')}
+										onChange={(value) => updateConfig(index,'value', value)}
 									/>
 									<Button
 										isDestructive
 										icon={trash}
 										label="Delete Config"
 										onClick={() => {
+											setSelectedConfig(index);
 											setIsOpen(true);
 										}}
 									/>
@@ -93,6 +125,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 			<ConfirmDialog
 				isOpen={isOpen}
 				onConfirm={() => {
+					updateConfigList(configList.splice(selectedConfig));
+					setSelectedConfig(undefined);
 					setIsOpen(false);
 				}}
 				onCancel={() => setIsOpen(false)}
