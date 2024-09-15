@@ -3,16 +3,16 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
-import { PluginDocumentSettingPanel } from '@wordpress/editor';
-import { copy, download, globe } from '@wordpress/icons';
+import { PluginDocumentSettingPanel, PluginPostStatusInfo } from '@wordpress/editor';
+import { copy, download, globe, seen } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 import { useCopyToClipboard } from '@wordpress/compose';
 import { downloadBlob } from '@wordpress/blob';
 import { DataForm } from '@wordpress/dataviews';
 import {
-    Button,
-    __experimentalHStack as HStack,
+    Toolbar,
+    ToolbarButton
 } from '@wordpress/components';
 
 /**
@@ -40,9 +40,9 @@ const WP_VERSIONS = [
 ];
 
 /**
- * Main component for displaying version control in post status info.
+ * Main component for displaying blueprint sidebar setting.
  */
-function BlueprintVersionControl() {
+function BlueprintSidebarSettings() {
     const { createNotice } = useDispatch(noticesStore);
     const { editPost } = useDispatch('core/editor');
 
@@ -74,7 +74,7 @@ function BlueprintVersionControl() {
         const preparedSchema = prepareSchema();
         if (preparedSchema) {
             downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
-            createNotice('success', __('Blueprint downloaded successfully!'));
+            createNotice('success', __('Blueprint downloaded generated!'), { type: 'snackbar' });
         }
     };
 
@@ -87,64 +87,55 @@ function BlueprintVersionControl() {
     };
 
     return (
-        <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
-            <HStack justify='left'>
-                <Button
-                    variant="secondary"
-                    icon={globe}
-                    href={playgroundBase + prepareSchema()}
-                    target='_new'
+        <>
+            <PluginPostStatusInfo>
+                <Toolbar>
+                    <ToolbarButton icon={globe} label="Open in playground" href={playgroundBase + prepareSchema()} target="_blank" />
+                    <ToolbarButton icon={download} label="Download JSON" onClick={handleDownload} />
+                    <ToolbarButton icon={copy} label="Copy JSON" ref={handleCopy} />
+                </Toolbar>
+            </PluginPostStatusInfo>
+            <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
+                <DataForm
+                    data={{
+                        php_version: blueprint_config.php_version,
+                        wp_version: blueprint_config.wp_version,
+                        landing_page: blueprint_config.landing_page,
+                    }}
+                    fields={[
+                        {
+                            elements: PHP_VERSIONS,
+                            id: 'php_version',
+                            label: 'PHP Version',
+                            type: 'text'
+                        },
+                        {
+                            elements: WP_VERSIONS,
+                            id: 'wp_version',
+                            label: 'WP Version',
+                            type: 'text'
+                        },
+                        {
+                            id: 'landing_page',
+                            label: 'Landing Page',
+                            type: 'text'
+                        },
+                    ]}
+                    form={{
+                        fields: [
+                            'php_version',
+                            'wp_version',
+                            'landing_page',
+                        ],
+                    }}
+                    onChange={handleBlueprintConfig}
                 />
-                <Button
-                    variant="secondary"
-                    ref={handleCopy}
-                    icon={copy}
-                />
-                <Button
-                    variant="secondary"
-                    icon={download}
-                    onClick={handleDownload}
-                />
-            </HStack>
-            <DataForm
-                data={{
-                    php_version: blueprint_config.php_version,
-                    wp_version: blueprint_config.wp_version,
-                    landing_page: blueprint_config.landing_page,
-                }}
-                fields={[
-                    {
-                        elements: PHP_VERSIONS,
-                        id: 'php_version',
-                        label: 'PHP Version',
-                        type: 'text'
-                    },
-                    {
-                        elements: WP_VERSIONS,
-                        id: 'wp_version',
-                        label: 'WP Version',
-                        type: 'text'
-                    },
-                    {
-                        id: 'landing_page',
-                        label: 'Landing Page',
-                        type: 'text'
-                    },
-                ]}
-                form={{
-                    fields: [
-                        'php_version',
-                        'wp_version',
-                        'landing_page',
-                    ],
-                }}
-                onChange={handleBlueprintConfig}
-            />
-        </PluginDocumentSettingPanel >
+            </PluginDocumentSettingPanel >
+        </>
     );
 };
 
 /**
  * Registers the 'blueprint-version-control' plugin.
  */
-registerPlugin('blueprint-version-control', { render: BlueprintVersionControl });
+registerPlugin('blueprint-version-control', { render: BlueprintSidebarSettings });
