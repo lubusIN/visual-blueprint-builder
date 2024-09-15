@@ -4,7 +4,7 @@
 	"name": "lubus/define-wp-config-consts",
 	"version": "0.1.0",
 	"title": "WP Config",
-	"category": "steps",
+	"category": "config",
 	"description": "Defines constants in a wp-config.php file. This step can be called multiple times, and the constants will be merged.",
 	"example": {},
 	"supports": {
