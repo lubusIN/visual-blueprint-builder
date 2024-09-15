@@ -69,6 +69,10 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		updateConfigList(updated);
 	};
 
+	const removeConfig = () => {
+		updateConfigList(configList.filter((config, index) => index !== selectedConfig));
+	};
+
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
@@ -98,7 +102,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							return (
 								<HStack key={index} alignment='bottom'>
 									<InputControl
-										label="Key"
+										label="Name"
 										value={key}
 										onChange={(value) => updateConfig(index,'key', value)}
 									/>
@@ -125,7 +129,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 			<ConfirmDialog
 				isOpen={isOpen}
 				onConfirm={() => {
-					updateConfigList(configList.splice(selectedConfig));
+					removeConfig();
 					setSelectedConfig(undefined);
 					setIsOpen(false);
 				}}
