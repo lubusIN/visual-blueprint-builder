@@ -102,7 +102,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 							return (
 								<HStack key={index} alignment='bottom'>
 									<InputControl
-										label="Key"
+										label="Name"
 										value={key}
 										onChange={(value) => updateOption(index,'key', value)}
 									/>
