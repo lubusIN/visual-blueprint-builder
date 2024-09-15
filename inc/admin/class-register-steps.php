@@ -43,6 +43,7 @@ class BlueprintSteps
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/make-dir');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-wxr');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/unzip');
+        register_block_type(BEPB_PLUGIN_DIR . 'build/steps/set-site-options');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/set-site-language');
         register_block_type(BEPB_PLUGIN_DIR . 'build/steps/import-theme-starter-content');
     }
