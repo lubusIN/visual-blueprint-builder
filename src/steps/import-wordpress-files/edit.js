@@ -26,11 +26,15 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { wordPressFilesZip: { url } } = attributes;
+	const { wordPressFilesZip } = attributes;
+	const { url } = wordPressFilesZip;
 
 	const handleInputChange = (value) => {
 		setAttributes({
-			wordPressFilesZip: value
+			wordPressFilesZip: {
+				...wordPressFilesZip,
+				...value
+			}
 		});
 	};
 
