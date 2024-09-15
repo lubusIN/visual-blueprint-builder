@@ -65,7 +65,10 @@ function BlueprintVersionControl() {
 
     // Function to prepare the schema
     const prepareSchema = () => {
-        const blockAttributes = blocks.map(block => block.attributes);
+        const blockAttributes = blocks.map(block => {
+            delete block.attributes.metadata;
+            return block.attributes;
+        });
         schema.steps = [...blockAttributes];
         return JSON.stringify(schema, null, 2);
     };
