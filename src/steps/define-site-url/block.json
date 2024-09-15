@@ -4,7 +4,7 @@
 	"name": "lubus/define-site-url",
 	"version": "0.1.0",
 	"title": "Define Site Url",
-	"category": "steps",
+	"category": "config",
 	"description": "Sets WP_HOME and WP_SITEURL constants for the WordPress installation. \n Using this step on playground.wordpress.net is moot. It is useful when building a custom Playground-based tool, like wp-now, or deploying Playground on a custom domain.",
 	"example": {},
 	"supports": {

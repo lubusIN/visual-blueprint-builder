@@ -4,7 +4,7 @@
 	"name": "lubus/install-theme",
 	"version": "0.1.0",
 	"title": "Install Theme",
-	"category": "steps",
+	"category": "extend",
 	"description": "Installs a WordPress theme in the Playground",
 	"example": {},
 	"supports": {

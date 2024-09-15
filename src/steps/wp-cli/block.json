@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/remove-file",
+	"name": "lubus/wp-cli",
 	"version": "0.1.0",
-	"title": "Remove File",
-	"category": "file-system",
-	"description": "Removes a file at the specified path.",
+	"title": "wp-cli",
+	"category": "scripts",
+	"description": "Runs PHP code using WP-CLI.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,14 +14,13 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "rm"
+			"default": "wp-cli"
 		},
-		"path": {
-			"type": "string",
-			"default": ""
+		"command": {
+			"type": "string"
 		}
 	},
-	"textdomain": "remove-file",
+	"textdomain": "wp-cli",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

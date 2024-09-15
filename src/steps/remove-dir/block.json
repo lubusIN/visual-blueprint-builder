@@ -4,7 +4,7 @@
 	"name": "lubus/remove-dir",
 	"version": "0.1.0",
 	"title": "Remove Directory",
-	"category": "steps",
+	"category": "file-system",
 	"description": "Removes a directory at the specified path.",
 	"example": {},
 	"supports": {

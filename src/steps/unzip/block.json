@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/import-wxr",
+	"name": "lubus/unzip",
 	"version": "0.1.0",
-	"title": "Import Wxr",
-	"category": "data",
-	"description": "Imports a WXR file into WordPress.",
+	"title": "Unzip",
+	"category": "file-system",
+	"description": "Unzip a zip file.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,25 +14,28 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "importWxr"
+			"default": "unzip"
 		},
-		"file": {
+		"zipFile": {
 			"type": "object",
 			"default": {
-				"resource": "url",
-				"url": ""
+				"resource": "vfs",
+				"path": ""
 			},
 			"properties": {
 				"resource": {
 					"type": "string"
 				},
-				"url": {
+				"path": {
 					"type": "string"
 				}
 			}
+		},
+		"extractToPath": {
+			"type": "string"
 		}
 	},
-	"textdomain": "import-wxr",
+	"textdomain": "unzip",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

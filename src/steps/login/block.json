@@ -4,7 +4,7 @@
 	"name": "lubus/login",
 	"version": "0.1.0",
 	"title": "Login",
-	"category": "steps",
+	"category": "config",
 	"description": "Logs in to Playground. Under the hood, this function submits the wp-login.php form just like a user would.",
 	"example": {},
 	"supports": {

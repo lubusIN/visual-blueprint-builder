@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/remove-file",
+	"name": "lubus/write-file",
 	"version": "0.1.0",
-	"title": "Remove File",
+	"title": "Write File",
 	"category": "file-system",
-	"description": "Removes a file at the specified path.",
+	"description": "Writes data to a file at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,14 +14,16 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "rm"
+			"default": "writeFile"
 		},
 		"path": {
-			"type": "string",
-			"default": ""
+			"type": "string"
+		},
+		"data": {
+			"type": "string"
 		}
 	},
-	"textdomain": "remove-file",
+	"textdomain": "write-file",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

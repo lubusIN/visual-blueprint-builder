@@ -1,31 +1,28 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/activate-plugin",
+	"name": "lubus/set-site-language",
 	"version": "0.1.0",
-	"title": "Activate plugin",
-	"category": "extend",
-	"description": "Activates a WordPress plugin (if it's installed).",
+	"title": "Set Site Language",
+	"category": "config",
+	"description": "Sets the site language and download translations.",
 	"example": {},
 	"supports": {
 		"html": false,
+		"multiple": false,
 		"customClassName": false
 	},
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "activatePlugin"
+			"default": "setSiteLanguage"
 		},
-		"pluginName": {
-			"type": "string",
-			"default": ""
-		},
-		"pluginPath": {
+		"language": {
 			"type": "string",
 			"default": ""
 		}
 	},
-	"textdomain": "activate-plugin",
+	"textdomain": "set-site-language",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }
