@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel, PluginPostStatusInfo } from '@wordpress/editor';
-import { copy, download, globe, seen } from '@wordpress/icons';
+import { copy, download, globe, code } from '@wordpress/icons';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 import { useCopyToClipboard } from '@wordpress/compose';
@@ -52,6 +52,7 @@ function BlueprintSidebarSettings() {
     });
 
     const playgroundBase = "https://playground.wordpress.net/#";
+    const playgroundBuilderBase = "https://playground.wordpress.net/builder/builder.html#";
 
     const schema = {
         $schema: "https://playground.wordpress.net/blueprint-schema.json",
@@ -102,6 +103,7 @@ function BlueprintSidebarSettings() {
                     <ToolbarButton icon={globe} label="Open in playground" href={playgroundBase + prepareSchema()} target="_blank" />
                     <ToolbarButton icon={download} label="Download JSON" onClick={handleDownload} />
                     <ToolbarButton icon={copy} label="Copy JSON" ref={handleCopy} />
+                    <ToolbarButton icon={code} label="Open in Builder" href={playgroundBuilderBase + prepareSchema()} target="_blank" />
                 </Toolbar>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
