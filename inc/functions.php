@@ -33,6 +33,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/wp-cli',
             'lubus/run-php',
             'lubus/unzip',
+            'lubus/update-user-meta',
             'lubus/set-site-options',
             'lubus/make-dir',
             'lubus/import-wxr',
