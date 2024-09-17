@@ -22,12 +22,14 @@ module.exports = {
         'steps/make-dir/index': './src/steps/make-dir/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/define-wp-config-consts/index': './src/steps/define-wp-config-consts/index.js',
         'steps/write-file/index': './src/steps/write-file/index.js',
         'steps/wp-cli/index': './src/steps/wp-cli/index.js',
         'steps/run-php/index': './src/steps/run-php/index.js',
         'steps/unzip/index': './src/steps/unzip/index.js',
         'steps/set-site-language/index': './src/steps/set-site-language/index.js',
         'steps/update-user-meta/index': './src/steps/update-user-meta/index.js',
+        'steps/set-site-options/index': './src/steps/set-site-options/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {

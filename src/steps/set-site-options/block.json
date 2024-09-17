@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/enable-multisite",
+	"name": "lubus/set-site-options",
 	"version": "0.1.0",
-	"title": "Enable Multisite",
+	"title": "Set Site Options",
 	"category": "config",
-	"description": "Defines the Multisite constants in a wp-config.php file.",
+	"description": "Sets site options. This is equivalent to calling update_option for each option in the options object.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -15,10 +15,14 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "enableMultisite"
+			"default": "setSiteOptions"
+		},
+		"options": {
+			"type": "object",
+			"default": {}
 		}
 	},
-	"textdomain": "enable-multisite",
+	"textdomain": "set-site-options",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

@@ -22,11 +22,17 @@ import './editor.scss';
  * @return {Element} Element to render.
  */
 export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { file: { url } } = attributes;
+	const { file } = attributes;
+	const { url } = file;
+
+	console.log(attributes)
 
 	const handleInputChange = (value) => {
 		setAttributes({
-			file: value
+			file: {
+				...file,
+				...value
+			}
 		});
 	};
 
