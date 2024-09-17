@@ -1,0 +1,1 @@
+{"version":3,"file":"steps/enable-multisite/index.css","mappings":";;;AAAA;;;;EAAA,C","sources":["webpack://block-editor-for-playground-blueprint/./src/steps/enable-multisite/editor.scss"],"sourcesContent":["/**\n * The following styles get applied inside the editor only.\n *\n * Replace them with your own styles or remove the file completely.\n */\n"],"names":[],"sourceRoot":""}

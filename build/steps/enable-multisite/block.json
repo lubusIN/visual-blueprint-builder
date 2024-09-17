@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lubus/enable-multisite",
+  "version": "0.1.0",
+  "title": "Enable Multisite",
+  "category": "config",
+  "description": "Defines the Multisite constants in a wp-config.php file.",
+  "example": {},
+  "supports": {
+    "html": false,
+    "multiple": false,
+    "customClassName": false
+  },
+  "attributes": {
+    "step": {
+      "type": "string",
+      "default": "enableMultisite"
+    }
+  },
+  "textdomain": "enable-multisite",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css"
+}
