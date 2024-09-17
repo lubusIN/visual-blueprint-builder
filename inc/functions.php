@@ -29,6 +29,7 @@ function example_allowed_block_types($allowed_block_types, $block_editor_context
             'lubus/reset-data',
             'lubus/write-file',
             'lubus/move',
+            'lubus/define-wp-config-consts',
             'lubus/wp-cli',
             'lubus/run-php',
             'lubus/unzip',

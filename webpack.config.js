@@ -22,6 +22,7 @@ module.exports = {
         'steps/make-dir/index': './src/steps/make-dir/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
+        'steps/define-wp-config-consts/index': './src/steps/define-wp-config-consts/index.js',
         'steps/write-file/index': './src/steps/write-file/index.js',
         'steps/wp-cli/index': './src/steps/wp-cli/index.js',
         'steps/run-php/index': './src/steps/run-php/index.js',
