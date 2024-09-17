@@ -9,8 +9,8 @@
 	"example": {},
 	"supports": {
 		"html": false,
-		"customClassName": false,
-		"multiple": false
+		"multiple": false,
+		"customClassName": false
 	},
 	"attributes": {
 		"step": {
