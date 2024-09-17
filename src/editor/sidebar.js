@@ -60,6 +60,12 @@ function BlueprintSidebarSettings() {
             php: blueprint_config.php_version,
             wp: blueprint_config.wp_version
         },
+        phpExtensionBundles: [
+            blueprint_config.php_extension_bundles
+        ],
+        features: {
+            networking: blueprint_config.networking
+        },
         steps: []
     };
 
@@ -104,6 +110,8 @@ function BlueprintSidebarSettings() {
                         php_version: blueprint_config.php_version,
                         wp_version: blueprint_config.wp_version,
                         landing_page: blueprint_config.landing_page,
+                        php_extension_bundles: blueprint_config.php_extension_bundles,
+                        networking: blueprint_config.networking
                     }}
                     fields={[
                         {
@@ -123,12 +131,32 @@ function BlueprintSidebarSettings() {
                             label: 'Landing Page',
                             type: 'text'
                         },
+                        {
+                            id: 'php_extension_bundles',
+                            label: 'PHP Extension Bundles',
+                            type: 'text',
+                            elements: [
+                                { label: 'Kitchen Sink', value: 'kitchen-sink' },
+                                { label: 'Light', value: 'light' },
+                            ]
+                        },
+                        {
+                            id: 'networking',
+                            label: 'Networking',
+                            type: 'text',
+                            elements: [
+                                { label: 'Enabled', value: true },
+                                { label: 'Disabled', value: false },
+                            ]
+                        },
                     ]}
                     form={{
                         fields: [
                             'php_version',
                             'wp_version',
                             'landing_page',
+                            'php_extension_bundles',
+                            'networking'
                         ],
                     }}
                     onChange={handleBlueprintConfig}
