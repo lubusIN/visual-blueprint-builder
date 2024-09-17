@@ -24,7 +24,7 @@
 			"step": "installPlugin",
 			"pluginZipFile": {
 				"resource": "url",
-				"url": "https://github-proxy.com/proxy/?repo=lubusIN/block-editor-for-playground-blueprint&branch=dev"
+				"url": "https://github-proxy.com/proxy/?repo=lubusIN/block-editor-for-playground-blueprint&branch=add/playground-demo"
 			}
 		},
 		{
