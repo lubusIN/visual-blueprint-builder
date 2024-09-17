@@ -3,7 +3,7 @@
         'name' => 'lubus/block-editor-for-playground-blueprint',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9f296b35f3f1ecf6ccb39d57b9414e850d3f6184',
+        'reference' => '05e22f0e7a742a7e9948ddf79e1815566a6c7f2a',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'lubus/block-editor-for-playground-blueprint' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9f296b35f3f1ecf6ccb39d57b9414e850d3f6184',
+            'reference' => '05e22f0e7a742a7e9948ddf79e1815566a6c7f2a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
