@@ -28,6 +28,7 @@ module.exports = {
         'steps/run-php/index': './src/steps/run-php/index.js',
         'steps/unzip/index': './src/steps/unzip/index.js',
         'steps/set-site-language/index': './src/steps/set-site-language/index.js',
+        'steps/set-site-options/index': './src/steps/set-site-options/index.js',
         'steps/login/index': './src/steps/login/index.js'
     },
     output: {
