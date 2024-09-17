@@ -25,8 +25,6 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	const { file } = attributes;
 	const { url } = file;
 
-	console.log(attributes)
-
 	const handleInputChange = (value) => {
 		setAttributes({
 			file: {
