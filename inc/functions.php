@@ -3,50 +3,72 @@
 /**
  * Filters the list of allowed block types in the block editor.
  *
- * This function restricts the available block types to Heading, List, Image, and Paragraph only.
+ * This function restricts blueprint steps to only be available for the 'blueprint' post type.
+ * Core blocks are allowed for all post types except blueprint.
  *
  * @param array|bool $allowed_block_types Array of block type slugs, or boolean to enable/disable all.
  * @param object     $block_editor_context The current block editor context.
  *
  * @return array The array of allowed block types.
  */
-function example_allowed_block_types($allowed_block_types, $block_editor_context)
+function filter_allowed_block_types($allowed_block_types, $block_editor_context)
 {
+    // Get all registered block types
+    $all_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
-    if (get_current_screen()->post_type == 'blueprint') {
-        $allowed_block_types = [
-            'lubus/login',
-            'lubus/install-plugin',
-            'lubus/install-theme',
-            'lubus/enable-multisite',
-            'lubus/define-site-url',
-            'lubus/copy-file',
-            'lubus/activate-theme',
-            'lubus/activate-plugin',
-            'lubus/import-wordpress-files',
-            'lubus/remove-dir',
-            'lubus/remove-file',
-            'lubus/reset-data',
-            'lubus/write-file',
-            'lubus/move',
-            'lubus/define-wp-config-consts',
-            'lubus/wp-cli',
-            'lubus/run-php',
-            'lubus/unzip',
-            'lubus/update-user-meta',
-            'lubus/set-site-options',
-            'lubus/make-dir',
-            'lubus/import-wxr',
-            'lubus/set-site-language',
-            'lubus/import-theme-starter-content',
-        ];
+    $blueprint_steps = [
+        'lubus/login',
+        'lubus/install-plugin',
+        'lubus/install-theme',
+        'lubus/enable-multisite',
+        'lubus/define-site-url',
+        'lubus/copy-file',
+        'lubus/activate-theme',
+        'lubus/activate-plugin',
+        'lubus/import-wordpress-files',
+        'lubus/remove-dir',
+        'lubus/remove-file',
+        'lubus/reset-data',
+        'lubus/write-file',
+        'lubus/move',
+        'lubus/define-wp-config-consts',
+        'lubus/wp-cli',
+        'lubus/run-php',
+        'lubus/unzip',
+        'lubus/update-user-meta',
+        'lubus/set-site-options',
+        'lubus/make-dir',
+        'lubus/import-wxr',
+        'lubus/set-site-language',
+        'lubus/import-theme-starter-content',
+    ];
 
-        return $allowed_block_types;
-    };
+    if ($block_editor_context->post->post_type === 'blueprint') {
+        // Allow only blueprint steps for 'blueprint' post type
+        return $blueprint_steps;
+    }
+    
+    // Allow all blocks except blueprint steps for other post types
+    $allowed_block_types = array_keys($all_blocks);
 
-    return true;
+    // Create a new array for the allowed blocks.
+    $filtered_blocks = [];
+
+    // Loop through each block in the allowed blocks list.
+    foreach ($allowed_block_types as $block) {
+
+        // Check if the block is not in the disallowed blocks list.
+        if (! in_array($block, $blueprint_steps, true)) {
+
+            // If it's not disallowed, add it to the filtered list.
+            $filtered_blocks[] = $block;
+        }
+    }
+
+    // Return the filtered list of allowed blocks
+    return $filtered_blocks;
 }
-add_filter('allowed_block_types_all', 'example_allowed_block_types', 10000, 2);
+add_filter('allowed_block_types_all', 'filter_allowed_block_types', 10000, 2);
 
 /**
  * Adds a custom block category 'Steps' to the block editor.
