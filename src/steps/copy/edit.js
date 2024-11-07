@@ -28,7 +28,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		<p {...useBlockProps()}>
 			<Placeholder
 				icon={copy}
-				label="Copy File"
+				label="Copy"
 				instructions={!isSelected && `${fromPath || 'From Path'} > ${toPath || 'To Path'}`}>
 				{isSelected && (
 					<VStack style={{ width: '100%' }}>

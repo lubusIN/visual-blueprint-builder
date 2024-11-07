@@ -27,7 +27,7 @@ class BlueprintSteps
             'login',
             'install-plugin',
             'enable-multisite',
-            'copy-file',
+            'copy',
             'install-theme',
             'define-site-url',
             'activate-theme',
