@@ -3,10 +3,10 @@
 /**
  * This class for registering a custom meta fields for block editor for playground blueprint.
  *
- * @package block-editor-for-playground-blueprint
+ * @package wp-playground-blueprint-editor
  */
 
-namespace Lubus\Admin\BlockEditorForPlaygroundBlueprint;
+namespace WP\Admin\PlaygroundBlueprintEditor;
 
 class RegisterCustomMeta
 {

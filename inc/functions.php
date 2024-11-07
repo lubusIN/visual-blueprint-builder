@@ -17,37 +17,37 @@ function filter_allowed_block_types($allowed_block_types, $block_editor_context)
     $all_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
     $blueprint_steps = [
-        'lubus/login',
-        'lubus/install-plugin',
-        'lubus/install-theme',
-        'lubus/enable-multisite',
-        'lubus/define-site-url',
-        'lubus/copy-file',
-        'lubus/activate-theme',
-        'lubus/activate-plugin',
-        'lubus/import-wordpress-files',
-        'lubus/remove-dir',
-        'lubus/remove-file',
-        'lubus/reset-data',
-        'lubus/write-file',
-        'lubus/move',
-        'lubus/define-wp-config-consts',
-        'lubus/wp-cli',
-        'lubus/run-php',
-        'lubus/unzip',
-        'lubus/update-user-meta',
-        'lubus/set-site-options',
-        'lubus/make-dir',
-        'lubus/import-wxr',
-        'lubus/set-site-language',
-        'lubus/import-theme-starter-content',
+        'playground-step/login',
+        'playground-step/install-plugin',
+        'playground-step/install-theme',
+        'playground-step/enable-multisite',
+        'playground-step/define-site-url',
+        'playground-step/copy-file',
+        'playground-step/activate-theme',
+        'playground-step/activate-plugin',
+        'playground-step/import-wordpress-files',
+        'playground-step/remove-dir',
+        'playground-step/remove-file',
+        'playground-step/reset-data',
+        'playground-step/write-file',
+        'playground-step/move',
+        'playground-step/define-wp-config-consts',
+        'playground-step/wp-cli',
+        'playground-step/run-php',
+        'playground-step/unzip',
+        'playground-step/update-user-meta',
+        'playground-step/set-site-options',
+        'playground-step/make-dir',
+        'playground-step/import-wxr',
+        'playground-step/set-site-language',
+        'playground-step/import-theme-starter-content',
     ];
 
     if ($block_editor_context->post->post_type === 'blueprint') {
         // Allow only blueprint steps for 'blueprint' post type
         return $blueprint_steps;
     }
-    
+
     // Allow all blocks except blueprint steps for other post types
     $allowed_block_types = array_keys($all_blocks);
 

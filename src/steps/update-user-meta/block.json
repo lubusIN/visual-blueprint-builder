@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/update-user-meta",
+	"name": "playground-step/update-user-meta",
 	"version": "0.1.0",
 	"title": "Update User Meta",
 	"category": "config",
@@ -26,7 +26,7 @@
 			"default": 1
 		}
 	},
-	"textdomain": "update-user-meta",
+	"textdomain": "wp-playground-blueprint-editor",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

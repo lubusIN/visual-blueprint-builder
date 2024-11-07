@@ -3,10 +3,10 @@
 /**
  * This class defines a custom post type for creating and managing blueprint.
  *
- * @package block-editor-for-playground-blueprint
+ * @package wp-playground-blueprint-editor
  */
 
-namespace Lubus\Admin\BlockEditorForPlaygroundBlueprint;
+namespace WP\Admin\PlaygroundBlueprintEditor;
 
 class BlueprintPostType
 {

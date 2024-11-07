@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/import-wxr",
+	"name": "playground-step/import-wxr",
 	"version": "0.1.0",
 	"title": "Import Wxr",
 	"category": "data",
@@ -33,7 +33,7 @@
 			}
 		}
 	},
-	"textdomain": "import-wxr",
+	"textdomain": "wp-playground-blueprint-editor",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }
