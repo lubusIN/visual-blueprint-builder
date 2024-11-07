@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/run-php",
+	"name": "playground-step/run-php",
 	"version": "0.1.0",
 	"title": "Run PHP",
 	"category": "scripts",
@@ -21,7 +21,7 @@
 			"default": "<?php require_once 'wordpress/wp-load.php'; \n // Add You Code ?>"
 		}
 	},
-	"textdomain": "runphp",
+	"textdomain": "wp-playground-blueprint-editor",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "lubus/make-dir",
+	"name": "playground-step/make-dir",
 	"version": "0.1.0",
 	"title": "Make Directory",
 	"category": "file-system",
@@ -22,7 +22,7 @@
 			"default": ""
 		}
 	},
-	"textdomain": "make-dir",
+	"textdomain": "wp-playground-blueprint-editor",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css"
 }

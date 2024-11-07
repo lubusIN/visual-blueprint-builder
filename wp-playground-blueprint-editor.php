@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Plugin Name: Block editor for playground blueprint
+ * Plugin Name: Playground blueprint editor
  * Description: Design playground blueprints with a specialized block editor interface in WordPress.
  * Version: 1.0.0
  * Requires PHP: 7.4
  * Author: Lubus
  * Author URI: https://lubus.in/
  * Contributor: Lubus, https://lubus.in/
- * Text Domain: block-editor-for-playground-blueprint
+ * Text Domain: wp-playground-blueprint-editor
  * 
- * @package block-editor-for-playground-blueprint
+ * @package wp-playground-blueprint-editor
  */
 
-namespace Lubus\BlockEditorForPlaygroundBlueprint;
+namespace WP\PlaygroundBlueprintEditor;
 
-use Lubus\Admin\BlockEditorForPlaygroundBlueprint\{
+use WP\Admin\PlaygroundBlueprintEditor\{
     BlueprintPostType,
     BlueprintSteps,
     EnqueueScripts,
@@ -27,17 +27,17 @@ defined('ABSPATH') || exit;
 require_once 'vendor/autoload.php';
 require_once 'inc/functions.php';
 
-if (!class_exists('BlockEditorForPlaygroundBlueprint')) {
+if (!class_exists('PlaygroundBlueprintEditor')) {
 
     /**
-     * Block editor for playground blueprint Main Class
+     * Playground blueprint editor Main Class
      */
-    class BlockEditorForPlaygroundBlueprint
+    class PlaygroundBlueprintEditor
     {
         /**
          * The single instance of the class.
          *
-         * @var BlockEditorForPlaygroundBlueprint
+         * @var PlaygroundBlueprintEditor
          */
         protected static $_instance = null;
 
@@ -88,7 +88,7 @@ if (!class_exists('BlockEditorForPlaygroundBlueprint')) {
                 define('BEPB_PLUGIN_URL', plugin_dir_url(BEPB_PLUGIN_FILE));
             }
 
-            // Plugin Basename aka: "block-editor-for-playground-blueprint/block-editor-playground-blueprint.php".
+            // Plugin Basename aka: "block-editor-for-playground-blueprint/wp-playground-blueprint-editor.php".
             if (!defined('BEPB_PLUGIN_BASENAME')) {
                 define('BEPB_PLUGIN_BASENAME', plugin_basename(BEPB_PLUGIN_FILE));
             }
@@ -107,4 +107,4 @@ if (!class_exists('BlockEditorForPlaygroundBlueprint')) {
     }
 }
 
-return BlockEditorForPlaygroundBlueprint::instance();
+return PlaygroundBlueprintEditor::instance();

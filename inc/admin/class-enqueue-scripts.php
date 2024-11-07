@@ -3,10 +3,10 @@
 /**
  * This class handles registering and enqueueing scripts and styles.
  *
- * @package wordpress-popup-builder
+ * @package wp-playground-blueprint-editor
  */
 
-namespace Lubus\Admin\BlockEditorForPlaygroundBlueprint;
+namespace WP\Admin\PlaygroundBlueprintEditor;
 
 class EnqueueScripts
 {

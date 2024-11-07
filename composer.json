@@ -1,15 +1,10 @@
 {
-    "name": "lubus/block-editor-for-playground-blueprint",
+    "name": "wp/playground-blueprint-editor",
     "description": "Design playground blueprints with a specialized block editor interface in WordPress.",
     "autoload": {
         "classmap": [
             "inc/"
         ]
     },
-    "authors": [
-        {
-            "name": "lubus"
-        }
-    ],
     "require": {}
 }
