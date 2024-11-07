@@ -22,7 +22,7 @@ function filter_allowed_block_types($allowed_block_types, $block_editor_context)
         'playground-step/install-theme',
         'playground-step/enable-multisite',
         'playground-step/define-site-url',
-        'playground-step/copy-file',
+        'playground-step/copy',
         'playground-step/activate-theme',
         'playground-step/activate-plugin',
         'playground-step/import-wordpress-files',

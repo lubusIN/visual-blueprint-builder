@@ -11,7 +11,7 @@ module.exports = {
         'steps/install-theme/index': './src/steps/install-theme/index.js',
         'steps/define-site-url/index': './src/steps/define-site-url/index.js',
         'steps/enable-multisite/index': './src/steps/enable-multisite/index.js',
-        'steps/copy-file/index': './src/steps/copy-file/index.js',
+        'steps/copy/index': './src/steps/copy/index.js',
         'steps/activate-theme/index': './src/steps/activate-theme/index.js',
         'steps/activate-plugin/index': './src/steps/activate-plugin/index.js',
         'steps/import-wordpress-files/index': './src/steps/import-wordpress-files/index.js',
