@@ -19,6 +19,7 @@ import {
  * Internal dependencies.
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Edit function for the plugin installation block.
@@ -77,71 +78,79 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
-				icon={postAuthor}
-				label="Site Meta">
-				{!isSelected && (
-					<VStack>
-						{meta ? <pre>{JSON.stringify(meta, null, " ")}</pre> : <span>{`{config user meta}`}</span>}
-						<span>{userId ? `for UserId ${userId}` : '{user Id}'}</span>
-					</VStack>
-				)}
-				{isSelected && (
-					<VStack>
-						<BaseControl
-							__nextHasNoMarginBottom
-							label="Meta Data"
-						>
-							<HStack alignment='bottom'>
-								<InputControl
-									label="Name"
-									value={metaName}
-									onChange={(value) => { setMetaName(value) }}
-								/>
-								<InputControl
-									label="Value"
-									value={metaValue}
-									onChange={(value) => setMetaValue(value)}
-								/>
-								<Button
-									icon={plus}
-									label="Add Config"
-									onClick={addOption}
-								/>
-							</HStack>
-							{meta && metaList.map(([key, value], index) => {
-								return (
-									<HStack key={index} alignment='bottom'>
+				preview={
+					<VStack style={{ width: '100%' }}>
+						<HStack justify='left' align={'center'} spacing={3}>
+							<Icon icon={postAuthor} size={28} className='step-icon' />
+							<VStack spacing={1}>
+								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								{!isSelected && (
+									<VStack>
+										<Text weight={600}>{meta ? <pre>{JSON.stringify(meta, null, " ")}</pre> : <span>{`{config user meta}`}</span>}</Text>
+										<Text weight={600}>{userId ? `for UserId ${userId}` : '{user Id}'}</Text>
+									</VStack>
+								)}
+							</VStack>
+						</HStack>
+						{isSelected && (
+							<VStack>
+								<BaseControl
+									__nextHasNoMarginBottom
+									label="Meta Data"
+								>
+									<HStack alignment='bottom'>
 										<InputControl
 											label="Name"
-											value={key}
-											onChange={(value) => updateOption(index, 'key', value)}
+											value={metaName}
+											onChange={(value) => { setMetaName(value) }}
 										/>
 										<InputControl
 											label="Value"
-											value={value}
-											onChange={(value) => updateOption(index, 'value', value)}
+											value={metaValue}
+											onChange={(value) => setMetaValue(value)}
 										/>
 										<Button
-											isDestructive
-											icon={trash}
-											label="Delete Config"
-											onClick={() => {
-												setSelectedMeta(index);
-												setIsOpen(true);
-											}}
+											icon={plus}
+											label="Add Config"
+											onClick={addOption}
 										/>
 									</HStack>
-								)
-							})}
-						</BaseControl>
-						<InputControl
-							label="User Id"
-							value={userId}
-							onChange={(value) => setAttributes({ userId: Number(value) })}
-						/>
+									{meta && metaList.map(([key, value], index) => {
+										return (
+											<HStack key={index} alignment='bottom'>
+												<InputControl
+													label="Name"
+													value={key}
+													onChange={(value) => updateOption(index, 'key', value)}
+												/>
+												<InputControl
+													label="Value"
+													value={value}
+													onChange={(value) => updateOption(index, 'value', value)}
+												/>
+												<Button
+													isDestructive
+													icon={trash}
+													label="Delete Config"
+													onClick={() => {
+														setSelectedMeta(index);
+														setIsOpen(true);
+													}}
+												/>
+											</HStack>
+										)
+									})}
+								</BaseControl>
+								<InputControl
+									label="User Id"
+									value={userId}
+									onChange={(value) => setAttributes({ userId: Number(value) })}
+								/>
+							</VStack>
+						)}
 					</VStack>
-				)}
-			</Placeholder>
+				}
+			/>
 			<ConfirmDialog
 				isOpen={isOpen}
 				onConfirm={() => {

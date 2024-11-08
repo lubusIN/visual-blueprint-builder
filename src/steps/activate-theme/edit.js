@@ -6,7 +6,10 @@ import { brush } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
+	Icon,
 	__experimentalVStack as VStack,
+	__experimentalHStack as HStack,
+	__experimentalText as Text,
 } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
@@ -14,6 +17,7 @@ import { DataForm } from '@wordpress/dataviews';
  * Internal dependencies.
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -27,31 +31,39 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	return (
 		<p {...useBlockProps()}>
 			<Placeholder
-				icon={brush}
-				label="Activate Theme"
-				instructions={!isSelected && `${themeFolderName || 'Theme Folder Name'}`}>
-				{isSelected && (
+				preview={
 					<VStack style={{ width: '100%' }}>
-						<DataForm
-							data={attributes}
-							fields={[
-								{
-									id: 'themeFolderName',
-									label: 'Theme Folder Name',
-									type: 'text',
-									placeholder: 'The name of the theme folder located in wp-content/themes/'
-								}
-							]}
-							form={{
-								fields: [
-									'themeFolderName'
-								]
-							}}
-							onChange={setAttributes}
-						/>
+						<HStack justify='left' align={'center'} spacing={3}>
+							<Icon icon={brush} size={28} className='step-icon' />
+							<VStack spacing={1}>
+								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								{!isSelected && (
+									<Text weight={600}>{`${themeFolderName || 'Theme Folder Name'}`}</Text>
+								)}
+							</VStack>
+						</HStack>
+						{isSelected && (
+							<DataForm
+								data={attributes}
+								fields={[
+									{
+										id: 'themeFolderName',
+										label: 'Theme Folder Name',
+										type: 'text',
+										placeholder: 'The name of the theme folder located in wp-content/themes/'
+									}
+								]}
+								form={{
+									fields: [
+										'themeFolderName'
+									]
+								}}
+								onChange={setAttributes}
+							/>
+						)}
 					</VStack>
-				)}
-			</Placeholder>
+				}
+			/>
 		</p>
 	);
 }

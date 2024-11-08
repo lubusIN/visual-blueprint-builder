@@ -8,10 +8,12 @@ import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
 	Button,
+	Icon,
 	__experimentalConfirmDialog as ConfirmDialog,
 	__experimentalInputControl as InputControl,
 	__experimentalHStack as HStack,
 	__experimentalVStack as VStack,
+	__experimentalText as Text,
 } from '@wordpress/components';
 
 /**
@@ -76,56 +78,66 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
-				icon={settings}
-				label="Site Options">
-				{!isSelected && (<pre>{JSON.stringify(options, null, " ")}</pre> || `{config site options}`)}
-				{isSelected && (
-					<VStack>
-						<HStack alignment='bottom'>
-							<InputControl
-								label="Name"
-								value={optionName}
-								onChange={(value) => { setOptionName(value) }}
-							/>
-							<InputControl
-								label="Value"
-								value={optionValue}
-								onChange={(value) => setOptionValue(value)}
-							/>
-							<Button
-								icon={plus}
-								label="Add Config"
-								onClick={addOption}
-							/>
+				preview={
+					<VStack style={{ width: '100%' }}>
+						<HStack justify='left' align={'center'} spacing={3}>
+							<Icon icon={settings} size={28} className='step-icon' />
+							<VStack spacing={1}>
+								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								{!isSelected && (
+									<Text weight={600}>{(<pre>{JSON.stringify(options, null, " ")}</pre> || `{config site options}`)}</Text>
+								)}
+							</VStack>
 						</HStack>
-						{options && optionList.map(([key, value], index) => {
-							return (
-								<HStack key={index} alignment='bottom'>
+						{isSelected && (
+							<VStack>
+								<HStack alignment='bottom'>
 									<InputControl
 										label="Name"
-										value={key}
-										onChange={(value) => updateOption(index,'key', value)}
+										value={optionName}
+										onChange={(value) => { setOptionName(value) }}
 									/>
 									<InputControl
 										label="Value"
-										value={value}
-										onChange={(value) => updateOption(index,'value', value)}
+										value={optionValue}
+										onChange={(value) => setOptionValue(value)}
 									/>
 									<Button
-										isDestructive
-										icon={trash}
-										label="Delete Config"
-										onClick={() => {
-											setSelectedOption(index);
-											setIsOpen(true);
-										}}
+										icon={plus}
+										label="Add Config"
+										onClick={addOption}
 									/>
 								</HStack>
-							)
-						})}
+								{options && optionList.map(([key, value], index) => {
+									return (
+										<HStack key={index} alignment='bottom'>
+											<InputControl
+												label="Name"
+												value={key}
+												onChange={(value) => updateOption(index, 'key', value)}
+											/>
+											<InputControl
+												label="Value"
+												value={value}
+												onChange={(value) => updateOption(index, 'value', value)}
+											/>
+											<Button
+												isDestructive
+												icon={trash}
+												label="Delete Config"
+												onClick={() => {
+													setSelectedOption(index);
+													setIsOpen(true);
+												}}
+											/>
+										</HStack>
+									)
+								})}
+							</VStack>
+						)}
 					</VStack>
-				)}
-			</Placeholder>
+				}
+			/>
 			<ConfirmDialog
 				isOpen={isOpen}
 				onConfirm={() => {
