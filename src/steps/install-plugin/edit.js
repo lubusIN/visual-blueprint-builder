@@ -8,15 +8,19 @@ import {
 	Placeholder,
 	TextControl,
 	ToggleControl,
+	Icon,
 	__experimentalVStack as VStack,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	__experimentalHStack as HStack,
+	__experimentalText as Text,
 } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Edit function for the plugin installation block.
@@ -71,59 +75,67 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
-				icon={plugins}
-				label="Install Plugin"
-				instructions={
-					!isSelected && `${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`
-				} >
-				{isSelected && (
+				preview={
 					<VStack style={{ width: '100%' }}>
-						<ToggleGroupControl
-							label="Resource"
-							value={resource}
-							isBlock
-							onChange={handleResourceChange}
-						>
-							<ToggleGroupControlOption value="url" label="URL" />
-							<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
-							<ToggleGroupControlOption value="vfs" label="VFS" />
-						</ToggleGroupControl>
+						<HStack justify='left' align={'center'} spacing={3}>
+							<Icon icon={plugins} size={28} className='step-icon' />
+							<VStack spacing={1}>
+								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								{!isSelected && (
+									<Text weight={600}>{`${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`}</Text>
+								)}
+							</VStack>
+						</HStack>
+						{isSelected && (
+							<>
+								<ToggleGroupControl
+									label="Resource"
+									value={resource}
+									isBlock
+									onChange={handleResourceChange}
+								>
+									<ToggleGroupControlOption value="url" label="URL" />
+									<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
+									<ToggleGroupControlOption value="vfs" label="VFS" />
+								</ToggleGroupControl>
 
-						{resource === 'vfs' && (
-							<TextControl
-								label={__('Path', 'install-plugin')}
-								value={path}
-								placeholder='Enter the file path for the plugin ZIP'
-								onChange={(newPath) => handleInputChange('path', newPath)}
-							/>
-						)}
-						{resource === 'url' && (
-							<TextControl
-								label={__('Url', 'install-plugin')}
-								value={url}
-								placeholder='Enter the URL of the plugin ZIP file'
-								onChange={(newPath) => handleInputChange('url', newPath)}
-							/>
-						)}
-						{resource === 'wordpress.org/plugins' && (
-							<TextControl
-								label={__('Slug', 'install-plugin')}
-								value={slug}
-								placeholder='Enter the plugin slug from WordPress.org (e.g., "contact-form-7")'
-								onChange={(newPath) => handleInputChange('slug', newPath)}
-							/>
-						)}
+								{resource === 'vfs' && (
+									<TextControl
+										label={__('Path', 'install-plugin')}
+										value={path}
+										placeholder='Enter the file path for the plugin ZIP'
+										onChange={(newPath) => handleInputChange('path', newPath)}
+									/>
+								)}
+								{resource === 'url' && (
+									<TextControl
+										label={__('Url', 'install-plugin')}
+										value={url}
+										placeholder='Enter the URL of the plugin ZIP file'
+										onChange={(newPath) => handleInputChange('url', newPath)}
+									/>
+								)}
+								{resource === 'wordpress.org/plugins' && (
+									<TextControl
+										label={__('Slug', 'install-plugin')}
+										value={slug}
+										placeholder='Enter the plugin slug from WordPress.org (e.g., "contact-form-7")'
+										onChange={(newPath) => handleInputChange('slug', newPath)}
+									/>
+								)}
 
-						<ToggleControl
-							label="Activate"
-							checked={activate}
-							onChange={() => setAttributes({
-								options: { activate: !activate }
-							})}
-						/>
+								<ToggleControl
+									label="Activate"
+									checked={activate}
+									onChange={() => setAttributes({
+										options: { activate: !activate }
+									})}
+								/>
+							</>
+						)}
 					</VStack>
-				)}
-			</Placeholder>
+				}
+			/>
 		</div>
 	);
 }

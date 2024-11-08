@@ -30,13 +30,13 @@ class EnqueueScripts
             return;
         }
 
-        $this->enqueue_editor_js_scripts();
+        $this->enqueue_editor_assets();
     }
 
     /**
-     * Enqueues the editor-specific js scripts.
+     * Enqueues the editor-specific assets.
      */
-    private function enqueue_editor_js_scripts()
+    private function enqueue_editor_assets()
     {
         $assetFile = $this->get_asset_file();
 
@@ -46,6 +46,13 @@ class EnqueueScripts
             $assetFile['dependencies'],
             $assetFile['version'],
             true
+        );
+
+        wp_enqueue_style(
+            'blueprint-editor',
+            BEPB_PLUGIN_URL . 'assets/css/editor.css',
+            [],
+            '1.0.0'
         );
     }
 

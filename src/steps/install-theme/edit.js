@@ -10,15 +10,19 @@ import {
 	Placeholder,
 	TextControl,
 	ToggleControl,
+	Icon,
 	__experimentalVStack as VStack,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	__experimentalHStack as HStack,
+	__experimentalText as Text,
 } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Edit function for the theme installation block.
@@ -73,73 +77,81 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
-				icon={brush}
-				label="Install Theme"
-				instructions={
-					!isSelected && `${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? 'Activate' : 'Install and keep Inactive'} > ${importStarterContent ? 'with' : 'without'} starter content`
-				}>
-				{isSelected && (
+				preview={
 					<VStack style={{ width: '100%' }}>
-						<ToggleGroupControl
-							label="Resource"
-							value={resource}
-							isBlock
-							onChange={handleResourceChange}
-						>
-							<ToggleGroupControlOption value="url" label="URL" />
-							<ToggleGroupControlOption value="wordpress.org/themes" label="Theme" />
-							<ToggleGroupControlOption value="vfs" label="VFS" />
-						</ToggleGroupControl>
+						<HStack justify='left' align={'center'} spacing={3}>
+							<Icon icon={brush} size={28} className='step-icon' />
+							<VStack spacing={1}>
+								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								{!isSelected && (
+									<Text weight={600}>{`${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? 'Activate' : 'Install and keep Inactive'} > ${importStarterContent ? 'with' : 'without'} starter content`}</Text>
+								)}
+							</VStack>
+						</HStack>
+						{isSelected && (
+							<>
+								<ToggleGroupControl
+									label="Resource"
+									value={resource}
+									isBlock
+									onChange={handleResourceChange}
+								>
+									<ToggleGroupControlOption value="url" label="URL" />
+									<ToggleGroupControlOption value="wordpress.org/themes" label="Theme" />
+									<ToggleGroupControlOption value="vfs" label="VFS" />
+								</ToggleGroupControl>
 
-						{resource === 'vfs' && (
-							<TextControl
-								label={__('Path', 'install-theme')}
-								value={path}
-								placeholder='Enter the file path for the theme ZIP'
-								onChange={(newPath) => handleInputChange('path', newPath)}
-							/>
-						)}
-						{resource === 'url' && (
-							<TextControl
-								label={__('Url', 'install-theme')}
-								value={url}
-								placeholder='Enter the URL of the theme ZIP file'
-								onChange={(newPath) => handleInputChange('url', newPath)}
-							/>
-						)}
-						{resource === 'wordpress.org/themes' && (
-							<TextControl
-								label={__('Slug', 'install-theme')}
-								value={slug}
-								placeholder='Enter the theme slug from WordPress.org (e.g., "twentytwentyfour")'
-								onChange={(newPath) => handleInputChange('slug', newPath)}
-							/>
-						)}
+								{resource === 'vfs' && (
+									<TextControl
+										label={__('Path', 'install-theme')}
+										value={path}
+										placeholder='Enter the file path for the theme ZIP'
+										onChange={(newPath) => handleInputChange('path', newPath)}
+									/>
+								)}
+								{resource === 'url' && (
+									<TextControl
+										label={__('Url', 'install-theme')}
+										value={url}
+										placeholder='Enter the URL of the theme ZIP file'
+										onChange={(newPath) => handleInputChange('url', newPath)}
+									/>
+								)}
+								{resource === 'wordpress.org/themes' && (
+									<TextControl
+										label={__('Slug', 'install-theme')}
+										value={slug}
+										placeholder='Enter the theme slug from WordPress.org (e.g., "twentytwentyfour")'
+										onChange={(newPath) => handleInputChange('slug', newPath)}
+									/>
+								)}
 
-						<ToggleControl
-							label="Activate"
-							checked={activate}
-							onChange={() => setAttributes({
-								options: {
-									...options,
-									activate: !activate
-								}
-							})}
-						/>
+								<ToggleControl
+									label="Activate"
+									checked={activate}
+									onChange={() => setAttributes({
+										options: {
+											...options,
+											activate: !activate
+										}
+									})}
+								/>
 
-						<ToggleControl
-							label="Import Starter Content"
-							checked={importStarterContent}
-							onChange={() => setAttributes({
-								options: {
-									...options,
-									importStarterContent: !importStarterContent
-								}
-							})}
-						/>
+								<ToggleControl
+									label="Import Starter Content"
+									checked={importStarterContent}
+									onChange={() => setAttributes({
+										options: {
+											...options,
+											importStarterContent: !importStarterContent
+										}
+									})}
+								/>
+							</>
+						)}
 					</VStack>
-				)}
-			</Placeholder>
+				}
+			/>
 		</div>
 	);
 }
