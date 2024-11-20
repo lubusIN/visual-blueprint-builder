@@ -2,22 +2,22 @@
 
 body.editor-styles-wrapper {
   background: white;
-  background-image: radial-gradient(#f4f4f4 1px, transparent 0);
+  background-image: radial-gradient(#e6e6e6 1px, transparent 0);
   background-size: 10px 10px;
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block:not(:first-child, :last-child) {
+.is-root-container
+.block-editor-block-list__block.wp-block:not(:first-child, :last-child) {
   margin-top: 65px;
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block:not(
-    :first-child,
-    :last-child
-  )::before {
+.is-root-container
+.block-editor-block-list__block.wp-block:not(
+  :first-child,
+  :last-child
+)::before {
   content: "";
   position: absolute;
   width: 1.5px;
@@ -30,8 +30,8 @@ body.editor-styles-wrapper {
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block {
+.is-root-container
+.block-editor-block-list__block.wp-block {
   &.is-selected,
   &.is-hovered {
     .components-placeholder {
@@ -50,9 +50,9 @@ body.editor-styles-wrapper {
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block
-  .components-placeholder {
+.is-root-container
+.block-editor-block-list__block.wp-block
+.components-placeholder {
   padding: 20px;
   box-shadow: inset 0 0 0 1.5px #e2e2e2;
   border-radius: 4px;
@@ -60,22 +60,33 @@ body.editor-styles-wrapper {
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block
-  .components-placeholder__preview {
+.is-root-container
+.block-editor-block-list__block.wp-block
+.components-placeholder__preview {
   width: 100%;
 }
 
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block
-  input,
+.is-root-container
+.block-editor-block-list__block.wp-block
+input,
 .editor-styles-wrapper
-  .is-root-container
-  .block-editor-block-list__block.wp-block
-  textarea {
+.is-root-container
+.block-editor-block-list__block.wp-block
+textarea,
+.editor-styles-wrapper
+.is-root-container
+.block-editor-block-list__block.wp-block 
+.components-input-control__backdrop {
   border-color: #b2dbfd;
+}
+
+.editor-styles-wrapper
+.is-root-container
+.block-editor-block-list__block.wp-block
+textarea {
   resize: vertical;
+
 }
 
 .step-icon {
