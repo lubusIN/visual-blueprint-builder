@@ -8,11 +8,13 @@ import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
 	Button,
+	Icon,
 	BaseControl,
 	__experimentalConfirmDialog as ConfirmDialog,
 	__experimentalInputControl as InputControl,
 	__experimentalHStack as HStack,
 	__experimentalVStack as VStack,
+	__experimentalText as Text,
 } from '@wordpress/components';
 
 /**
@@ -94,58 +96,56 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 						</HStack>
 						{isSelected && (
 							<VStack>
-								<BaseControl
-									__nextHasNoMarginBottom
-									label="Meta Data"
-								>
-									<HStack alignment='bottom'>
-										<InputControl
-											label="Name"
-											value={metaName}
-											onChange={(value) => { setMetaName(value) }}
-										/>
-										<InputControl
-											label="Value"
-											value={metaValue}
-											onChange={(value) => setMetaValue(value)}
-										/>
-										<Button
-											icon={plus}
-											label="Add Config"
-											onClick={addOption}
-										/>
-									</HStack>
-									{meta && metaList.map(([key, value], index) => {
-										return (
-											<HStack key={index} alignment='bottom'>
-												<InputControl
-													label="Name"
-													value={key}
-													onChange={(value) => updateOption(index, 'key', value)}
-												/>
-												<InputControl
-													label="Value"
-													value={value}
-													onChange={(value) => updateOption(index, 'value', value)}
-												/>
-												<Button
-													isDestructive
-													icon={trash}
-													label="Delete Config"
-													onClick={() => {
-														setSelectedMeta(index);
-														setIsOpen(true);
-													}}
-												/>
-											</HStack>
-										)
-									})}
-								</BaseControl>
-								<InputControl
-									label="User Id"
-									value={userId}
-									onChange={(value) => setAttributes({ userId: Number(value) })}
-								/>
+
+								<HStack justify='left' alignment='bottom'>
+									<InputControl
+										label="Name"
+										value={metaName}
+										onChange={(value) => { setMetaName(value) }}
+									/>
+									<InputControl
+										label="Value"
+										value={metaValue}
+										onChange={(value) => setMetaValue(value)}
+									/>
+									<Button
+										icon={plus}
+										label="Add Config"
+										onClick={addOption}
+									/>
+								</HStack>
+								{meta && metaList.map(([key, value], index) => {
+									return (
+										<HStack justify='left' key={index} alignment='bottom'>
+											<InputControl
+												label="Name"
+												value={key}
+												onChange={(value) => updateOption(index, 'key', value)}
+											/>
+											<InputControl
+												label="Value"
+												value={value}
+												onChange={(value) => updateOption(index, 'value', value)}
+											/>
+											<Button
+												isDestructive
+												icon={trash}
+												label="Delete Config"
+												onClick={() => {
+													setSelectedMeta(index);
+													setIsOpen(true);
+												}}
+											/>
+										</HStack>
+									)
+								})}
+								<HStack justify='left'>
+									<InputControl
+										label="User Id"
+										value={userId}
+										onChange={(value) => setAttributes({ userId: Number(value) })}
+									/>
+								</HStack>
 							</VStack>
 						)}
 					</VStack>

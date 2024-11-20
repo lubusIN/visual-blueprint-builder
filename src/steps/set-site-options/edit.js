@@ -20,6 +20,7 @@ import {
  * Internal dependencies.
  */
 import './editor.scss';
+import metadata from './block.json';
 
 /**
  * Edit function for the plugin installation block.
@@ -91,7 +92,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 						</HStack>
 						{isSelected && (
 							<VStack>
-								<HStack alignment='bottom'>
+								<HStack justify='left' alignment='bottom'>
 									<InputControl
 										label="Name"
 										value={optionName}
@@ -110,7 +111,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								</HStack>
 								{options && optionList.map(([key, value], index) => {
 									return (
-										<HStack key={index} alignment='bottom'>
+										<HStack justify='left' key={index} alignment='bottom'>
 											<InputControl
 												label="Name"
 												value={key}
