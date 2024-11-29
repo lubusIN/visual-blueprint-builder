@@ -2,8 +2,7 @@
 
 [![Try in WordPress Playground](https://img.shields.io/badge/Try%20in%20WordPress%20Playground-blue?style=for-the-badge)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/lubusIN/block-editor-for-playground-blueprint/demo/_playground/blueprint-github.json)
 
-<video src=".github/builder-demo.mp4" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px; width: 100%"></video>
-
+<video src="https://github.com/lubusIN/block-editor-for-playground-blueprint/raw/refs/heads/main/.github/builder-demo.mp4" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px; width: 100%"></video>
 
 Playground Blueprint Editor is block based editing experience for building blueprint.json
 
