@@ -60,11 +60,11 @@ export default function Picker({ type, onSelect }) {
 					borderRadius: '8px'
 				}}
 			>
-				{__('Browse', 'picker')}
+				{__(`Browse ${type}`, 'picker')}
 			</Button>
 			{isModalOpen && (
 				<Modal
-					title={__('Browse Items', 'picker')}
+					title={__(`Browse ${type}`, 'picker')}
 					onRequestClose={closeModal}
 					shouldCloseOnClickOutside={false}
 					style={{ width: '75%' }}
