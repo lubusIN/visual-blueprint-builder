@@ -121,13 +121,17 @@ export default function Picker({ type, onSelect }) {
 												</FlexItem>
 											</Flex>
 											
-											<a
-												href={type === 'themes' ? item.preview_url : item.none}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												{__('Preview', 'picker')}
-											</a>
+											{
+												type === 'themes' && (
+													<a
+														href={item.preview_url}
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{__('Preview', 'picker')}
+													</a>
+												)
+											}
 										</CardBody>
 									</Card>
 								))}
