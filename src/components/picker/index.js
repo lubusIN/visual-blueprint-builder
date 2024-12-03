@@ -6,8 +6,11 @@ import {
 	Spinner,
 	Card,
 	CardBody,
-	Flex,
-	FlexItem,
+	ExternalLink,
+	__experimentalText as Text,
+	__experimentalGrid as Grid,
+	__experimentalVStack as VStack,
+	__experimentalHStack as HStack,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
@@ -22,9 +25,8 @@ export default function Picker({ type, onSelect }) {
 	const fetchItems = async (query = '') => {
 		setLoading(true);
 		const isSearch = !!query.trim();
-		const url = isSearch
-			? `https://api.wordpress.org/${type}/info/1.2/?action=query_${type}&request[search]=${query}`
-			: `https://api.wordpress.org/${type}/info/1.2/?action=query_${type}&request[popular]=1`;
+		const url = `https://api.wordpress.org/${type}/info/1.2/?action=query_${type}${isSearch ? `&request[search]=${query}` : `&request[popular]=1`}`;
+
 
 		try {
 			const response = await fetch(url);
@@ -53,7 +55,11 @@ export default function Picker({ type, onSelect }) {
 
 	return (
 		<div>
-			<Button variant="secondary" onClick={openModal}>
+			<Button variant="secondary" onClick={openModal}
+				style={{
+					borderRadius: '8px'
+				}}
+			>
 				{__('Browse', 'picker')}
 			</Button>
 			{isModalOpen && (
@@ -61,7 +67,7 @@ export default function Picker({ type, onSelect }) {
 					title={__('Browse Items', 'picker')}
 					onRequestClose={closeModal}
 					shouldCloseOnClickOutside={false}
-					style={{ width: "70%" }}
+					style={{ width: '75%' }}
 				>
 					<TextControl
 						placeholder={__('Search by name or author', 'picker')}
@@ -75,71 +81,73 @@ export default function Picker({ type, onSelect }) {
 						variant="primary"
 						onClick={() => fetchItems(searchTerm)}
 						disabled={isLoading}
+						style={{
+							borderRadius: '8px'
+						}}
 					>
 						{__('Search', 'picker')}
 					</Button>
 
 					{isLoading && <Spinner />}
 					{!isLoading && (
-						<div>
+						<VStack>
 							<h3>{searchTerm ? __('Search Results', 'picker') : __('Popular Items', 'picker')}</h3>
-							<div className="wp-block-editor__block-card-container">
+							<Grid
+								columns={3} 
+								gap={10}   
+							>
 								{(searchTerm ? results : popularItems).map((item) => (
-									<Card key={item.slug} style={{ marginBottom: '20px' }}>
+									<Card key={item.slug} size='large'>
 										<CardBody>
-											<Flex>
-												<FlexItem>
-													<img
-														src={type === 'plugins' ? item.icons['1x'] || item.icons.default : item.author.avatar}
-														alt={type === 'plugins' ? `${item.name} Icon` : `${item.author.display_name} Avatar`}
-														style={{ width: '50px', height: '50px', borderRadius: '50%' }}
-													/>
-												</FlexItem>
-												<FlexItem>
-													<strong>{type === 'plugins' ? item.name : item.name} </strong>
-												</FlexItem>
-												<FlexItem>
-													<a
-														href={item.author.profile}
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{item.author.display_name}
-													</a>
-												</FlexItem>
-												<FlexItem>
+											<VStack style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+												<img
+													src={type === 'plugins' ? item.icons['1x'] || item.icons.default : item.author.avatar}
+													alt={type === 'plugins' ? `${item.name} Icon` : `${item.author.display_name} Avatar`}
+													style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
+												/>
+												<HStack>
+													<strong>{item.name}</strong>
+													<Text>
+														<ExternalLink href={item.author.profile} target="_blank">
+															{item.author.display_name}
+														</ExternalLink>
+													</Text>
+												</HStack>
+											</VStack>
+											<HStack>
+												<Button
+													style={{
+														borderRadius: '8px'
+													}}
+													variant="secondary"
+													onClick={() => {
+														onSelect(item.slug);
+														closeModal();
+													}}
+												>
+													{__('Select', 'picker')}
+												</Button>
+												{type === 'themes' && (
 													<Button
-														variant="secondary"
-														onClick={() => {
-															onSelect(item.slug);
-															closeModal();
+														style={{
+															borderRadius: '8px'
 														}}
-														style={{ marginLeft: '10px' }}
-													>
-														{__('Select', 'picker')}
-													</Button>
-												</FlexItem>
-											</Flex>
-											
-											{
-												type === 'themes' && (
-													<a
-														href={item.preview_url}
-														target="_blank"
-														rel="noopener noreferrer"
+														variant="secondary"
+														onClick={() => window.open(item.preview_url, '_blank')}
 													>
 														{__('Preview', 'picker')}
-													</a>
-												)
-											}
+													</Button>
+												)}
+											</HStack>
 										</CardBody>
 									</Card>
 								))}
-							</div>
-						</div>
+							</Grid>
+						</VStack>
 					)}
 				</Modal>
 			)}
 		</div>
+
 	);
 }
