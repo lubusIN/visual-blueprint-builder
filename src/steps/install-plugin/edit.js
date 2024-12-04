@@ -14,6 +14,7 @@ import {
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	__experimentalHStack as HStack,
 	__experimentalText as Text,
+	__experimentalInputControl as InputControl,
 } from '@wordpress/components';
 
 /**
@@ -21,6 +22,8 @@ import {
  */
 import './editor.scss';
 import metadata from './block.json';
+import Picker from '../../components/picker';
+
 
 /**
  * Edit function for the plugin installation block.
@@ -116,14 +119,17 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/plugins' && (
-									<TextControl
-										label={__('Slug', 'install-plugin')}
-										value={slug}
-										placeholder='Enter the plugin slug from WordPress.org (e.g., "contact-form-7")'
-										onChange={(newPath) => handleInputChange('slug', newPath)}
-									/>
-								)}
-
+									<VStack style={{width:'100%',
+									}}>
+										<InputControl
+											label={__('Slug', 'install-plugin')}
+											value={slug}
+											placeholder="Enter plugin slug"
+											onChange={(value) => handleInputChange('slug', value)}
+											suffix={<Picker type="plugins"
+												onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}/>}
+										/>
+									</VStack>)}
 								<ToggleControl
 									label="Activate"
 									checked={activate}
