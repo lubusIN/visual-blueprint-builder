@@ -120,8 +120,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/themes' && (
-									<VStack style={{width:'100%'}}>
 										<InputControl
+											style={{width:'100%', paddingBottom:'8px'}}
 											label={__('Slug', 'install-theme')}
 											value={slug}
 											placeholder="Enter theme slug"
@@ -130,7 +130,6 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 												onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}
 												text="Picker" />}
 										/>
-									</VStack>
 								)}
 
 								<ToggleControl

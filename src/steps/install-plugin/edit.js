@@ -119,9 +119,8 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/plugins' && (
-									<VStack style={{width:'100%',
-									}}>
 										<InputControl
+										style={{width:'100%',paddingBottom:'8px'}}
 											label={__('Slug', 'install-plugin')}
 											value={slug}
 											placeholder="Enter plugin slug"
@@ -129,7 +128,7 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 											suffix={<Picker type="plugins"
 												onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}/>}
 										/>
-									</VStack>)}
+									)}
 								<ToggleControl
 									label="Activate"
 									checked={activate}
