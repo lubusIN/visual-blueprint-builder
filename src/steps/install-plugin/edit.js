@@ -22,8 +22,7 @@ import {
  */
 import './editor.scss';
 import metadata from './block.json';
-import Picker from '../../components/picker';
-
+import { Picker } from '../../../components';
 
 /**
  * Edit function for the plugin installation block.
@@ -119,16 +118,16 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/plugins' && (
-										<InputControl
-										style={{width:'100%',paddingBottom:'8px'}}
-											label={__('Slug', 'install-plugin')}
-											value={slug}
-											placeholder="Enter plugin slug"
-											onChange={(value) => handleInputChange('slug', value)}
-											suffix={<Picker type="plugins"
-												onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}/>}
-										/>
-									)}
+									<InputControl
+										style={{ width: '100%', paddingBottom: '8px' }}
+										label={__('Slug', 'install-plugin')}
+										value={slug}
+										placeholder="Enter plugin slug"
+										onChange={(value) => handleInputChange('slug', value)}
+										suffix={<Picker type="plugins"
+											onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)} />}
+									/>
+								)}
 								<ToggleControl
 									label="Activate"
 									checked={activate}

@@ -24,7 +24,7 @@ import {
  */
 import './editor.scss';
 import metadata from './block.json';
-import Picker from '../../components/picker';
+import { Picker } from '../../../components';
 
 /**
  * Edit function for the theme installation block.
@@ -120,16 +120,16 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/themes' && (
-										<InputControl
-											style={{width:'100%', paddingBottom:'8px'}}
-											label={__('Slug', 'install-theme')}
-											value={slug}
-											placeholder="Enter theme slug"
-											onChange={(value) => handleInputChange('slug', value)}
-											suffix={<Picker type="themes"
-												onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}
-												text="Picker" />}
-										/>
+									<InputControl
+										style={{ width: '100%', paddingBottom: '8px' }}
+										label={__('Slug', 'install-theme')}
+										value={slug}
+										placeholder="Enter theme slug"
+										onChange={(value) => handleInputChange('slug', value)}
+										suffix={<Picker type="themes"
+											onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}
+											text="Picker" />}
+									/>
 								)}
 
 								<ToggleControl
