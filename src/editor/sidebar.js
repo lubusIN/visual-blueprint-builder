@@ -12,8 +12,10 @@ import { downloadBlob } from '@wordpress/blob';
 import { DataForm } from '@wordpress/dataviews';
 import {
     Toolbar,
-    ToolbarButton
+    ToolbarButton,
+    __experimentalVStack as VStack,
 } from '@wordpress/components';
+import JsonUploadModal from '../components/OpenBlueprintJson/JsonUploadModel';
 
 /**
  * PHP and WordPress version options for dropdowns.
@@ -99,12 +101,15 @@ function BlueprintSidebarSettings() {
     return (
         <>
             <PluginPostStatusInfo>
+            <VStack>
+               <JsonUploadModal/> 
                 <Toolbar>
                     <ToolbarButton icon={globe} label="Open in playground" href={playgroundBase + prepareSchema()} target="_blank" />
                     <ToolbarButton icon={download} label="Download JSON" onClick={handleDownload} />
                     <ToolbarButton icon={copy} label="Copy JSON" ref={handleCopy} />
                     <ToolbarButton icon={code} label="Open in Builder" href={playgroundBuilderBase + prepareSchema()} target="_blank" />
                 </Toolbar>
+                </VStack>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
                 <DataForm
