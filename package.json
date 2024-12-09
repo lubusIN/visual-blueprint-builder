@@ -17,6 +17,7 @@
   "dependencies": {
     "@wordpress/blob": "^4.7.0",
     "@wordpress/blocks": "^13.7.0",
+    "@wordpress/dataviews": "^4.9.0",
     "@wordpress/icons": "^10.6.0",
     "react-loading-skeleton": "^3.5.0"
   }
