@@ -19,6 +19,10 @@
     "@wordpress/blocks": "^13.7.0",
     "@wordpress/dataviews": "^4.3.0",
     "@wordpress/icons": "^10.6.0",
+<<<<<<< HEAD
     "ajv": "^8.17.1"
+=======
+    "react-loading-skeleton": "^3.5.0"
+>>>>>>> main
   }
 }

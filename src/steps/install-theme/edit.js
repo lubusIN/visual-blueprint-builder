@@ -16,6 +16,7 @@ import {
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	__experimentalHStack as HStack,
 	__experimentalText as Text,
+	__experimentalInputControl as InputControl,
 } from '@wordpress/components';
 
 /**
@@ -23,6 +24,7 @@ import {
  */
 import './editor.scss';
 import metadata from './block.json';
+import { Picker } from '../../../components';
 
 /**
  * Edit function for the theme installation block.
@@ -118,11 +120,15 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 								{resource === 'wordpress.org/themes' && (
-									<TextControl
+									<InputControl
+										style={{ width: '100%', paddingBottom: '8px' }}
 										label={__('Slug', 'install-theme')}
 										value={slug}
-										placeholder='Enter the theme slug from WordPress.org (e.g., "twentytwentyfour")'
-										onChange={(newPath) => handleInputChange('slug', newPath)}
+										placeholder="Enter theme slug"
+										onChange={(value) => handleInputChange('slug', value)}
+										suffix={<Picker type="themes"
+											onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}
+											text="Picker" />}
 									/>
 								)}
 
