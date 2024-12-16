@@ -95,7 +95,11 @@ function BlueprintSidebarSettings() {
     });
 
     const handleBlueprintConfig = (value) => {
-        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...value } } });
+        const updatedValue = {
+            ...value,
+            networking: value.networking === 'true' ? true : false,
+        };
+        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...updatedValue } } });
     };
 
     // transforming Fetched Json data from blueprint by JsonUploadModal
