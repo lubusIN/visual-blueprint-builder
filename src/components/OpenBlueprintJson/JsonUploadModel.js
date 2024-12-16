@@ -1,8 +1,9 @@
-import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { dispatch } from '@wordpress/data';
-import { Button, FormFileUpload, __experimentalVStack as VStack, __experimentalHStack as HStack, DropZone } from '@wordpress/components';
+import { dispatch,  useDispatch } from '@wordpress/data';
+import { Button, FormFileUpload, __experimentalVStack as VStack, DropZone } from '@wordpress/components';
 import Ajv from 'ajv';
+import { store as noticesStore } from '@wordpress/notices';
 
 const ajv = new Ajv();
 
@@ -43,9 +44,7 @@ const blueprintSchema = {
 };
 
 const JsonFileUpload = ({ onSubmitData }) => {
-    const [message, setMessage] = useState(null);
-    const [messageType, setMessageType] = useState(null);
-    const [invalidBlocks, setInvalidBlocks] = useState([]);
+    const { createNotice } = useDispatch(noticesStore);
 
     const camelToKebab = (str) => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
@@ -81,17 +80,20 @@ const JsonFileUpload = ({ onSubmitData }) => {
                     if (validate(jsonData)) {
                         const { steps, landingPage, preferredVersions, phpExtensionBundles, features } = jsonData;
                         const { valid, invalid } = validateSteps(steps);
-                        setInvalidBlocks(invalid);
 
                         if (valid.length > 0) {
                             dispatch('core/block-editor').insertBlocks(valid);
-                            setMessage('Valid blocks inserted into the editor.');
-                            setMessageType('success');
+                            createNotice('success', __('Blueprint blocks inserted successfully.'));
                         }
 
                         if (invalid.length > 0) {
-                            setMessage('Some steps are invalid. Check details below.');
-                            setMessageType('warning');
+                            const invalidStepDetails = invalid
+                                .map(({ stepIndex, stepData, error }) => `Step ${stepIndex}: ${stepData.step}${error}`)
+                                .join(', ');
+                            createNotice(
+                                'warning',
+                                __(`Some steps are invalid: ${invalidStepDetails}.`)
+                            );
                         }
                         const dataToPass = {
                             landingPage,
@@ -99,23 +101,19 @@ const JsonFileUpload = ({ onSubmitData }) => {
                             phpExtensionBundles,
                             features,
                         };
-                        // Pass the data to the sidebar via the onSubmitData 
                         if (onSubmitData) {
                             onSubmitData(dataToPass);
                         }
                     } else {
-                        setMessage('Invalid blueprint schema.');
-                        setMessageType('error');
+                        createNotice('error', __('Invalid blueprint schema.'));
                     }
                 } catch (err) {
-                    setMessage('Invalid JSON file.');
-                    setMessageType('error');
+                    createNotice('error', __('Invalid JSON file.'));
                 }
             };
             reader.readAsText(file);
         } else {
-            setMessage('Please upload a valid JSON file.');
-            setMessageType('error');
+            createNotice('error', __('Please upload a valid JSON file.'));
         }
     };
 
@@ -134,39 +132,32 @@ const JsonFileUpload = ({ onSubmitData }) => {
     };
 
     return (
-        <VStack>
-            <HStack>
-                <DropZone onFilesDrop={handleDrop} accept="application/json" />
-                <FormFileUpload
-                    __next40pxDefaultSize
-                    accept="application/json"
-                    onChange={handleFileSelect}>
-                    <Button
-                        __next40pxDefaultSize
-                        variant="secondary"
-                    >Open Json Blueprint / Dropfile</Button>
-                </FormFileUpload>
-            </HStack>
+        <VStack alignment="stretch" >
+            <FormFileUpload
+                __next50pxDefaultSize
+                accept="application/json"
+                onChange={handleFileSelect}
+                style={{ width: '100%' }}
+            >
+                <Button
+                    __next50pxDefaultSize
+                    style={{
+                        position: 'relative',
+                        border: '1px solid #CCCCCC',
+                        minWidth: '232px',
+                        minHeight:'50px',
+                        justifyContent: 'center'
+                    }}
+                >
+                    Open JSON Blueprint
+                    <DropZone
+                        onFilesDrop={handleDrop}
+                        accept="application/json"
+                        style={{ position: 'absolute', minHeight:'50px' }}
+                    />
+                </Button>
+            </FormFileUpload>
 
-            {message && (
-                <div style={{ marginTop: '10px', color: messageType === 'success' ? 'green' : messageType === 'warning' ? 'orange' : 'red' }}>
-                    {message}
-                </div>
-            )}
-
-            {invalidBlocks.length > 0 && (
-                <div style={{ marginTop: '20px', color: 'orange' }}>
-                    <h4>Invalid Steps:</h4>
-                    <ul>
-                        {invalidBlocks.map((block, index) => (
-                            <li key={index}>
-                                <strong>Step {block.stepIndex}:</strong> {block.error}
-                                <pre>{JSON.stringify(block.stepData, null, 2)}</pre>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
         </VStack>
     );
 };

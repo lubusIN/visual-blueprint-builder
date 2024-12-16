@@ -122,7 +122,7 @@ function BlueprintSidebarSettings() {
     return (
         <>
             <PluginPostStatusInfo>
-            <VStack>
+            <VStack spacing={5} >
                <JsonUploadModal onSubmitData={handleJsonDataSubmit}/> 
                 <Toolbar>
                     <ToolbarButton icon={globe} label="Open in playground" href={playgroundBase + prepareSchema()} target="_blank" />
