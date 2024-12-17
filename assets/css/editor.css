@@ -98,3 +98,37 @@ body.editor-styles-wrapper {
 .custom-skeleton {
   width: 100%;
 }
+
+.upload_blueprint_json {
+  box-shadow: inset 0 0 0 1px #ccc;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+}
+
+.upload_blueprint_json
+  .components-drop-zone
+  .components-drop-zone__content-inner {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  row-gap: 8px;
+  column-gap: 8px;
+}
+
+.upload_blueprint_json
+  .components-drop-zone
+  .components-drop-zone__content-inner
+  .components-drop-zone__content-icon {
+  margin: 0;
+}
+
+.dataforms-layouts-panel__field-dropdown .components-popover__content {
+  padding: 16px;
+  min-width: 248px;
+}
+
+.dataforms-layouts-panel__field-dropdown
+  .dataforms-layouts-panel__dropdown-header {
+  margin-bottom: 16px;
+}

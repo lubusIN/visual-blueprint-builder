@@ -1,9 +1,16 @@
+/**
+ * Wordpress dependencies.
+ */
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { dispatch,  useDispatch } from '@wordpress/data';
-import { Button, FormFileUpload, __experimentalVStack as VStack, DropZone } from '@wordpress/components';
-import Ajv from 'ajv';
+import { dispatch, useDispatch } from '@wordpress/data';
+import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
+
+/**
+ * External dependencies.
+ */
+import Ajv from 'ajv';
 
 const ajv = new Ajv();
 
@@ -43,7 +50,7 @@ const blueprintSchema = {
     required: ['landingPage', 'preferredVersions', 'phpExtensionBundles', 'features', 'steps'],
 };
 
-const JsonFileUpload = ({ onSubmitData }) => {
+const BlueprintJsonUpload = ({ onSubmitData }) => {
     const { createNotice } = useDispatch(noticesStore);
 
     const camelToKebab = (str) => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -78,7 +85,7 @@ const JsonFileUpload = ({ onSubmitData }) => {
                     const validate = ajv.compile(blueprintSchema);
 
                     if (validate(jsonData)) {
-                        const { steps, landingPage, preferredVersions, phpExtensionBundles, features } = jsonData;
+                        const { steps } = jsonData;
                         const { valid, invalid } = validateSteps(steps);
 
                         if (valid.length > 0) {
@@ -95,14 +102,8 @@ const JsonFileUpload = ({ onSubmitData }) => {
                                 __(`Some steps are invalid: ${invalidStepDetails}.`)
                             );
                         }
-                        const dataToPass = {
-                            landingPage,
-                            preferredVersions,
-                            phpExtensionBundles,
-                            features,
-                        };
                         if (onSubmitData) {
-                            onSubmitData(dataToPass);
+                            onSubmitData(jsonData);
                         }
                     } else {
                         createNotice('error', __('Invalid blueprint schema.'));
@@ -132,34 +133,19 @@ const JsonFileUpload = ({ onSubmitData }) => {
     };
 
     return (
-        <VStack alignment="stretch" >
-            <FormFileUpload
-                __next50pxDefaultSize
+        <FormFileUpload
+            className='upload_blueprint_json'
+            __next40pxDefaultSize
+            accept="application/json"
+            onChange={handleFileSelect}
+        >
+            Open JSON Blueprint
+            <DropZone
+                onFilesDrop={handleDrop}
                 accept="application/json"
-                onChange={handleFileSelect}
-                style={{ width: '100%' }}
-            >
-                <Button
-                    __next50pxDefaultSize
-                    style={{
-                        position: 'relative',
-                        border: '1px solid #CCCCCC',
-                        minWidth: '232px',
-                        minHeight:'50px',
-                        justifyContent: 'center'
-                    }}
-                >
-                    Open JSON Blueprint
-                    <DropZone
-                        onFilesDrop={handleDrop}
-                        accept="application/json"
-                        style={{ position: 'absolute', minHeight:'50px' }}
-                    />
-                </Button>
-            </FormFileUpload>
-
-        </VStack>
+            />
+        </FormFileUpload>
     );
 };
 
-export default JsonFileUpload;
+export default BlueprintJsonUpload;
