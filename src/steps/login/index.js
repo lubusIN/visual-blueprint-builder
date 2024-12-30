@@ -54,15 +54,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'username',
-										label: 'Username',
+										label: __('Username', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter username'
+										placeholder: __('Enter username', 'wp-playground-blueprint-editor')
 									},
 									{
 										id: 'password',
-										label: 'Password',
+										label: __('Password', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter password'
+										placeholder: __('Enter password', 'wp-playground-blueprint-editor')
 									},
 								]}
 								form={{

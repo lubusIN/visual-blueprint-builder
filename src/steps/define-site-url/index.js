@@ -38,7 +38,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${siteUrl || 'Site Url'}`}</Text>
+									<Text weight={600}>
+										{`${siteUrl || __('Site Url', 'wp-playground-blueprint-editor')}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,10 +50,10 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'siteUrl',
-										label: 'Site Url',
+										label: __('Site Url', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'e.g., https://example.com'
-									}
+										placeholder: __('e.g., https://example.com', 'wp-playground-blueprint-editor'),
+									},
 								]}
 								form={{
 									fields: [

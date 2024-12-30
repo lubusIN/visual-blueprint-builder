@@ -86,7 +86,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{(<pre>{JSON.stringify(consts, null, " ")}</pre> || `{config consts}`)}</Text>
+									<Text weight={600}>
+										{(<pre>{JSON.stringify(consts, null, " " )}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -94,18 +96,18 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack>
 								<HStack alignment='bottom'>
 									<InputControl
-										label="Name"
+										label={__('Name', 'wp-playground-blueprint-editor')}
 										value={configName}
 										onChange={(value) => { setConfigName(value) }}
 									/>
 									<InputControl
-										label="Value"
+										label={__('Value', 'wp-playground-blueprint-editor')}
 										value={configValue}
 										onChange={(value) => setConfigValue(value)}
 									/>
 									<Button
 										icon={plus}
-										label="Add Config"
+										label={__('Add Config', 'wp-playground-blueprint-editor')}
 										onClick={addConfig}
 									/>
 								</HStack>
@@ -113,19 +115,19 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									return (
 										<HStack key={index} alignment='bottom'>
 											<InputControl
-												label="Name"
+												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
 												onChange={(value) => updateConfig(index, 'key', value)}
 											/>
 											<InputControl
-												label="Value"
+												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
 												onChange={(value) => updateConfig(index, 'value', value)}
 											/>
 											<Button
 												isDestructive
 												icon={trash}
-												label="Delete Config"
+												label={__('Delete Config', 'wp-playground-blueprint-editor')}
 												onClick={() => {
 													setSelectedConfig(index);
 													setIsOpen(true);
@@ -148,7 +150,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				}}
 				onCancel={() => setIsOpen(false)}
 			>
-				Delete Config?
+				{__('Delete Config?', 'wp-playground-blueprint-editor')}
 			</ConfirmDialog>
 		</div>
 	);

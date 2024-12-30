@@ -38,7 +38,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`at ${path || '{path}'}`}</Text>
+									<Text weight={600}>
+										{__('at', 'wp-playground-blueprint-editor')} {` ${path || '{path}'}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,9 +50,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'path',
-										label: 'File Path',
+										label: __('File Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter the file path to remove (e.g., /wp-content/plugins/index.php)',
+										placeholder: __('Enter the file path to remove (e.g., /wp-content/plugins/index.php)', 'wp-playground-blueprint-editor'),
 									}
 								]}
 								form={{

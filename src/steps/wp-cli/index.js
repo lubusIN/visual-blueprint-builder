@@ -38,14 +38,14 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{(command || '{command to run}')}</Text>
+									<Text weight={600}>{(command || __('{command to run}', 'wp-playground-blueprint-editor'))}</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<TextareaControl
 								__nextHasNoMarginBottom
-								label="Command"
+								label={__('Command', 'wp-playground-blueprint-editor')}
 								onChange={(value) => setAttributes({ command: value })}
 								placeholder=""
 								value={command}
