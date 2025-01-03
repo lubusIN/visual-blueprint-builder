@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/remove-file",
+	"name": "playground-step/cp",
 	"version": "0.1.0",
-	"title": "Remove File",
+	"title": "Copy",
 	"category": "file-system",
-	"description": "Removes a file at the specified path.",
+	"description": "Copies a file from one path to another.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,9 +14,13 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "rm"
+			"default": "cp"
 		},
-		"path": {
+		"fromPath": {
+			"type": "string",
+			"default": ""
+		},
+		"toPath": {
 			"type": "string",
 			"default": ""
 		}
