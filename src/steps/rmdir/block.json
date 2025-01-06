@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/move",
+	"name": "playground-step/rmdir",
 	"version": "0.1.0",
-	"title": "Move File/Dir",
+	"title": "Remove Directory",
 	"category": "file-system",
-	"description": "Moves a file or directory from one path to another.",
+	"description": "Removes a directory at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,13 +14,9 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "mv"
+			"default": "rmdir"
 		},
-		"fromPath": {
-			"type": "string",
-			"default": ""
-		},
-		"toPath": {
+		"path": {
 			"type": "string",
 			"default": ""
 		}
