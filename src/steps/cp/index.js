@@ -2,7 +2,8 @@
  * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { globe } from '@wordpress/icons';
+import { registerBlockType } from '@wordpress/blocks';
+import { copy } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -16,7 +17,6 @@ import { DataForm } from '@wordpress/dataviews';
 /**
  * Internal dependencies.
  */
-import './editor.scss';
 import metadata from './block.json';
 
 /**
@@ -25,8 +25,8 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { siteUrl } = attributes;
+function Edit({ attributes, setAttributes, isSelected }) {
+	const { fromPath, toPath } = attributes;
 
 	return (
 		<p {...useBlockProps()}>
@@ -34,11 +34,11 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={globe} size={28} className='step-icon' />
+							<Icon icon={copy} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${siteUrl || 'Site Url'}`}</Text>
+									<Text weight={600}>{`${fromPath || 'From Path'} > ${toPath || 'To Path'}`}</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -47,15 +47,22 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								data={attributes}
 								fields={[
 									{
-										id: 'siteUrl',
-										label: 'Site Url',
+										id: 'fromPath',
+										label: 'From Path',
 										type: 'text',
-										placeholder: 'e.g., https://example.com'
-									}
+										placeholder: 'Enter source path'
+									},
+									{
+										id: 'toPath',
+										label: 'To Path',
+										type: 'text',
+										placeholder: 'Enter destination path'
+									},
 								]}
 								form={{
 									fields: [
-										'siteUrl'
+										'fromPath',
+										'toPath'
 									]
 								}}
 								onChange={setAttributes}
@@ -67,3 +74,11 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		</p>
 	);
 }
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType(metadata.name, {
+	icon: copy,
+	edit: Edit,
+});

@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/move",
+	"name": "playground-step/rm",
 	"version": "0.1.0",
-	"title": "Move File/Dir",
+	"title": "Remove File",
 	"category": "file-system",
-	"description": "Moves a file or directory from one path to another.",
+	"description": "Removes a file at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,18 +14,13 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "mv"
+			"default": "rm"
 		},
-		"fromPath": {
-			"type": "string",
-			"default": ""
-		},
-		"toPath": {
+		"path": {
 			"type": "string",
 			"default": ""
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+	"editorScript": "file:./index.js"
 }

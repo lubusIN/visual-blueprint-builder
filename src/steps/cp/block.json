@@ -1,28 +1,30 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/make-dir",
+	"name": "playground-step/cp",
 	"version": "0.1.0",
-	"title": "Make Directory",
+	"title": "Copy",
 	"category": "file-system",
-	"description": "Creates a directory at the specified path.",
+	"description": "Copies a file from one path to another.",
 	"example": {},
 	"supports": {
 		"html": false,
-		"multiple": false,
 		"customClassName": false
 	},
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "mkdir"
+			"default": "cp"
 		},
-		"path": {
+		"fromPath": {
+			"type": "string",
+			"default": ""
+		},
+		"toPath": {
 			"type": "string",
 			"default": ""
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+	"editorScript": "file:./index.js"
 }

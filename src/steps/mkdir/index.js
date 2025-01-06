@@ -1,8 +1,9 @@
 /**
- * WordPress dependencies.
+ * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { wordpress } from '@wordpress/icons';
+import { registerBlockType } from '@wordpress/blocks';
+import { file } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -16,66 +17,61 @@ import { DataForm } from '@wordpress/dataviews';
 /**
  * Internal dependencies.
  */
-import './editor.scss';
 import metadata from './block.json';
 
 /**
- * Edit function for the plugin installation block.
+ * The edit function describes the structure of your block in the context of the
+ * editor. This represents what the editor will render when the block is used.
  *
- * @param {Object} props Component properties.
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { wordPressFilesZip } = attributes;
-	const { url } = wordPressFilesZip;
-
-	const handleInputChange = (value) => {
-		setAttributes({
-			wordPressFilesZip: {
-				...wordPressFilesZip,
-				...value
-			}
-		});
-	};
+function Edit({ attributes, setAttributes, isSelected }) {
+	const { path } = attributes;
 
 	return (
-		<div {...useBlockProps()}>
+		<p {...useBlockProps()}>
 			<Placeholder
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={wordpress} size={28} className='step-icon' />
+							<Icon icon={file} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`from ${url || '{zip url}'}`}</Text>
+									<Text weight={600}>{`at ${path || '{directory path}'}`}</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<DataForm
-								data={{
-									url
-								}}
+								data={attributes}
 								fields={[
 									{
-										id: 'url',
-										label: 'Url',
+										id: 'path',
+										label: 'Directory Path',
 										type: 'text',
-										placeholder: 'Enter the URL of the zip file'
+										placeholder: 'e.g., /wp-content/plugins/new-directory'
 									}
 								]}
 								form={{
 									fields: [
-										'url'
+										'path'
 									]
 								}}
-								onChange={handleInputChange}
+								onChange={setAttributes}
 							/>
 						)}
 					</VStack>
 				}
 			/>
-		</div>
+		</p>
 	);
 }
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType(metadata.name, {
+	icon: file,
+	edit: Edit,
+});

@@ -2,7 +2,8 @@
  * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { file } from '@wordpress/icons';
+import { registerBlockType } from '@wordpress/blocks';
+import { trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -16,7 +17,6 @@ import { DataForm } from '@wordpress/dataviews';
 /**
  * Internal dependencies.
  */
-import './editor.scss';
 import metadata from './block.json';
 
 /**
@@ -25,7 +25,7 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes, isSelected }) {
+function Edit({ attributes, setAttributes, isSelected }) {
 	const { path } = attributes;
 
 	return (
@@ -34,11 +34,11 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={file} size={28} className='step-icon' />
+							<Icon icon={trash} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`at ${path || '{directory path}'}`}</Text>
+									<Text weight={600}>{`at ${path || '{path}'}`}</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,9 +48,9 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'path',
-										label: 'Directory Path',
+										label: 'File Path',
 										type: 'text',
-										placeholder: 'e.g., /wp-content/plugins/new-directory'
+										placeholder: 'Enter the file path to remove (e.g., /wp-content/plugins/index.php)',
 									}
 								]}
 								form={{
@@ -67,3 +67,11 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		</p>
 	);
 }
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType(metadata.name, {
+	icon: trash,
+	edit: Edit,
+});

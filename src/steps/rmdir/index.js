@@ -2,7 +2,8 @@
  * Wordpress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { key, login } from '@wordpress/icons';
+import { registerBlockType } from '@wordpress/blocks';
+import { trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -16,7 +17,6 @@ import { DataForm } from '@wordpress/dataviews';
 /**
  * Internal dependencies.
  */
-import './editor.scss';
 import metadata from './block.json';
 
 /**
@@ -25,8 +25,8 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-export default function Edit({ attributes, setAttributes, isSelected }) {
-	const { username, password } = attributes;
+function Edit({ attributes, setAttributes, isSelected }) {
+	const { path } = attributes;
 
 	return (
 		<p {...useBlockProps()}>
@@ -34,41 +34,28 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={login} size={28} className='step-icon' />
-							<VStack spacing={0}>
+							<Icon icon={trash} size={28} className='step-icon' />
+							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && username && password && (
-									<HStack spacing={1}>
-										<Text weight={600}>{username}</Text>
-										<Icon icon={key} style={{ fill: "#949494" }} />
-									</HStack>
+								{!isSelected && (
+									<Text weight={600}>{`at ${path || '{path}'}`}</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<DataForm
-								data={{
-									username,
-									password
-								}}
+								data={attributes}
 								fields={[
 									{
-										id: 'username',
-										label: 'Username',
+										id: 'path',
+										label: 'File Path',
 										type: 'text',
-										placeholder: 'Enter username'
-									},
-									{
-										id: 'password',
-										label: 'Password',
-										type: 'text',
-										placeholder: 'Enter password'
-									},
+										placeholder: 'Enter the directory path to remove (e.g., /wp-content/uploads/old-files)',
+									}
 								]}
 								form={{
 									fields: [
-										'username',
-										'password'
+										'path'
 									]
 								}}
 								onChange={setAttributes}
@@ -80,3 +67,11 @@ export default function Edit({ attributes, setAttributes, isSelected }) {
 		</p>
 	);
 }
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType(metadata.name, {
+	icon: trash,
+	edit: Edit,
+});

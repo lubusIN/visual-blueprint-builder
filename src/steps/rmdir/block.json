@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/remove-file",
+	"name": "playground-step/rmdir",
 	"version": "0.1.0",
-	"title": "Remove File",
+	"title": "Remove Directory",
 	"category": "file-system",
-	"description": "Removes a file at the specified path.",
+	"description": "Removes a directory at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,7 +14,7 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "rm"
+			"default": "rmdir"
 		},
 		"path": {
 			"type": "string",
@@ -22,6 +22,5 @@
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+	"editorScript": "file:./index.js"
 }
