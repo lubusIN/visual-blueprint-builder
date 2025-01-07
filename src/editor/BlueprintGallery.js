@@ -18,8 +18,8 @@ import {
 /**
  * Internal dependencies.
  */
-import { dataBlueprint } from './BlueprintData';
-import BlueprintJsonUpload from './blueprint-upload-json';
+import { dataBlueprint } from './BlueprintGalleryData';
+import BlueprintJsonUpload from './Open-Json';
 
 
 // BlueprintPicker 
@@ -80,7 +80,6 @@ function BlueprintPicker() {
                                     <VStack>
                                         <Heading level={4}>{blueprintData.title}</Heading>
                                         <Text>  By {<a>{blueprintData.author}</a>}</Text>
-                                        {/* <Text>{blueprintData.categories.join(', ')}</Text> */}
                                         <Text>{blueprintData.description}</Text>
                                     </VStack>
                                     <HStack>
@@ -98,7 +97,12 @@ function BlueprintPicker() {
                         ))}
                     </Grid>
                      {/* Pass the sourceData to BlueprintJsonUpload */}
-                     <BlueprintJsonUpload sourceData={sourceData}/>
+                     {sourceData && (
+                        <BlueprintJsonUpload
+                            sourceData={sourceData}
+                            onSubmitData={(data) => console.log('Validated Blueprint:', data)}
+                        />
+                    )}
                 </Modal>
             )}
         </>

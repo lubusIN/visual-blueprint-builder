@@ -15,7 +15,7 @@ import {
     ToolbarButton,
     __experimentalVStack as VStack,
 } from '@wordpress/components';
-import BlueprintGalleryPicker from '../components/BlueprintGallery';
+import BlueprintGalleryPicker from './BlueprintGallery';
 
 /**
  * PHP and WordPress version options for dropdowns.
