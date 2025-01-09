@@ -1,21 +1,20 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/make-dir",
+	"name": "playground-step/rm",
 	"version": "0.1.0",
-	"title": "Make Directory",
+	"title": "Remove File",
 	"category": "file-system",
-	"description": "Creates a directory at the specified path.",
+	"description": "Removes a file at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
-		"multiple": false,
 		"customClassName": false
 	},
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "mkdir"
+			"default": "rm"
 		},
 		"path": {
 			"type": "string",

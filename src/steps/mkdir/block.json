@@ -1,20 +1,21 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/remove-dir",
+	"name": "playground-step/mkdir",
 	"version": "0.1.0",
-	"title": "Remove Directory",
+	"title": "Make Directory",
 	"category": "file-system",
-	"description": "Removes a directory at the specified path.",
+	"description": "Creates a directory at the specified path.",
 	"example": {},
 	"supports": {
 		"html": false,
+		"multiple": false,
 		"customClassName": false
 	},
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "rmdir"
+			"default": "mkdir"
 		},
 		"path": {
 			"type": "string",

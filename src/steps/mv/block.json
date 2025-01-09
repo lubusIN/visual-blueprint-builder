@@ -1,11 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/copy",
+	"name": "playground-step/mv",
 	"version": "0.1.0",
-	"title": "Copy",
+	"title": "Move File/Dir",
 	"category": "file-system",
-	"description": "Copies a file from one path to another.",
+	"description": "Moves a file or directory from one path to another.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -14,7 +14,7 @@
 	"attributes": {
 		"step": {
 			"type": "string",
-			"default": "cp"
+			"default": "mv"
 		},
 		"fromPath": {
 			"type": "string",

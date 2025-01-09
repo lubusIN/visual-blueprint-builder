@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Lubus
+# Copyright (C) 2025 Lubus
 # This file is distributed under the same license as the Playground blueprint editor plugin.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-30T04:38:57+00:00\n"
+"POT-Creation-Date: 2025-01-09T08:50:38+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: wp-playground-blueprint-editor\n"
@@ -47,6 +47,7 @@ msgid "File System"
 msgstr ""
 
 #: inc/functions.php:98
+#: build/steps/write-file/index.js:1
 #: src/steps/write-file/index.js:56
 msgid "Data"
 msgstr ""
@@ -55,201 +56,179 @@ msgstr ""
 msgid "Scripts"
 msgstr ""
 
-#: build/steps/install-plugin/index.js:646
-#: src/steps/install-plugin/index.js:96
-#: src/steps/install-theme/index.js:96
-#: build/steps/install-plugin/index.js:438
-msgid "Resource"
-msgstr ""
-
-#: build/steps/install-plugin/index.js:663
-#: src/steps/install-plugin/index.js:110
-#: build/steps/install-plugin/index.js:452
-msgid "Enter the file path for the plugin ZIP"
-msgstr ""
-
-#: build/steps/install-plugin/index.js:668
-#: src/steps/install-plugin/index.js:118
-#: build/steps/install-plugin/index.js:460
-msgid "Enter the URL of the plugin ZIP file"
-msgstr ""
-
-#: build/steps/install-plugin/index.js:677
-#: src/steps/install-plugin/index.js:127
-#: build/steps/install-plugin/index.js:469
-msgid "Enter plugin slug"
-msgstr ""
-
-#: build/steps/install-plugin/index.js:684
-#: src/steps/install-plugin/index.js:88
-#: src/steps/install-plugin/index.js:134
-#: src/steps/install-theme/index.js:89
-#: src/steps/install-theme/index.js:136
-#: build/steps/install-plugin/index.js:476
-msgid "Activate"
-msgstr ""
-
-#: components/picker/index.js:54
-#: components/picker/index.js:112
-msgid "Select"
-msgstr ""
-
-#: components/picker/index.js:94
-msgid "No description available"
-msgstr ""
-
-#: components/picker/index.js:100
-msgid "No data available"
-msgstr ""
-
-#: components/picker/index.js:103
-msgid "Tested with"
-msgstr ""
-
-#: components/picker/index.js:103
-msgid "Unknown"
-msgstr ""
-
-#: components/picker/index.js:171
-msgid "Browse"
-msgstr ""
-
-#: components/picker/index.js:184
-msgid "Search by name or author"
-msgstr ""
-
+#. translators: %s: Field name.
+#: build/editor.js:4
 #: src/editor/sidebar.js:22
 msgid "Latest"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:35
 msgid "WordPress nightly"
 msgstr ""
 
-#: src/editor/sidebar.js:87
-msgid "Blueprint downloaded generated!"
-msgstr ""
-
+#: build/editor.js:4
 #: src/editor/sidebar.js:92
 msgid "Blueprint Schema Copied!"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:103
 msgid "Open in Playground"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:104
 msgid "Download JSON"
 msgstr ""
 
+#: build/editor.js:4
+#: src/editor/sidebar.js:87
+msgid "Blueprint downloaded generated!"
+msgstr ""
+
+#: build/editor.js:4
 #: src/editor/sidebar.js:105
 msgid "Copy JSON"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:106
 msgid "Open in Builder"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:109
 msgid "Playground Settings"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:122
 msgid "PHP Version"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:128
 msgid "WP Version"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:133
 msgid "Landing Page"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:138
 msgid "PHP Extension Bundles"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:141
 msgid "Kitchen Sink"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:142
 msgid "Light"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:147
 msgid "Networking"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:150
 msgid "Enabled"
 msgstr ""
 
+#: build/editor.js:4
 #: src/editor/sidebar.js:151
 msgid "Disabled"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/activate-plugin/index.js:4
 #: src/steps/activate-plugin/index.js:43
 #: src/steps/activate-plugin/index.js:56
 msgid "Plugin Name"
 msgstr ""
 
+#: build/steps/activate-plugin/index.js:4
 #: src/steps/activate-plugin/index.js:43
 #: src/steps/activate-plugin/index.js:62
 msgid "Plugin Path"
 msgstr ""
 
+#: build/steps/activate-plugin/index.js:4
 #: src/steps/activate-plugin/index.js:58
 msgid "Enter plugin name"
 msgstr ""
 
+#: build/steps/activate-plugin/index.js:4
 #: src/steps/activate-plugin/index.js:64
 msgid "Enter the full path to the plugin"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/activate-theme/index.js:4
 #: src/steps/activate-theme/index.js:42
 #: src/steps/activate-theme/index.js:53
 msgid "Theme Folder Name"
 msgstr ""
 
+#: build/steps/activate-theme/index.js:4
 #: src/steps/activate-theme/index.js:55
 msgid "The name of the theme folder located in wp-content/themes/"
 msgstr ""
 
-#: src/steps/copy/index.js:42
-#: src/steps/copy/index.js:53
-#: src/steps/move/index.js:53
+#. translators: %s: Field name.
+#: build/steps/cp/index.js:4
+#: build/steps/mv/index.js:4
+#: src/steps/cp/index.js:42
+#: src/steps/cp/index.js:53
+#: src/steps/mv/index.js:53
 msgid "From Path"
 msgstr ""
 
-#: src/steps/copy/index.js:42
-#: src/steps/copy/index.js:59
-#: src/steps/move/index.js:59
+#: build/steps/cp/index.js:4
+#: build/steps/mv/index.js:4
+#: src/steps/cp/index.js:42
+#: src/steps/cp/index.js:59
+#: src/steps/mv/index.js:59
 msgid "To Path"
 msgstr ""
 
-#: src/steps/copy/index.js:55
+#: build/steps/cp/index.js:4
+#: src/steps/cp/index.js:55
 msgid "Enter source path"
 msgstr ""
 
-#: src/steps/copy/index.js:61
+#: build/steps/cp/index.js:4
+#: src/steps/cp/index.js:61
 msgid "Enter destination path"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/define-site-url/index.js:4
 #: src/steps/define-site-url/index.js:42
 #: src/steps/define-site-url/index.js:53
 msgid "Site Url"
 msgstr ""
 
+#: build/steps/define-site-url/index.js:4
 #: src/steps/define-site-url/index.js:55
 msgid "e.g., https://example.com"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
 #: src/steps/define-wp-config-consts/index.js:90
 msgid "{config consts}"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
+#: build/steps/set-site-options/index.js:1
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/define-wp-config-consts/index.js:99
 #: src/steps/define-wp-config-consts/index.js:118
 #: src/steps/set-site-options/index.js:99
@@ -259,6 +238,9 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
+#: build/steps/set-site-options/index.js:1
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/define-wp-config-consts/index.js:104
 #: src/steps/define-wp-config-consts/index.js:123
 #: src/steps/set-site-options/index.js:104
@@ -268,34 +250,50 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
+#: build/steps/set-site-options/index.js:1
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/define-wp-config-consts/index.js:110
 #: src/steps/set-site-options/index.js:110
 #: src/steps/update-user-meta/index.js:116
 msgid "Add Config"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
+#: build/steps/set-site-options/index.js:1
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/define-wp-config-consts/index.js:130
 #: src/steps/set-site-options/index.js:130
 #: src/steps/update-user-meta/index.js:136
 msgid "Delete Config"
 msgstr ""
 
+#: build/steps/define-wp-config-consts/index.js:1
 #: src/steps/define-wp-config-consts/index.js:153
 msgid "Delete Config?"
 msgstr ""
 
+#: build/steps/enable-multisite/index.js:1
 #: src/steps/enable-multisite/index.js:39
 msgid "Activate Multisite Network"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/import-theme-starter-content/index.js:4
 #: src/steps/import-theme-starter-content/index.js:56
 msgid "Theme Slug"
 msgstr ""
 
+#: build/steps/import-theme-starter-content/index.js:4
 #: src/steps/import-theme-starter-content/index.js:58
 msgid "e.g., twentytwentyfour"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/import-wordpress-files/index.js:4
+#: build/steps/import-wxr/index.js:4
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
 #: src/steps/import-wordpress-files/index.js:68
 #: src/steps/import-wxr/index.js:68
 #: src/steps/install-plugin/index.js:116
@@ -303,33 +301,105 @@ msgstr ""
 msgid "Url"
 msgstr ""
 
+#: build/steps/import-wordpress-files/index.js:4
 #: src/steps/import-wordpress-files/index.js:70
 msgid "Enter the URL of the zip file"
 msgstr ""
 
+#: build/steps/import-wxr/index.js:4
 #: src/steps/import-wxr/index.js:70
 msgid "e.g, https://your-site.com/starter-content.wxr"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:54
+#: components/picker/index.js:112
+msgid "Select"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:94
+msgid "No description available"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:100
+msgid "No data available"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:103
+msgid "Tested with"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:103
+msgid "Unknown"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:171
+msgid "Browse"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: components/picker/index.js:184
+msgid "Search by name or author"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: src/steps/install-plugin/index.js:88
+#: src/steps/install-plugin/index.js:134
+#: src/steps/install-theme/index.js:89
+#: src/steps/install-theme/index.js:136
+msgid "Activate"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-plugin/index.js:88
 #: src/steps/install-theme/index.js:89
 msgid "Install and keep Inactive"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: src/steps/install-plugin/index.js:96
+#: src/steps/install-theme/index.js:96
+msgid "Resource"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-plugin/index.js:101
 #: src/steps/install-theme/index.js:101
 msgid "URL"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
 #: src/steps/install-plugin/index.js:102
 msgid "Plugin"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-plugin/index.js:103
 #: src/steps/install-theme/index.js:103
 msgid "VFS"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
+#: build/steps/unzip/index.js:4
+#: build/steps/write-file/index.js:1
 #: src/steps/install-plugin/index.js:108
 #: src/steps/install-theme/index.js:108
 #: src/steps/unzip/index.js:72
@@ -337,199 +407,272 @@ msgstr ""
 msgid "Path"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: src/steps/install-plugin/index.js:110
+msgid "Enter the file path for the plugin ZIP"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: src/steps/install-plugin/index.js:118
+msgid "Enter the URL of the plugin ZIP file"
+msgstr ""
+
+#: build/steps/install-plugin/index.js:1
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-plugin/index.js:125
 #: src/steps/install-theme/index.js:125
 msgid "Slug"
 msgstr ""
 
+#: build/steps/install-plugin/index.js:1
+#: src/steps/install-plugin/index.js:127
+msgid "Enter plugin slug"
+msgstr ""
+
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:89
 msgid "with"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:89
 msgid "without"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:89
 msgid "starter content"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:102
 msgid "Theme"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:110
 msgid "Enter the file path for the theme ZIP"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:118
 msgid "Enter the URL of the theme ZIP file"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:127
 msgid "Enter theme slug"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:131
 msgid "Picker"
 msgstr ""
 
+#: build/steps/install-theme/index.js:1
 #: src/steps/install-theme/index.js:147
 msgid "Import Starter Content"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/login/index.js:4
 #: src/steps/login/index.js:57
 msgid "Username"
 msgstr ""
 
+#: build/steps/login/index.js:4
 #: src/steps/login/index.js:59
 msgid "Enter username"
 msgstr ""
 
+#: build/steps/login/index.js:4
 #: src/steps/login/index.js:63
 msgid "Password"
 msgstr ""
 
+#: build/steps/login/index.js:4
 #: src/steps/login/index.js:65
 msgid "Enter password"
 msgstr ""
 
-#: src/steps/make-dir/index.js:42
-#: src/steps/remove-dir/index.js:42
-#: src/steps/remove-file/index.js:42
+#. translators: %s: Field name.
+#: build/steps/mkdir/index.js:4
+#: build/steps/rm/index.js:4
+#: build/steps/rmdir/index.js:4
+#: src/steps/mkdir/index.js:42
+#: src/steps/rm/index.js:42
+#: src/steps/rmdir/index.js:42
 msgid "at"
 msgstr ""
 
-#: src/steps/make-dir/index.js:53
+#: build/steps/mkdir/index.js:4
+#: src/steps/mkdir/index.js:53
 msgid "Directory Path"
 msgstr ""
 
-#: src/steps/make-dir/index.js:55
+#: build/steps/mkdir/index.js:4
+#: src/steps/mkdir/index.js:55
 msgid "e.g., /wp-content/plugins/new-directory"
 msgstr ""
 
-#: src/steps/move/index.js:42
+#. translators: %s: Field name.
+#: build/steps/mv/index.js:4
+#: src/steps/mv/index.js:42
 msgid "from"
 msgstr ""
 
-#: src/steps/move/index.js:42
+#. translators: %s: Field name.
+#: build/steps/mv/index.js:4
+#: build/steps/set-site-language/index.js:4
+#: src/steps/mv/index.js:42
 #: src/steps/set-site-language/index.js:42
 msgid "to"
 msgstr ""
 
-#: src/steps/move/index.js:55
+#: build/steps/mv/index.js:4
+#: src/steps/mv/index.js:55
 msgid "Enter the current path of the file or directory"
 msgstr ""
 
-#: src/steps/move/index.js:61
+#: build/steps/mv/index.js:4
+#: src/steps/mv/index.js:61
 msgid "Enter the new path where the file or directory should be moved"
 msgstr ""
 
-#: src/steps/remove-dir/index.js:53
-#: src/steps/remove-file/index.js:53
-msgid "File Path"
-msgstr ""
-
-#: src/steps/remove-dir/index.js:55
-msgid "Enter the directory path to remove (e.g., /wp-content/uploads/old-files)"
-msgstr ""
-
-#: src/steps/remove-file/index.js:55
-msgid "Enter the file path to remove (e.g., /wp-content/plugins/index.php)"
-msgstr ""
-
+#: build/steps/reset-data/index.js:1
 #: src/steps/reset-data/index.js:39
 msgid "Delete WordPress posts and comments"
 msgstr ""
 
+#: build/steps/rm/index.js:4
+#: build/steps/rmdir/index.js:4
+#: src/steps/rm/index.js:53
+#: src/steps/rmdir/index.js:53
+msgid "File Path"
+msgstr ""
+
+#: build/steps/rm/index.js:4
+#: src/steps/rm/index.js:55
+msgid "Enter the file path to remove (e.g., /wp-content/plugins/index.php)"
+msgstr ""
+
+#: build/steps/rmdir/index.js:4
+#: src/steps/rmdir/index.js:55
+msgid "Enter the directory path to remove (e.g., /wp-content/uploads/old-files)"
+msgstr ""
+
+#: build/steps/run-php/index.js:1
 #: src/steps/run-php/index.js:42
 msgid "Code Snippet"
 msgstr ""
 
+#: build/steps/run-php/index.js:1
 #: src/steps/run-php/index.js:50
 msgid "When running WordPress functions, the code key must first load wp-load.php and start with \"<?php require_once 'wordpress/wp-load.php'; \""
 msgstr ""
 
+#: build/steps/run-php/index.js:1
 #: src/steps/run-php/index.js:54
 msgid "Code"
 msgstr ""
 
+#: build/steps/set-site-language/index.js:4
 #: src/steps/set-site-language/index.js:42
 msgid "{language code}"
 msgstr ""
 
+#: build/steps/set-site-language/index.js:4
 #: src/steps/set-site-language/index.js:53
 msgid "Language"
 msgstr ""
 
+#: build/steps/set-site-language/index.js:4
 #: src/steps/set-site-language/index.js:55
 msgid "e.g. 'en_US'"
 msgstr ""
 
+#: build/steps/set-site-options/index.js:1
 #: src/steps/set-site-options/index.js:90
 msgid "{config site options}"
 msgstr ""
 
+#: build/steps/set-site-options/index.js:1
 #: src/steps/set-site-options/index.js:153
 msgid "Delete Option?"
 msgstr ""
 
+#. translators: %s: Field name.
+#: build/steps/unzip/index.js:4
 #: src/steps/unzip/index.js:58
 msgid "{zip path}"
 msgstr ""
 
+#: build/steps/unzip/index.js:4
 #: src/steps/unzip/index.js:58
 msgid "{folder path}"
 msgstr ""
 
+#: build/steps/unzip/index.js:4
 #: src/steps/unzip/index.js:74
 msgid "The path of the zip file to extract"
 msgstr ""
 
+#: build/steps/unzip/index.js:4
 #: src/steps/unzip/index.js:78
 msgid "Extract To Path"
 msgstr ""
 
+#: build/steps/unzip/index.js:4
 #: src/steps/unzip/index.js:80
 msgid "The path to extract the zip file to"
 msgstr ""
 
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/update-user-meta/index.js:91
 msgid "{config user meta}"
 msgstr ""
 
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/update-user-meta/index.js:94
 msgid "for UserId"
 msgstr ""
 
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/update-user-meta/index.js:94
 msgid "{user Id}"
 msgstr ""
 
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/update-user-meta/index.js:147
 msgid "User Id"
 msgstr ""
 
+#: build/steps/update-user-meta/index.js:1
 #: src/steps/update-user-meta/index.js:166
 msgid "Delete User Meta?"
 msgstr ""
 
+#: build/steps/wp-cli/index.js:1
 #: src/steps/wp-cli/index.js:41
 msgid "{command to run}"
 msgstr ""
 
+#: build/steps/wp-cli/index.js:1
 #: src/steps/wp-cli/index.js:48
 msgid "Command"
 msgstr ""
 
+#: build/steps/write-file/index.js:1
 #: src/steps/write-file/index.js:42
 msgid "write file at"
 msgstr ""
 
+#: build/steps/write-file/index.js:1
 #: src/steps/write-file/index.js:51
 msgid "The path of the file to write to"
 msgstr ""
 
+#: build/steps/write-file/index.js:1
 #: src/steps/write-file/index.js:58
 msgid "The data to write"
 msgstr ""
@@ -558,14 +701,14 @@ msgctxt "block description"
 msgid "Activates a WordPress theme (if it's installed)."
 msgstr ""
 
-#: build/steps/copy/block.json
-#: src/steps/copy/block.json
+#: build/steps/cp/block.json
+#: src/steps/cp/block.json
 msgctxt "block title"
 msgid "Copy"
 msgstr ""
 
-#: build/steps/copy/block.json
-#: src/steps/copy/block.json
+#: build/steps/cp/block.json
+#: src/steps/cp/block.json
 msgctxt "block description"
 msgid "Copies a file from one path to another."
 msgstr ""
@@ -680,52 +823,28 @@ msgctxt "block description"
 msgid "Logs in to Playground. Under the hood, this function submits the wp-login.php form just like a user would."
 msgstr ""
 
-#: build/steps/make-dir/block.json
-#: src/steps/make-dir/block.json
+#: build/steps/mkdir/block.json
+#: src/steps/mkdir/block.json
 msgctxt "block title"
 msgid "Make Directory"
 msgstr ""
 
-#: build/steps/make-dir/block.json
-#: src/steps/make-dir/block.json
+#: build/steps/mkdir/block.json
+#: src/steps/mkdir/block.json
 msgctxt "block description"
 msgid "Creates a directory at the specified path."
 msgstr ""
 
-#: build/steps/move/block.json
-#: src/steps/move/block.json
+#: build/steps/mv/block.json
+#: src/steps/mv/block.json
 msgctxt "block title"
 msgid "Move File/Dir"
 msgstr ""
 
-#: build/steps/move/block.json
-#: src/steps/move/block.json
+#: build/steps/mv/block.json
+#: src/steps/mv/block.json
 msgctxt "block description"
 msgid "Moves a file or directory from one path to another."
-msgstr ""
-
-#: build/steps/remove-dir/block.json
-#: src/steps/remove-dir/block.json
-msgctxt "block title"
-msgid "Remove Directory"
-msgstr ""
-
-#: build/steps/remove-dir/block.json
-#: src/steps/remove-dir/block.json
-msgctxt "block description"
-msgid "Removes a directory at the specified path."
-msgstr ""
-
-#: build/steps/remove-file/block.json
-#: src/steps/remove-file/block.json
-msgctxt "block title"
-msgid "Remove File"
-msgstr ""
-
-#: build/steps/remove-file/block.json
-#: src/steps/remove-file/block.json
-msgctxt "block description"
-msgid "Removes a file at the specified path."
 msgstr ""
 
 #: build/steps/reset-data/block.json
@@ -738,6 +857,30 @@ msgstr ""
 #: src/steps/reset-data/block.json
 msgctxt "block description"
 msgid "Deletes WordPress posts and comments and sets the auto increment sequence for the posts and comments tables to 0."
+msgstr ""
+
+#: build/steps/rm/block.json
+#: src/steps/rm/block.json
+msgctxt "block title"
+msgid "Remove File"
+msgstr ""
+
+#: build/steps/rm/block.json
+#: src/steps/rm/block.json
+msgctxt "block description"
+msgid "Removes a file at the specified path."
+msgstr ""
+
+#: build/steps/rmdir/block.json
+#: src/steps/rmdir/block.json
+msgctxt "block title"
+msgid "Remove Directory"
+msgstr ""
+
+#: build/steps/rmdir/block.json
+#: src/steps/rmdir/block.json
+msgctxt "block description"
+msgid "Removes a directory at the specified path."
 msgstr ""
 
 #: build/steps/run-php/block.json
