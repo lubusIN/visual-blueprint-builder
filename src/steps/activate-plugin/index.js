@@ -38,7 +38,12 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${pluginName || 'Plugin Name'} > ${pluginPath || 'Plugin Path'}`}</Text>
+									<Text weight={600}>
+										{__(
+											`${pluginName || __('Plugin Name', 'wp-playground-blueprint-editor')} > ${pluginPath || __('Plugin Path', 'wp-playground-blueprint-editor')}`,
+											'wp-playground-blueprint-editor'
+										)}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,15 +53,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'pluginName',
-										label: 'Plugin Name',
+										label: __('Plugin Name', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter plugin name'
+										placeholder: __('Enter plugin name', 'wp-playground-blueprint-editor'),
 									},
 									{
 										id: 'pluginPath',
-										label: 'Plugin Path',
+										label: __('Plugin Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter the full path to the plugin'
+										placeholder: __('Enter the full path to the plugin', 'wp-playground-blueprint-editor'),
 									},
 								]}
 								form={{

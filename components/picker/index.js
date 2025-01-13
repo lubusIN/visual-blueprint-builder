@@ -1,5 +1,5 @@
 /**
- * Wordpress dependencies.
+ * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
@@ -51,7 +51,7 @@ const ThemeComponent = ({ item, onSelect }) => {
 							variant="secondary"
 							style={{ borderRadius: '4px' }}
 							onClick={() => onSelect(item.slug)}>
-							{__('Select', 'picker')}
+							{__('Select', 'wp-playground-blueprint-editor')}
 						</Button>
 					</HStack>
 				</CardBody>
@@ -91,16 +91,16 @@ const PluginComponent = ({ item, onSelect }) => {
 							</ExternalLink>
 						</HStack>
 						<Text lineHeight={'1.5em'}>
-							{item.short_description || __('No description available', 'picker')}
+							{item.short_description || __('No description available', 'wp-playground-blueprint-editor')}
 						</Text>
 						<HStack spacing={10}>
 							<Text color='#666'>
 								{item.active_installs
 									? `${formatNumber(item.active_installs)}+ active installations`
-									: __('No data available', 'picker')}
+									: __('No data available', 'wp-playground-blueprint-editor')}
 							</Text>
 							<Text color='#666'>
-								{__('Tested with', 'picker')} {item.tested || __('Unknown', 'picker')}
+								{__('Tested with', 'wp-playground-blueprint-editor')} {item.tested || __('Unknown', 'wp-playground-blueprint-editor')}
 							</Text>
 						</HStack>
 					</VStack>
@@ -109,7 +109,7 @@ const PluginComponent = ({ item, onSelect }) => {
 							variant="secondary"
 							style={{ borderRadius: '4px' }}
 							onClick={() => onSelect(item.slug)} >
-							{__('Select', 'picker')}
+							{__('Select', 'wp-playground-blueprint-editor')}
 						</Button>
 					</HStack>
 				</VStack>
@@ -168,11 +168,11 @@ function Picker({ type, onSelect }) {
 					boxShadow: 'none'
 				}}
 			>
-				{__('Browse', 'picker')}
+				{__('Browse', 'wp-playground-blueprint-editor')}
 			</Button>
 			{isModalOpen && (
 				<Modal
-					title={__(`Browse ${type[0].toUpperCase()}${type.slice(1)}`, 'picker')}
+					title={__(`Browse ${type[0].toUpperCase()}${type.slice(1)}`, 'wp-playground-blueprint-editor')}
 					onRequestClose={() => setModalOpen(false)}
 					shouldCloseOnClickOutside={false}
 					size='large'
@@ -181,7 +181,7 @@ function Picker({ type, onSelect }) {
 					<VStack spacing={6} justify='space-between'>
 						<InputControl
 							__next40pxDefaultSize
-							placeholder={__('Search by name or author', 'picker')}
+							placeholder={__('Search by name or author', 'wp-playground-blueprint-editor')}
 							value={searchTerm}
 							onChange={(value) => {
 								setSearchTerm(value);

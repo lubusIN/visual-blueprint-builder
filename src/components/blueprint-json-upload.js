@@ -7,48 +7,6 @@ import { dispatch, useDispatch } from '@wordpress/data';
 import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
 
-/**
- * External dependencies.
- */
-import Ajv from 'ajv';
-
-const ajv = new Ajv();
-
-const blueprintSchema = {
-    type: 'object',
-    properties: {
-        landingPage: { type: 'string' },
-        preferredVersions: {
-            type: 'object',
-            properties: {
-                php: { type: 'string' },
-                wp: { type: 'string' },
-            },
-        },
-        phpExtensionBundles: {
-            type: 'array',
-            items: { type: 'string' },
-        },
-        features: {
-            type: 'object',
-            properties: {
-                networking: { type: 'boolean' },
-            },
-        },
-        steps: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    step: { type: 'string' },
-                    attributes: { type: 'object' },
-                },
-                required: ['step'],
-            },
-        },
-    },
-    required: ['landingPage', 'preferredVersions', 'phpExtensionBundles', 'features', 'steps'],
-};
 
 const BlueprintJsonUpload = ({ onSubmitData }) => {
     const { createNotice } = useDispatch(noticesStore);
@@ -82,9 +40,8 @@ const BlueprintJsonUpload = ({ onSubmitData }) => {
             reader.onload = () => {
                 try {
                     const jsonData = JSON.parse(reader.result);
-                    const validate = ajv.compile(blueprintSchema);
 
-                    if (validate(jsonData)) {
+                    if (jsonData) {
                         const { steps } = jsonData;
                         const { valid, invalid } = validateSteps(steps);
 

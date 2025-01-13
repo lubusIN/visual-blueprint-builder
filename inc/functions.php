@@ -83,23 +83,23 @@ function add_new_block_category($block_categories, $block_editor_context)
     $steps_categories = [
         [
             'slug'  => 'config',
-            'title' => esc_html__('Config', 'text-domain')
+            'title' => esc_html__('Config', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'extend',
-            'title' => esc_html__('Extend', 'text-domain'),
+            'title' => esc_html__('Extend', 'wp-playground-blueprint-editor'),
         ],
         [
             'slug'  => 'file-system',
-            'title' => esc_html__('File System', 'text-domain')
+            'title' => esc_html__('File System', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'data',
-            'title' => esc_html__('Data', 'text-domain')
+            'title' => esc_html__('Data', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'scripts',
-            'title' => esc_html__('Scripts', 'text-domain')
+            'title' => esc_html__('Scripts', 'wp-playground-blueprint-editor')
         ],
     ];
 

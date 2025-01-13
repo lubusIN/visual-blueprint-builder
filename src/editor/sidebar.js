@@ -127,7 +127,7 @@ function BlueprintSidebarSettings() {
                     </Toolbar>
                 </VStack>
             </PluginPostStatusInfo>
-            <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
+            <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
                 <DataForm
                     data={{
                         php_version: blueprint_config.php_version,
@@ -140,27 +140,29 @@ function BlueprintSidebarSettings() {
                         {
                             elements: PHP_VERSIONS,
                             id: 'php_version',
+                            label: __('PHP Version', 'wp-playground-blueprint-editor'),
+                            type: 'text'
                             label: 'PHP Version',
                             type: 'text',
                         },
                         {
                             elements: WP_VERSIONS,
                             id: 'wp_version',
-                            label: 'WP Version',
+                            label: __('WP Version', 'wp-playground-blueprint-editor'),
                             type: 'text'
                         },
                         {
                             id: 'landing_page',
-                            label: 'Landing Page',
+                            label: __('Landing Page', 'wp-playground-blueprint-editor'),
                             type: 'text'
                         },
                         {
                             id: 'php_extension_bundles',
-                            label: 'PHP Extension Bundles',
+                            label: __('PHP Extension Bundles', 'wp-playground-blueprint-editor'),
                             type: 'text',
                             elements: [
-                                { label: 'Kitchen Sink', value: 'kitchen-sink' },
-                                { label: 'Light', value: 'light' },
+                                { label: __('Kitchen Sink', 'wp-playground-blueprint-editor'), value: 'kitchen-sink' },
+                                { label: __('Light', 'wp-playground-blueprint-editor'), value: 'light' },
                             ]
                         },
                         {

@@ -38,15 +38,20 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{"code snippet"}</Text>
+									<Text weight={600}>
+										{__('Code Snippet', 'wp-playground-blueprint-editor')}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<TextareaControl
 								__nextHasNoMarginBottom
-								help={`When running WordPress functions, the code key must first load wp-load.php and start with "<?php require_once 'wordpress/wp-load.php'; "`}
-								label="Code"
+								help={__(
+									'When running WordPress functions, the code key must first load wp-load.php and start with "<?php require_once \'wordpress/wp-load.php\'; "',
+									'wp-playground-blueprint-editor'
+								)}
+								label={__('Code', 'wp-playground-blueprint-editor')}
 								onChange={(value) => setAttributes({ code: value })}
 								placeholder="<?php ?>"
 								value={code}

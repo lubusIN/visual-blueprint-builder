@@ -38,7 +38,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`at ${path || '{directory path}'}`}</Text>
+									<Text weight={600}>
+										{__('at', 'wp-playground-blueprint-editor')} {` ${path || '{directory path}'}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,9 +50,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'path',
-										label: 'Directory Path',
+										label: __('Directory Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'e.g., /wp-content/plugins/new-directory'
+										placeholder: __('e.g., /wp-content/plugins/new-directory', 'wp-playground-blueprint-editor')
 									}
 								]}
 								form={{

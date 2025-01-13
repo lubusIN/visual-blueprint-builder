@@ -48,7 +48,12 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`from ${url || '{zip url}'}`}</Text>
+									<Text weight={600}>
+										{__(
+											`from ${url || '{zip url}'}`,
+											'wp-playground-blueprint-editor'
+										)}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -60,10 +65,10 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'url',
-										label: 'Url',
+										label: __('Url', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter the URL of the zip file'
-									}
+										placeholder: __('Enter the URL of the zip file', 'wp-playground-blueprint-editor'),
+									},
 								]}
 								form={{
 									fields: [
