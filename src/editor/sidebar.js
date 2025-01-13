@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel, PluginPostStatusInfo } from '@wordpress/editor';
 import { copy, download, globe, code } from '@wordpress/icons';
+import { useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
 import { useCopyToClipboard } from '@wordpress/compose';
@@ -12,38 +13,22 @@ import { downloadBlob } from '@wordpress/blob';
 import { DataForm } from '@wordpress/dataviews';
 import {
     Toolbar,
-    ToolbarButton
+    ToolbarButton,
+    ToggleControl,
+    __experimentalVStack as VStack,
 } from '@wordpress/components';
 
 /**
- * PHP and WordPress version options for dropdowns.
+ * Internal dependencies.
  */
-const PHP_VERSIONS = [
-    { label: __('Latest', 'wp-playground-blueprint-editor'), value: 'latest' },
-    { label: '8.3', value: '8.3' },
-    { label: '8.2', value: '8.2' },
-    { label: '8.1', value: '8.1' },
-    { label: '8.0', value: '8.0' },
-    { label: '7.4', value: '7.4' },
-    { label: '7.3', value: '7.3' },
-    { label: '7.2', value: '7.2' },
-    { label: '7.1', value: '7.1' },
-    { label: '7.0', value: '7.0' },
-];
-
-const WP_VERSIONS = [
-    { label: __('WordPress nightly', 'wp-playground-blueprint-editor'), value: 'nightly' },
-    { label: '6.6', value: '6.1' },
-    { label: '6.5', value: '6.1' },
-    { label: '6.4', value: '6.2' },
-    { label: '6.3', value: '6.1' },
-];
+import BlueprintJsonUpload from './open-json';
+import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
 
 /**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
-    const { createNotice } = useDispatch(noticesStore);
+    const { createErrorNotice, createSuccessNotice } = useDispatch(noticesStore);
     const { editPost } = useDispatch('core/editor');
 
     const blocks = useSelect((select) => select('core/block-editor').getBlocks(), []);
@@ -51,60 +36,96 @@ function BlueprintSidebarSettings() {
         return select('core/editor').getEditedPostAttribute('meta')['_blueprint_config'] || {}
     });
 
-    const playgroundBase = "https://playground.wordpress.net/#";
-    const playgroundBuilderBase = "https://playground.wordpress.net/builder/builder.html#";
-
     const schema = {
-        $schema: "https://playground.wordpress.net/blueprint-schema.json",
+        $schema: PLAYGROUND_BLUEPRINT_SCHEMA_URL,
         landingPage: blueprint_config.landing_page,
         preferredVersions: {
             php: blueprint_config.php_version,
             wp: blueprint_config.wp_version
         },
-        phpExtensionBundles: [
-            blueprint_config.php_extension_bundles
-        ],
-        features: {
-            networking: blueprint_config.networking
-        },
+        phpExtensionBundles: [blueprint_config.php_extension_bundles],
+        features: blueprint_config.networking ? { networking: true } : {},
         steps: []
     };
 
-    // Function to prepare the schema
-    const prepareSchema = () => {
-        const blockAttributes = blocks.map(block => {
-            delete block.attributes.metadata;
-            return block.attributes;
+    /**
+     * Prepares the schema by extracting attributes from blocks.
+     * Blocks' metadata is excluded to keep the schema clean.
+     */
+    const prepareSchema = useCallback(() => {
+        const blockAttributes = blocks.map((block) => {
+            const { metadata, ...rest } = block.attributes; // Exclude metadata
+            return rest;
         });
-        schema.steps = [...blockAttributes];
-        return JSON.stringify(schema, null, 2);
-    };
+        schema.steps = blockAttributes;
+        return JSON.stringify(schema, null, 2); // Format the schema as a pretty JSON string
+    }, [blocks, schema]);
 
+    /**
+     * Handles downloading the prepared schema as a JSON file.
+     */
     const handleDownload = () => {
-        const preparedSchema = prepareSchema();
-        if (preparedSchema) {
+        try {
+            const preparedSchema = prepareSchema();
             downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
-            createNotice('success', __('Blueprint downloaded generated!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+            createSuccessNotice(__('Blueprint downloaded successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+        } catch (error) {
+            createErrorNotice(__('Failed to download Blueprint JSON.','wp-playground-blueprint-editor'));
         }
     };
 
-    const handleCopy = useCopyToClipboard(prepareSchema, () => {
-        createNotice('success', __('Blueprint Schema Copied!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
+    /**
+     * Copies the prepared schema to the clipboard.
+     */
+    const handleCopy = useCopyToClipboard(() => {
+        if (!schema.steps.length) {
+            createErrorNotice(__('No Blueprint steps to copy!','wp-playground-blueprint-editor'));
+            return ''; // Return empty string for invalid data
+        }
+        createSuccessNotice(__('Blueprint schema copied to clipboard!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+        return prepareSchema();
     });
 
-    const handleBlueprintConfig = (value) => {
-        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...value } } });
+    /**
+     * Updates the blueprint configuration stored in the post meta.
+     * @param {Object} updatedValues - Partial blueprint configuration to update.
+     */
+    const updateBlueprintConfig = (updatedValues) => {
+        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...updatedValues } } });
+    };
+
+    /**
+     * Handles JSON data submission from the upload modal.
+     * Transforms the uploaded JSON to match the blueprint configuration format.
+     * @param {Object} data - Uploaded JSON data.
+     */
+    const handleJsonDataSubmit = (data) => {
+        if (!data) {
+            createErrorNotice(__('Failed to update Blueprint configuration.','wp-playground-blueprint-editor'));
+            return;
+        }
+        updateBlueprintConfig({
+            landing_page: data.landingPage,
+            php_version: data.preferredVersions.php,
+            wp_version: data.preferredVersions.wp,
+            php_extension_bundles: data.phpExtensionBundles,
+            networking: data.features.networking || false,
+        });
+        createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
 
     return (
         <>
             <PluginPostStatusInfo>
-                <Toolbar>
-                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={playgroundBase + prepareSchema()} target="_blank" />
+            <VStack spacing={5} style={{ width: '100%' }}>
+                    <BlueprintJsonUpload onSubmitData={handleJsonDataSubmit} />
+                    <Toolbar style={{ justifyContent: 'space-between' }}>
+                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
                     <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
                     <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
-                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={playgroundBuilderBase + prepareSchema()} target="_blank" />
+                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BUILDER_BASE + prepareSchema()} target="_blank" />
                 </Toolbar>
+                </VStack>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
                 <DataForm
@@ -145,11 +166,20 @@ function BlueprintSidebarSettings() {
                         {
                             id: 'networking',
                             label: __('Networking', 'wp-playground-blueprint-editor'),
-                            type: 'text',
-                            elements: [
-                                { label: __('Enabled', 'wp-playground-blueprint-editor'), value: true },
-                                { label: __('Disabled', 'wp-playground-blueprint-editor'), value: false },
-                            ]
+                            type: 'integer',
+                            Edit: ({ field, onChange, data, hideLabelFromVision }) => {
+                                const { id, getValue } = field;
+                                return (
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label={hideLabelFromVision ? '' : field.label}
+                                        checked={getValue({ item: data })}
+                                        onChange={() =>
+                                            onChange({ [id]: !getValue({ item: data }) })
+                                        }
+                                    />
+                                );
+                            },
                         },
                     ]}
                     form={{
@@ -158,12 +188,17 @@ function BlueprintSidebarSettings() {
                             'wp_version',
                             'landing_page',
                             'php_extension_bundles',
-                            'networking'
+                            {
+                                id: 'networking',
+                                layout: 'regular',
+                                labelPosition: 'side',
+                            },
                         ],
+                        type: 'panel',
                     }}
-                    onChange={handleBlueprintConfig}
+                    onChange={updateBlueprintConfig}
                 />
-            </PluginDocumentSettingPanel >
+            </PluginDocumentSettingPanel>
         </>
     );
 };

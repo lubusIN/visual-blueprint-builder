@@ -29,7 +29,7 @@ class BlueprintSteps {
             'define-site-url',
             'activate-theme',
             'activate-plugin',
-            'import-wordpress-files',
+            'import-word-press-files',
             'rmdir',
             'rm',
             'reset-data',
