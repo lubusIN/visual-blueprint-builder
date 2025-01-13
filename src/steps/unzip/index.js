@@ -54,7 +54,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`from ${path || '{zip path}'} to ${extractToPath || '{folder path}'}`}</Text>
+									<Text weight={600}>
+										{`from ${path || __('{zip path}', 'wp-playground-blueprint-editor')} to ${extractToPath || __('{folder path}', 'wp-playground-blueprint-editor')}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -67,15 +69,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'path',
-										label: 'Path',
+										label: __('Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'The path of the zip file to extract'
+										placeholder: __('The path of the zip file to extract', 'wp-playground-blueprint-editor')
 									},
 									{
 										id: 'extractToPath',
-										label: 'Extract To Path',
+										label: __('Extract To Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'The path to extract the zip file to'
+										placeholder: __('The path to extract the zip file to', 'wp-playground-blueprint-editor')
 									}
 								]}
 								form={{

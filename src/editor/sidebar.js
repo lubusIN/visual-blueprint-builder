@@ -19,7 +19,7 @@ import {
  * PHP and WordPress version options for dropdowns.
  */
 const PHP_VERSIONS = [
-    { label: 'Latest', value: 'latest' },
+    { label: __('Latest', 'wp-playground-blueprint-editor'), value: 'latest' },
     { label: '8.3', value: '8.3' },
     { label: '8.2', value: '8.2' },
     { label: '8.1', value: '8.1' },
@@ -32,7 +32,7 @@ const PHP_VERSIONS = [
 ];
 
 const WP_VERSIONS = [
-    { label: 'Wordpress nightly', value: 'nightly' },
+    { label: __('WordPress nightly', 'wp-playground-blueprint-editor'), value: 'nightly' },
     { label: '6.6', value: '6.1' },
     { label: '6.5', value: '6.1' },
     { label: '6.4', value: '6.2' },
@@ -84,12 +84,12 @@ function BlueprintSidebarSettings() {
         const preparedSchema = prepareSchema();
         if (preparedSchema) {
             downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
-            createNotice('success', __('Blueprint downloaded generated!'), { type: 'snackbar' });
+            createNotice('success', __('Blueprint downloaded generated!','wp-playground-blueprint-editor'), { type: 'snackbar' });
         }
     };
 
     const handleCopy = useCopyToClipboard(prepareSchema, () => {
-        createNotice('success', __('Blueprint Schema Copied!'), { type: 'snackbar' });
+        createNotice('success', __('Blueprint Schema Copied!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
     });
 
     const handleBlueprintConfig = (value) => {
@@ -100,13 +100,13 @@ function BlueprintSidebarSettings() {
         <>
             <PluginPostStatusInfo>
                 <Toolbar>
-                    <ToolbarButton icon={globe} label="Open in playground" href={playgroundBase + prepareSchema()} target="_blank" />
-                    <ToolbarButton icon={download} label="Download JSON" onClick={handleDownload} />
-                    <ToolbarButton icon={copy} label="Copy JSON" ref={handleCopy} />
-                    <ToolbarButton icon={code} label="Open in Builder" href={playgroundBuilderBase + prepareSchema()} target="_blank" />
+                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={playgroundBase + prepareSchema()} target="_blank" />
+                    <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
+                    <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
+                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={playgroundBuilderBase + prepareSchema()} target="_blank" />
                 </Toolbar>
             </PluginPostStatusInfo>
-            <PluginDocumentSettingPanel name='playground-settings' title='Playground Settings'>
+            <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
                 <DataForm
                     data={{
                         php_version: blueprint_config.php_version,
@@ -119,36 +119,36 @@ function BlueprintSidebarSettings() {
                         {
                             elements: PHP_VERSIONS,
                             id: 'php_version',
-                            label: 'PHP Version',
+                            label: __('PHP Version', 'wp-playground-blueprint-editor'),
                             type: 'text'
                         },
                         {
                             elements: WP_VERSIONS,
                             id: 'wp_version',
-                            label: 'WP Version',
+                            label: __('WP Version', 'wp-playground-blueprint-editor'),
                             type: 'text'
                         },
                         {
                             id: 'landing_page',
-                            label: 'Landing Page',
+                            label: __('Landing Page', 'wp-playground-blueprint-editor'),
                             type: 'text'
                         },
                         {
                             id: 'php_extension_bundles',
-                            label: 'PHP Extension Bundles',
+                            label: __('PHP Extension Bundles', 'wp-playground-blueprint-editor'),
                             type: 'text',
                             elements: [
-                                { label: 'Kitchen Sink', value: 'kitchen-sink' },
-                                { label: 'Light', value: 'light' },
+                                { label: __('Kitchen Sink', 'wp-playground-blueprint-editor'), value: 'kitchen-sink' },
+                                { label: __('Light', 'wp-playground-blueprint-editor'), value: 'light' },
                             ]
                         },
                         {
                             id: 'networking',
-                            label: 'Networking',
+                            label: __('Networking', 'wp-playground-blueprint-editor'),
                             type: 'text',
                             elements: [
-                                { label: 'Enabled', value: true },
-                                { label: 'Disabled', value: false },
+                                { label: __('Enabled', 'wp-playground-blueprint-editor'), value: true },
+                                { label: __('Disabled', 'wp-playground-blueprint-editor'), value: false },
                             ]
                         },
                     ]}

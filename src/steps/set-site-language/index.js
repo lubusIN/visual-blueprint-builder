@@ -38,7 +38,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`to ${lang || '{language code}'}`}</Text>
+									<Text weight={600}>
+										{__('to', 'wp-playground-blueprint-editor')} {` ${lang || __('{language code}', 'wp-playground-blueprint-editor')}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,9 +50,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'language',
-										label: 'Language',
+										label: __('Language', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'e.g. \'en_US\''
+										placeholder: __('e.g. \'en_US\'', 'wp-playground-blueprint-editor')
 									}
 								]}
 								form={{

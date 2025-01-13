@@ -1,5 +1,5 @@
 /**
- * Wordpress dependencies.
+ * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
@@ -39,23 +39,23 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`write file at ${path}`}</Text>
+									<Text weight={600}>{__('write file at', 'wp-playground-blueprint-editor')} {path}</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<VStack>
 								<TextControl
-									label={__('Path', 'write-file')}
+									label={__('Path', 'wp-playground-blueprint-editor')}
 									value={path}
-									placeholder='The path of the file to write to'
+									placeholder={__('The path of the file to write to', 'wp-playground-blueprint-editor')}
 									onChange={(value) => setAttributes({ path: value })}
 								/>
 								<TextareaControl
 									__nextHasNoMarginBottom
-									label="Data"
+									label={__('Data', 'wp-playground-blueprint-editor')}
 									onChange={(value) => setAttributes({ data: value })}
-									placeholder="The data to write"
+									placeholder={__('The data to write', 'wp-playground-blueprint-editor')}
 									value={data}
 								/>
 							</VStack>

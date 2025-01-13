@@ -38,7 +38,12 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`for ${themeSlug || '{THEME SLUG}'}`}</Text>
+									<Text weight={600}>
+										{__(
+											`for ${themeSlug || '{THEME SLUG}'}`,
+											'wp-playground-blueprint-editor'
+										)}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,10 +53,10 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'themeSlug',
-										label: 'Theme Slug',
+										label: __('Theme Slug', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'e.g., twentytwentyfour'
-									}
+										placeholder: __('e.g., twentytwentyfour', 'wp-playground-blueprint-editor'),
+									},
 								]}
 								form={{
 									fields: [
@@ -64,7 +69,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 					</VStack>
 				}
 			/>
-		</p >
+		</p>
 	);
 }
 
