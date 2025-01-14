@@ -25,7 +25,7 @@ function filter_allowed_block_types($allowed_block_types, $block_editor_context)
         'playground-step/cp',
         'playground-step/activate-theme',
         'playground-step/activate-plugin',
-        'playground-step/import-word-press-files',
+        'playground-step/import-wordpress-files',
         'playground-step/rmdir',
         'playground-step/rm',
         'playground-step/reset-data',

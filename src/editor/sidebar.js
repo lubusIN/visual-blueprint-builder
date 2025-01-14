@@ -21,7 +21,7 @@ import {
 /**
  * Internal dependencies.
  */
-import BlueprintJsonUpload from './open-json';
+import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
 
 /**
@@ -118,7 +118,7 @@ function BlueprintSidebarSettings() {
         <>
             <PluginPostStatusInfo>
             <VStack spacing={5} style={{ width: '100%' }}>
-                    <BlueprintJsonUpload onSubmitData={handleJsonDataSubmit} />
+                    <OpenJson onSubmitData={handleJsonDataSubmit} />
                     <Toolbar style={{ justifyContent: 'space-between' }}>
                     <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
                     <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />

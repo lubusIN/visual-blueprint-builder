@@ -4,11 +4,19 @@ import { dispatch, useDispatch } from '@wordpress/data';
 import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
 
-const BlueprintJsonUpload = ({ onSubmitData }) => {
+const OpenJson = ({ onSubmitData }) => {
     const { createNotice } = useDispatch(noticesStore);
 
-    // Utility to convert camelCase to kebab-case
-    const convertToKebabCase = (str) => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    // Utility to convert camelCase to kebab-case with special handling for "WordPress"
+    const convertToKebabCase = (str) => {
+        
+        return str
+            .replace(/WordPress/g, 'Wordpress') // Temporarily normalize "WordPress" casing
+            .replace(/([a-z])([A-Z])/g, '$1-$2') // Convert camelCase to kebab-case
+            .replace(/Wordpress/g, 'wordpress') // Convert "Wordpress" back to "wordpress"
+            .toLowerCase(); // Convert the entire string to lowercase
+    };
+    
 
     // Validate steps from the JSON schema
     const validateBlueprintSteps = (steps) => {
@@ -111,4 +119,4 @@ const BlueprintJsonUpload = ({ onSubmitData }) => {
     );
 };
 
-export default BlueprintJsonUpload;
+export default OpenJson;

@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "playground-step/import-word-press-files",
+	"name": "playground-step/import-wordpress-files",
 	"version": "0.1.0",
 	"title": "Import WordPress files",
 	"category": "data",

@@ -14,7 +14,7 @@ module.exports = {
         'steps/define-wp-config-consts/index': './src/steps/define-wp-config-consts/index.js',
         'steps/enable-multisite/index': './src/steps/enable-multisite/index.js',
         'steps/import-theme-starter-content/index': './src/steps/import-theme-starter-content/index.js',
-        'steps/import-word-press-files/index': './src/steps/import-word-press-files/index.js',
+        'steps/import-wordpress-files/index': './src/steps/import-wordpress-files/index.js',
         'steps/import-wxr/index': './src/steps/import-wxr/index.js',
         'steps/install-plugin/index': './src/steps/install-plugin/index.js',
         'steps/install-theme/index': './src/steps/install-theme/index.js',
