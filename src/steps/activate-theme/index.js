@@ -38,7 +38,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${themeFolderName || 'Theme Folder Name'}`}</Text>
+									<Text weight={600}>
+										{themeFolderName || __('Theme Folder Name', 'wp-playground-blueprint-editor')}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,10 +50,10 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'themeFolderName',
-										label: 'Theme Folder Name',
+										label: __('Theme Folder Name', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'The name of the theme folder located in wp-content/themes/'
-									}
+										placeholder: __('The name of the theme folder located in wp-content/themes/', 'wp-playground-blueprint-editor'),
+									},
 								]}
 								form={{
 									fields: [

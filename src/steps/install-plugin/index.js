@@ -84,52 +84,54 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${resource} > ${getResourceInfo(resource)} > ${activate ? 'Activate' : 'Install and keep Inactive'}`}</Text>
+									<Text weight={600}>
+										{`${resource} > ${getResourceInfo(resource)} > ${activate ? __('Activate', 'wp-playground-blueprint-editor') : __('Install and keep Inactive', 'wp-playground-blueprint-editor')}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
 							<>
 								<ToggleGroupControl
-									label="Resource"
+									label={__('Resource', 'wp-playground-blueprint-editor')}
 									value={resource}
 									isBlock
 									onChange={handleResourceChange}
 								>
-									<ToggleGroupControlOption value="url" label="URL" />
-									<ToggleGroupControlOption value="wordpress.org/plugins" label="Plugin" />
-									<ToggleGroupControlOption value="vfs" label="VFS" />
+									<ToggleGroupControlOption value="url" label={__('URL', 'wp-playground-blueprint-editor')} />
+									<ToggleGroupControlOption value="wordpress.org/plugins" label={__('Plugin', 'wp-playground-blueprint-editor')} />
+									<ToggleGroupControlOption value="vfs" label={__('VFS', 'wp-playground-blueprint-editor')} />
 								</ToggleGroupControl>
 
 								{resource === 'vfs' && (
 									<TextControl
-										label={__('Path', 'install-plugin')}
+										label={__('Path', 'wp-playground-blueprint-editor')}
 										value={path}
-										placeholder='Enter the file path for the plugin ZIP'
+										placeholder={__('Enter the file path for the plugin ZIP', 'wp-playground-blueprint-editor')}
 										onChange={(newPath) => handleInputChange('path', newPath)}
 									/>
 								)}
 								{resource === 'url' && (
 									<TextControl
-										label={__('Url', 'install-plugin')}
+										label={__('Url', 'wp-playground-blueprint-editor')}
 										value={url}
-										placeholder='Enter the URL of the plugin ZIP file'
+										placeholder={__('Enter the URL of the plugin ZIP file', 'wp-playground-blueprint-editor')}
 										onChange={(newPath) => handleInputChange('url', newPath)}
 									/>
 								)}
 								{resource === 'wordpress.org/plugins' && (
 									<InputControl
 										style={{ width: '100%', paddingBottom: '8px' }}
-										label={__('Slug', 'install-plugin')}
+										label={__('Slug', 'wp-playground-blueprint-editor')}
 										value={slug}
-										placeholder="Enter plugin slug"
+										placeholder={__('Enter plugin slug', 'wp-playground-blueprint-editor')}
 										onChange={(value) => handleInputChange('slug', value)}
 										suffix={<Picker type="plugins"
 											onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)} />}
 									/>
 								)}
 								<ToggleControl
-									label="Activate"
+									label={__('Activate', 'wp-playground-blueprint-editor')}
 									checked={activate}
 									onChange={() => setAttributes({
 										options: { activate: !activate }

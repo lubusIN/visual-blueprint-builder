@@ -87,8 +87,12 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
 									<VStack>
-										<Text weight={600}>{meta ? <pre>{JSON.stringify(meta, null, " ")}</pre> : <span>{`{config user meta}`}</span>}</Text>
-										<Text weight={600}>{userId ? `for UserId ${userId}` : '{user Id}'}</Text>
+										<Text weight={600}>
+											{meta ? <pre>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
+										</Text>
+										<Text weight={600}>
+											{userId ? `${__('for UserId', 'wp-playground-blueprint-editor')} ${userId}` : __('{user Id}', 'wp-playground-blueprint-editor')}
+										</Text>
 									</VStack>
 								)}
 							</VStack>
@@ -98,18 +102,18 @@ function Edit({ attributes, setAttributes, isSelected }) {
 
 								<HStack justify='left' alignment='bottom'>
 									<InputControl
-										label="Name"
+										label={__('Name', 'wp-playground-blueprint-editor')}
 										value={metaName}
 										onChange={(value) => { setMetaName(value) }}
 									/>
 									<InputControl
-										label="Value"
+										label={__('Value', 'wp-playground-blueprint-editor')}
 										value={metaValue}
 										onChange={(value) => setMetaValue(value)}
 									/>
 									<Button
 										icon={plus}
-										label="Add Config"
+										label={__('Add Config', 'wp-playground-blueprint-editor')}
 										onClick={addOption}
 									/>
 								</HStack>
@@ -117,19 +121,19 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									return (
 										<HStack justify='left' key={index} alignment='bottom'>
 											<InputControl
-												label="Name"
+												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
 												onChange={(value) => updateOption(index, 'key', value)}
 											/>
 											<InputControl
-												label="Value"
+												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
 												onChange={(value) => updateOption(index, 'value', value)}
 											/>
 											<Button
 												isDestructive
 												icon={trash}
-												label="Delete Config"
+												label={__('Delete Config', 'wp-playground-blueprint-editor')}
 												onClick={() => {
 													setSelectedMeta(index);
 													setIsOpen(true);
@@ -140,7 +144,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								})}
 								<HStack justify='left'>
 									<InputControl
-										label="User Id"
+										label={__('User Id', 'wp-playground-blueprint-editor')}
 										value={userId}
 										onChange={(value) => setAttributes({ userId: Number(value) })}
 									/>
@@ -159,7 +163,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				}}
 				onCancel={() => setIsOpen(false)}
 			>
-				Delete User Meta?
+				{__('Delete User Meta?', 'wp-playground-blueprint-editor')}
 			</ConfirmDialog>
 		</div >
 	);

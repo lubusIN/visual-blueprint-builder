@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { moveTo } from '@wordpress/icons';
+import { trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -26,7 +26,7 @@ import metadata from './block.json';
  * @return {Element} Element to render.
  */
 function Edit({ attributes, setAttributes, isSelected }) {
-	const { fromPath, toPath } = attributes;
+	const { path } = attributes;
 
 	return (
 		<p {...useBlockProps()}>
@@ -34,11 +34,13 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={moveTo} size={28} className='step-icon' />
+							<Icon icon={trash} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`from ${fromPath || '{from path}'} to ${toPath || '{to path}'}`}</Text>
+									<Text weight={600}>
+										{__('at', 'wp-playground-blueprint-editor')} {` ${path || '{path}'}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -47,22 +49,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								data={attributes}
 								fields={[
 									{
-										id: 'fromPath',
-										label: 'From Path',
+										id: 'path',
+										label: __('File Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter the current path of the file or directory'
-									},
-									{
-										id: 'toPath',
-										label: 'To Path',
-										type: 'text',
-										placeholder: 'Enter the new path where the file or directory should be moved'
-									},
+										placeholder: __('Enter the file path to remove (e.g., /wp-content/plugins/index.php)', 'wp-playground-blueprint-editor'),
+									}
 								]}
 								form={{
 									fields: [
-										'fromPath',
-										'toPath'
+										'path'
 									]
 								}}
 								onChange={setAttributes}
@@ -79,6 +74,6 @@ function Edit({ attributes, setAttributes, isSelected }) {
  * Every block starts by registering a new block type definition.
  */
 registerBlockType(metadata.name, {
-	icon: moveTo,
+	icon: trash,
 	edit: Edit,
 });

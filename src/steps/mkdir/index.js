@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { trash } from '@wordpress/icons';
+import { file } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -34,11 +34,13 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={trash} size={28} className='step-icon' />
+							<Icon icon={file} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`at ${path || '{path}'}`}</Text>
+									<Text weight={600}>
+										{__('at', 'wp-playground-blueprint-editor')} {` ${path || '{directory path}'}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,9 +50,9 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'path',
-										label: 'File Path',
+										label: __('Directory Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter the file path to remove (e.g., /wp-content/plugins/index.php)',
+										placeholder: __('e.g., /wp-content/plugins/new-directory', 'wp-playground-blueprint-editor')
 									}
 								]}
 								form={{
@@ -72,6 +74,6 @@ function Edit({ attributes, setAttributes, isSelected }) {
  * Every block starts by registering a new block type definition.
  */
 registerBlockType(metadata.name, {
-	icon: trash,
+	icon: file,
 	edit: Edit,
 });

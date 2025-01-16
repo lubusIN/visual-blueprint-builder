@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { copy } from '@wordpress/icons';
+import { moveTo } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
 import {
 	Placeholder,
@@ -34,11 +34,13 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				preview={
 					<VStack style={{ width: '100%' }}>
 						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={copy} size={28} className='step-icon' />
+							<Icon icon={moveTo} size={28} className='step-icon' />
 							<VStack spacing={1}>
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
-									<Text weight={600}>{`${fromPath || 'From Path'} > ${toPath || 'To Path'}`}</Text>
+									<Text weight={600}>
+										{__('from', 'wp-playground-blueprint-editor')} {` ${fromPath || '{from path}'}`} {__('to', 'wp-playground-blueprint-editor')} {` ${toPath || '{to path}'}`}
+									</Text>
 								)}
 							</VStack>
 						</HStack>
@@ -48,15 +50,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								fields={[
 									{
 										id: 'fromPath',
-										label: 'From Path',
+										label: __('From Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter source path'
+										placeholder: __('Enter the current path of the file or directory', 'wp-playground-blueprint-editor')
 									},
 									{
 										id: 'toPath',
-										label: 'To Path',
+										label: __('To Path', 'wp-playground-blueprint-editor'),
 										type: 'text',
-										placeholder: 'Enter destination path'
+										placeholder: __('Enter the new path where the file or directory should be moved', 'wp-playground-blueprint-editor')
 									},
 								]}
 								form={{
@@ -79,6 +81,6 @@ function Edit({ attributes, setAttributes, isSelected }) {
  * Every block starts by registering a new block type definition.
  */
 registerBlockType(metadata.name, {
-	icon: copy,
+	icon: moveTo,
 	edit: Edit,
 });
