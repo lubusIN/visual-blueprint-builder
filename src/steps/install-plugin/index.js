@@ -31,8 +31,8 @@ import { Picker } from '../../../components';
  * @return {Element} Element to render.
  */
 function Edit({ attributes, setAttributes, isSelected }) {
-	const { pluginZipFile, options } = attributes;
-	const { resource, path, url, slug } = pluginZipFile;
+	const { pluginData, options } = attributes;
+	const { resource, path, url, slug } = pluginData;
 	const { activate } = options;
 
 	const handleResourceChange = (newResource) => {
@@ -42,22 +42,22 @@ function Edit({ attributes, setAttributes, isSelected }) {
 
 		// Conditionally add attributes based on the selected resource
 		if (newResource === 'vfs') {
-			newAttributes.path = pluginZipFile.path || '';
+			newAttributes.path = pluginData.path || '';
 		} else if (newResource === 'url') {
-			newAttributes.url = pluginZipFile.url || '';
+			newAttributes.url = pluginData.url || '';
 		} else if (newResource === 'wordpress.org/plugins') {
-			newAttributes.slug = pluginZipFile.slug || '';
+			newAttributes.slug = pluginData.slug || '';
 		}
 
 		setAttributes({
-			pluginZipFile: newAttributes
+			pluginData: newAttributes
 		});
 	};
 
 	const handleInputChange = (field, value) => {
 		setAttributes({
-			pluginZipFile: {
-				...pluginZipFile,
+			pluginData: {
+				...pluginData,
 				[field]: value
 			}
 		});

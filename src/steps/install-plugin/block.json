@@ -16,7 +16,7 @@
 			"type": "string",
 			"default": "installPlugin"
 		},
-		"pluginZipFile": {
+		"pluginData": {
 			"type": "object",
 			"default": {
 				"resource": "url",
