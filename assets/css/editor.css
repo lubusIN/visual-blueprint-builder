@@ -132,3 +132,9 @@ body.editor-styles-wrapper {
   .dataforms-layouts-panel__dropdown-header {
   margin-bottom: 16px;
 }
+.blueprint_gallery_json {
+  box-shadow: inset 0 0 0 1px #ccc;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+}

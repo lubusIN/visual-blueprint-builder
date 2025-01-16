@@ -3,8 +3,9 @@ import { createBlock } from '@wordpress/blocks';
 import { dispatch, useDispatch } from '@wordpress/data';
 import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
+import { useEffect } from '@wordpress/element';
 
-const OpenJson = ({ onSubmitData }) => {
+const OpenJson = ({ onSubmitData ,galleryData }) => {
     const { createNotice } = useDispatch(noticesStore);
 
     // Utility to convert camelCase to kebab-case with special handling for "WordPress"
@@ -101,6 +102,13 @@ const OpenJson = ({ onSubmitData }) => {
             processJsonFile(file);
         }
     };
+        // Only process galleryData if it's not already processed
+        useEffect(() => {
+            if (galleryData) {
+                handleBlueprintData(galleryData);
+            }
+        }, [galleryData]); // Runs when galleryData changes
+    
 
 
     return (
