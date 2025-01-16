@@ -22,7 +22,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
-import { Picker } from '../../../components';
+import { Picker } from '../../components';
 
 /**
  * Edit function for the plugin installation block.
