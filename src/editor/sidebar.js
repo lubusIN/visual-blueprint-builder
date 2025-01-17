@@ -115,6 +115,7 @@ function BlueprintSidebarSettings() {
             wp_version: data.preferredVersions.wp,
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
+            login: data.login || false,
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
