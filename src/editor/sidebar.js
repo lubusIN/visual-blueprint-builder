@@ -45,6 +45,7 @@ function BlueprintSidebarSettings() {
         },
         phpExtensionBundles: [blueprint_config.php_extension_bundles],
         features: blueprint_config.networking ? { networking: true } : {},
+        login: blueprint_config.login,
         steps: []
     };
 
@@ -58,9 +59,13 @@ function BlueprintSidebarSettings() {
             return rest;
         });
         schema.steps = blockAttributes;
-        return JSON.stringify(schema, null, 2); // Format the schema as a pretty JSON string
-    }, [blocks, schema]);
-
+        // Conditionally include the `login` property only if it's true
+        const cleanedSchema = {
+            ...schema,
+            login: blueprint_config.login ? blueprint_config.login : undefined,
+        };
+        return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
+    }, [blocks, schema, blueprint_config]);
     /**
      * Handles downloading the prepared schema as a JSON file.
      */
@@ -110,6 +115,7 @@ function BlueprintSidebarSettings() {
             wp_version: data.preferredVersions.wp,
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
+            login: data.login || false,
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
@@ -134,7 +140,8 @@ function BlueprintSidebarSettings() {
                         wp_version: blueprint_config.wp_version,
                         landing_page: blueprint_config.landing_page,
                         php_extension_bundles: blueprint_config.php_extension_bundles,
-                        networking: blueprint_config.networking
+                        networking: blueprint_config.networking,
+                        login: blueprint_config.login
                     }}
                     fields={[
                         {
@@ -181,6 +188,24 @@ function BlueprintSidebarSettings() {
                                 );
                             },
                         },
+                        {
+                            id: 'login',
+                            label: __('Login', 'wp-playground-blueprint-editor'),
+                            type: 'integer',
+                            Edit: ({ field, onChange, data, hideLabelFromVision }) => {
+                                const { id, getValue } = field;
+                                return (
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label={hideLabelFromVision ? '' : field.label}
+                                        checked={getValue({ item: data })}
+                                        onChange={() =>
+                                            onChange({ [id]: !getValue({ item: data }) })
+                                        }
+                                    />
+                                );
+                            },
+                        }
                     ]}
                     form={{
                         fields: [
@@ -193,6 +218,11 @@ function BlueprintSidebarSettings() {
                                 layout: 'regular',
                                 labelPosition: 'side',
                             },
+                            {
+                                id: 'login',
+                                layout: 'regular',
+                                labelPosition: 'side',
+                            }
                         ],
                         type: 'panel',
                     }}
