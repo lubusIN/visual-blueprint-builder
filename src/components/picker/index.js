@@ -163,6 +163,7 @@ function Picker({ type, onSelect }) {
 		<>
 			<Button
 				variant="secondary"
+				size='compact'
 				onClick={() => setModalOpen(true)}
 				style={{
 					boxShadow: 'none'
