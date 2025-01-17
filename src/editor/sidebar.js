@@ -46,6 +46,7 @@ function BlueprintSidebarSettings() {
         phpExtensionBundles: [blueprint_config.php_extension_bundles],
         features: blueprint_config.networking ? { networking: true } : {},
         login: blueprint_config.login,
+        extraLibraries: blueprint_config.extra_libraries,
         steps: []
     };
 
@@ -63,6 +64,7 @@ function BlueprintSidebarSettings() {
         const cleanedSchema = {
             ...schema,
             login: blueprint_config.login ? blueprint_config.login : undefined,
+            extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
     }, [blocks, schema, blueprint_config]);
@@ -116,6 +118,7 @@ function BlueprintSidebarSettings() {
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
             login: data.login || false,
+            extra_libraries: data.extraLibraries || undefined, 
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
@@ -141,7 +144,8 @@ function BlueprintSidebarSettings() {
                         landing_page: blueprint_config.landing_page,
                         php_extension_bundles: blueprint_config.php_extension_bundles,
                         networking: blueprint_config.networking,
-                        login: blueprint_config.login
+                        login: blueprint_config.login,
+                        extra_libraries: blueprint_config.extra_libraries,
                     }}
                     fields={[
                         {
@@ -205,7 +209,25 @@ function BlueprintSidebarSettings() {
                                     />
                                 );
                             },
-                        }
+                        },
+                        {
+                            id: 'extra_libraries',
+                            label: __('Extra Libraries (WP-CLI)', 'wp-playground-blueprint-editor'),
+                            type: 'integer',
+                            Edit: ({ field, onChange, data, hideLabelFromVision }) => {
+                                const { id, getValue } = field;
+                                return (
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label={hideLabelFromVision ? '' : field.label}
+                                        checked={getValue({ item: data })}
+                                        onChange={() =>
+                                            onChange({ [id]: !getValue({ item: data }) })
+                                        }
+                                    />
+                                );
+                            },
+                        },    
                     ]}
                     form={{
                         fields: [
@@ -222,7 +244,12 @@ function BlueprintSidebarSettings() {
                                 id: 'login',
                                 layout: 'regular',
                                 labelPosition: 'side',
-                            }
+                            },
+                            {
+                                id: 'extra_libraries',
+                                layout: 'regular',
+                                labelPosition: 'side',
+                            },
                         ],
                         type: 'panel',
                     }}
