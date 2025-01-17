@@ -23,6 +23,7 @@ import {
  */
 import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
+import SiteOptionsSettings from './site-options-settings';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -46,6 +47,7 @@ function BlueprintSidebarSettings() {
         phpExtensionBundles: [blueprint_config.php_extension_bundles],
         features: blueprint_config.networking ? { networking: true } : {},
         login: blueprint_config.login,
+        siteOptions: blueprint_config.siteOptions,
         steps: []
     };
 
@@ -63,6 +65,9 @@ function BlueprintSidebarSettings() {
         const cleanedSchema = {
             ...schema,
             login: blueprint_config.login ? blueprint_config.login : undefined,
+            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
+            ? blueprint_config.siteOptions 
+            : undefined, // Include only if siteOptions is non-empty
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
     }, [blocks, schema, blueprint_config]);
@@ -116,6 +121,7 @@ function BlueprintSidebarSettings() {
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
             login: data.login || false,
+            siteOptions: data.siteOptions || undefined,
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
@@ -227,6 +233,14 @@ function BlueprintSidebarSettings() {
                         type: 'panel',
                     }}
                     onChange={updateBlueprintConfig}
+                />
+                {/* Site Options Button */}
+                <SiteOptionsSettings
+                    attributes={{ siteOptions: blueprint_config.siteOptions }}
+                    setAttributes={(updatedAttributes) =>
+                        updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
+                    }
+                    label={__('Site Options', 'wp-playground-blueprint-editor')}
                 />
             </PluginDocumentSettingPanel>
         </>
