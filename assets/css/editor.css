@@ -94,6 +94,11 @@ body.editor-styles-wrapper {
   padding: 6px;
   border-radius: 4px;
 }
+.site-icon {
+  margin-right: 10px;
+} && .site-icon:hover{  
+  fill: #3858e9 !important;
+}
 
 .custom-skeleton {
   width: 100%;
@@ -131,4 +136,7 @@ body.editor-styles-wrapper {
 .dataforms-layouts-panel__field-dropdown
   .dataforms-layouts-panel__dropdown-header {
   margin-bottom: 16px;
+}
+.dataforms-layouts-regular__field{
+  min-height: 32px!important
 }

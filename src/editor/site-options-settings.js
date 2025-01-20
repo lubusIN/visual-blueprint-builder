@@ -2,18 +2,19 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { plus, trash } from '@wordpress/icons';
+import { plus, trash, cog } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
+    Icon,
     __experimentalInputControl as InputControl,
     __experimentalHStack as HStack,
     __experimentalVStack as VStack,
 } from '@wordpress/components';
 
 
-function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Select' }) {
+function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
     const { siteOptions } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
     const [optionList, updateOptionList] = useState(Object.entries(siteOptions|| {}));
@@ -61,20 +62,17 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Select' 
 
     return (
         <div>
-            {/* Trigger Button */}
-            <Button variant='tertiary' onClick={() => setModalOpen(true)}>
-                {__(label, 'wp-playground-blueprint-editor')}
-            </Button>
-
+            {/* Trigger Modal */}
+            <Icon icon={cog}  size={28} className='site-icon' onClick={() => setModalOpen(true)}/>
             {/* Modal */}
             {isModalOpen && (
                 <Modal
                     title={__('Site Options', 'wp-playground-blueprint-editor')}
-                    onRequestClose={() => setModalOpen(false)}
+                    onRequestClose={() =>{saveOptions()}}
                 >
                     <VStack spacing={4}>
                         {/* Add New Option */}
-                        <HStack>
+                        <HStack justify='left' alignment='bottom'>
                             <InputControl
                                 label={__('Name', 'wp-playground-blueprint-editor')}
                                 value={optionName}
@@ -94,7 +92,7 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Select' 
 
                         {/* Existing Options */}
                         {optionList.map(([key, value], index) => (
-                            <HStack key={index}>
+                            <HStack key={index} justify='left' alignment='bottom'>
                                 <InputControl
                                     label={__('Name', 'wp-playground-blueprint-editor')}
                                     value={key}
@@ -114,16 +112,6 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Select' 
                             </HStack>
                         ))}
                     </VStack>
-
-                    {/* Modal Actions */}
-                    <HStack justify="right" spacing={3}>
-                        <Button onClick={() => setModalOpen(false)}>
-                            {__('Cancel', 'wp-playground-blueprint-editor')}
-                        </Button>
-                        <Button variant='tertiary' onClick={saveOptions}>
-                            {__('Save', 'wp-playground-blueprint-editor')}
-                        </Button>
-                    </HStack>
                 </Modal>
             )}
         </div>
