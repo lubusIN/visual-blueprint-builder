@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel, PluginPostStatusInfo } from '@wordpress/editor';
-import { copy, download, globe, code } from '@wordpress/icons';
+import { copy, download, globe, code, justifySpaceBetween } from '@wordpress/icons';
 import { useCallback } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
@@ -16,6 +16,8 @@ import {
     ToolbarButton,
     ToggleControl,
     __experimentalVStack as VStack,
+    __experimentalHStack as HStack,
+    __experimentalHeading as Heading,
 } from '@wordpress/components';
 
 /**
@@ -66,9 +68,8 @@ function BlueprintSidebarSettings() {
         const cleanedSchema = {
             ...schema,
             login: blueprint_config.login ? blueprint_config.login : undefined,
-            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
-            ? blueprint_config.siteOptions 
-            : undefined, // Include only if siteOptions is non-empty
+            siteOptions: blueprint_config.siteOptions && Object(blueprint_config.siteOptions).length > 0 
+            ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
             extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
@@ -261,14 +262,16 @@ function BlueprintSidebarSettings() {
                     }}
                     onChange={updateBlueprintConfig}
                 />
+                <HStack  style={{ justifySpaceBetween}}>
+                    <Heading style={{marginBottom: 0}}>SiteOptions</Heading>
                 {/* Site Options Button */}
                 <SiteOptionsSettings
                     attributes={{ siteOptions: blueprint_config.siteOptions }}
                     setAttributes={(updatedAttributes) =>
                         updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
                     }
-                    label={__('Site Options', 'wp-playground-blueprint-editor')}
                 />
+                </HStack>
             </PluginDocumentSettingPanel>
         </>
     );

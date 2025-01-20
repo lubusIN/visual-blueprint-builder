@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { plus, trash } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
@@ -12,46 +13,46 @@ import {
 } from '@wordpress/components';
 
 
-function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Edit Options' }) {
+function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Select' }) {
     const { siteOptions } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
-    const [optionList, updateOptionList] = useState(Object.entries(siteOptions));
+    const [optionList, updateOptionList] = useState(Object.entries(siteOptions|| {}));
     const [optionName, setOptionName] = useState('');
     const [optionValue, setOptionValue] = useState('');
 
 
-      // Sync local state with attributes when siteOptions updates
-      useEffect(() => {
+    // Sync local state with attributes when siteOptions updates
+    useEffect(() => {
         updateOptionList(Object.entries(siteOptions || {}));
     }, [siteOptions]);
     const addOption = () => {
-        if (optionName && optionValue) {
+        if (optionName && optionValue) {       
             updateOptionList([...optionList, [optionName, optionValue]]);
             setOptionName('');
             setOptionValue('');
         }
     };
 
-    const updateOption = (index, field, value) => {
+    const updateOption = (index, field, fieldValue) => {
         const updatedList = optionList.map(([key, value], i) => {
-			if (i === index) {
-				if ('key' === field) {
-					return [fieldValue, value]
-				}
+            if (i === index) {
+                if ('key' === field) {
+                    return [fieldValue, value]
+                }
 
-				if ('value' === field) {
-					return [key, fieldValue]
-				}
-			} else {
-				return [key, value];
-			}
-		});
+                if ('value' === field) {
+                    return [key, fieldValue]
+                }
+            } else {
+                return [key, value];
+            }
+        });
         updateOptionList(updatedList);
     };
 
     const removeOption = () => {
-		updateOptionList(optionList.filter((option, index) => index !== index));
-	};
+        updateOptionList(optionList.filter((option, index) => index !== index));
+    };
 
     const saveOptions = () => {
         setAttributes({ siteOptions: Object.fromEntries(optionList) });
@@ -61,14 +62,14 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Edit Opt
     return (
         <div>
             {/* Trigger Button */}
-            <Button style={{padding: '10px 0px'}} onClick={() => setModalOpen(true)}>
+            <Button variant='tertiary' onClick={() => setModalOpen(true)}>
                 {__(label, 'wp-playground-blueprint-editor')}
             </Button>
 
             {/* Modal */}
             {isModalOpen && (
                 <Modal
-                    title={__('Edit Site Options', 'wp-playground-blueprint-editor')}
+                    title={__('Site Options', 'wp-playground-blueprint-editor')}
                     onRequestClose={() => setModalOpen(false)}
                 >
                     <VStack spacing={4}>
@@ -84,9 +85,11 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Edit Opt
                                 value={optionValue}
                                 onChange={(value) => setOptionValue(value)}
                             />
-                            <Button variant='tertiary' onClick={addOption}>
-                                {__('Add Option', 'wp-playground-blueprint-editor')}
-                            </Button>
+                            <Button
+                                icon={plus}
+                                label={__('Add Config', 'wp-playground-blueprint-editor')}
+                                onClick={addOption}
+                            />
                         </HStack>
 
                         {/* Existing Options */}
@@ -104,10 +107,10 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, label = 'Edit Opt
                                 />
                                 <Button
                                     isDestructive
+                                    icon={trash}
+                                    label={__('Delete Config', 'wp-playground-blueprint-editor')}
                                     onClick={() => removeOption(index)}
-                                >
-                                    {__('Delete', 'wp-playground-blueprint-editor')}
-                                </Button>
+                                />
                             </HStack>
                         ))}
                     </VStack>
