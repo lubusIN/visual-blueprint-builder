@@ -23,7 +23,7 @@ import {
  */
 import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
-import BlueprintGallery from './blueprint-gallery';
+import Gallery from './blueprint-gallery';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -120,7 +120,7 @@ function BlueprintSidebarSettings() {
             <PluginPostStatusInfo>
             <VStack spacing={5} style={{ width: '100%' }}>
                     <OpenJson onSubmitData={handleJsonDataSubmit} />
-                    <BlueprintGallery onSubmitData={handleJsonDataSubmit}/>
+                    <Gallery onSubmitData={handleJsonDataSubmit}/>
                     <Toolbar style={{ justifyContent: 'space-between' }}>
                     <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
                     <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />

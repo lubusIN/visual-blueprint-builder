@@ -13,7 +13,6 @@ import {
     __experimentalText as Text,
     __experimentalHeading as Heading,
     __experimentalGrid as Grid,
-    __experimentalHStack as HStack,
     __experimentalVStack as VStack,
 } from '@wordpress/components';
 
@@ -22,7 +21,7 @@ import {
  */
 import { handleBlueprintData } from './utils';
 
-function BlueprintGallery({ onSubmitData }) {
+function Gallery({ onSubmitData }) {
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
@@ -67,7 +66,6 @@ function BlueprintGallery({ onSubmitData }) {
             });
             handleBlueprintData({ ...data, steps: updatedSteps }, createNotice, onSubmitData);
         } catch (error) {
-            // Only trigger the notice if there is a true error
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
     };
@@ -77,9 +75,8 @@ function BlueprintGallery({ onSubmitData }) {
             {/* Open modal button */}
             <Button
                 className='blueprint_gallery_json'
-                variant="secondary"
                 onClick={() => setModalOpen(true)}>
-                {__('Open Blueprint Gallery', 'wp-playground-blueprint-editor')}
+                {__('Gallery', 'wp-playground-blueprint-editor')}
             </Button>
 
             {/* Blueprint gallery modal */}
@@ -92,24 +89,44 @@ function BlueprintGallery({ onSubmitData }) {
                     size="large"
                 >
                     {blueprintList ? (
-                        <Grid columns={2} gap={5}>
+                        <Grid columns={2} gap={6}>
                             {Object.entries(blueprintList).map(([blueprintName, blueprintDetails], index) => (
-                                <Card key={index} size="small">
-                                    <CardBody>
-                                        <VStack>
-                                            <Heading level={4}>{blueprintDetails.title}</Heading>
-                                            <Text>{__('By', 'wp-playground-blueprint-editor')} {blueprintDetails.author}</Text>
-                                            <Text>{blueprintDetails.description}</Text>
-                                        </VStack>
-                                        <HStack>
-                                            <Button
-                                                variant="link"
-                                                onClick={() => fetchBlueprintDetails(blueprintName)}
-                                                style={{ marginLeft: '10px' }}
+                                <Card
+                                    key={index}
+                                    elevation={3}
+                                >
+                                    <CardBody style={{ height: '100%', justifyContent: 'space-between', display: 'flex', flexDirection: 'column' }}>
+                                        {/* Blueprint Info */}
+                                        <VStack align='start' spacing={4} >
+                                            <Heading level={4}>
+                                                {blueprintDetails.title}
+                                            </Heading>
+                                            <Text>
+                                                {__('By', 'wp-playground-blueprint-editor')} {blueprintDetails.author}
+                                            </Text>
+                                            <Text
+                                                lineHeight={'1.5em'}
+                                                size={15}   
+                                                color='#777'
                                             >
-                                                {__('Import Blueprint', 'wp-playground-blueprint-editor')}
-                                            </Button>
-                                        </HStack>
+                                                {blueprintDetails.description}
+                                            </Text>
+                                            </VStack>
+                                      
+
+                                        {/* Action Button */}
+                                        <Button
+                                            variant="secondary"
+                                            style={{
+                                                borderRadius: '4px',
+                                                alignSelf: 'flex-end',
+                                                
+                                            }}
+                                            onClick={() => fetchBlueprintDetails(blueprintName)}
+                                        >
+                                            {__('Import', 'wp-playground-blueprint-editor')}
+                                        </Button>
+                                        
                                     </CardBody>
                                 </Card>
                             ))}
@@ -123,4 +140,4 @@ function BlueprintGallery({ onSubmitData }) {
     );
 }
 
-export default BlueprintGallery;
+export default Gallery;

@@ -50,7 +50,7 @@ const OpenJson = ({ onSubmitData }) => {
             accept="application/json"
             onChange={handleFileSelection}
         >
-            {__('Open Blueprint', 'wp-playground-blueprint-editor')}
+            {__('Open', 'wp-playground-blueprint-editor')}
             <DropZone
                 onFilesDrop={handleFileDrop}
                 accept="application/json"
