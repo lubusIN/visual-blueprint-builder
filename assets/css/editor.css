@@ -135,3 +135,9 @@ body.editor-styles-wrapper {
 .dataforms-layouts-regular__field{
   min-height: 32px!important
 }
+.blueprint_gallery_json {
+  box-shadow: inset 0 0 0 1px #ccc;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+}
