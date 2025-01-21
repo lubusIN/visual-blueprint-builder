@@ -24,7 +24,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
-import { Picker } from '../../../components';
+import { Picker } from '../../components';
 
 /**
  * Edit function for the theme installation block.
@@ -33,8 +33,8 @@ import { Picker } from '../../../components';
  * @return {Element} Element to render.
  */
 function Edit({ attributes, setAttributes, isSelected }) {
-	const { themeZipFile, options } = attributes;
-	const { resource, path, url, slug } = themeZipFile;
+	const { themeData, options } = attributes;
+	const { resource, path, url, slug } = themeData;
 	const { activate, importStarterContent } = options;
 
 	const handleResourceChange = (newResource) => {
@@ -44,22 +44,22 @@ function Edit({ attributes, setAttributes, isSelected }) {
 
 		// Conditionally add attributes based on the selected resource
 		if (newResource === 'vfs') {
-			newAttributes.path = themeZipFile.path || '';
+			newAttributes.path = themeData.path || '';
 		} else if (newResource === 'url') {
-			newAttributes.url = themeZipFile.url || '';
+			newAttributes.url = themeData.url || '';
 		} else if (newResource === 'wordpress.org/themes') {
-			newAttributes.slug = themeZipFile.slug || '';
+			newAttributes.slug = themeData.slug || '';
 		}
 
 		setAttributes({
-			themeZipFile: newAttributes
+			themeData: newAttributes
 		});
 	};
 
 	const handleInputChange = (field, value) => {
 		setAttributes({
-			themeZipFile: {
-				...themeZipFile,
+			themeData: {
+				...themeData,
 				[field]: value
 			}
 		});

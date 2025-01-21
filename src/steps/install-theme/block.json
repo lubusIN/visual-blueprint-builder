@@ -15,7 +15,7 @@
 			"type": "string",
 			"default": "installTheme"
 		},
-		"themeZipFile": {
+		"themeData": {
 			"type": "object",
 			"default": {
 				"resource": "url",
@@ -49,5 +49,6 @@
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js"
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
 }

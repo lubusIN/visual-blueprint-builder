@@ -15,11 +15,11 @@ import {
     Toolbar,
     ToolbarButton,
     ToggleControl,
-    __experimentalVStack as VStack,
     Flex,
     FlexBlock,
-
-
+    __experimentalVStack as VStack,
+    __experimentalHStack as HStack,
+    __experimentalText as Text,
 } from '@wordpress/components';
 
 /**
@@ -28,6 +28,7 @@ import {
 import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
 import Gallery from './blueprint-gallery';
+import SiteOptionsSettings from './site-options-settings';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -50,6 +51,9 @@ function BlueprintSidebarSettings() {
         },
         phpExtensionBundles: [blueprint_config.php_extension_bundles],
         features: blueprint_config.networking ? { networking: true } : {},
+        login: blueprint_config.login,
+        siteOptions: blueprint_config.siteOptions,
+        extraLibraries: blueprint_config.extra_libraries,
         steps: []
     };
 
@@ -63,9 +67,16 @@ function BlueprintSidebarSettings() {
             return rest;
         });
         schema.steps = blockAttributes;
-        return JSON.stringify(schema, null, 2); // Format the schema as a pretty JSON string
-    }, [blocks, schema]);
-
+        // Conditionally include the `login` property only if it's true
+        const cleanedSchema = {
+            ...schema,
+            login: blueprint_config.login ? blueprint_config.login : undefined,
+            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
+            ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
+            extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
+        };
+        return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
+    }, [blocks, schema, blueprint_config]);
     /**
      * Handles downloading the prepared schema as a JSON file.
      */
@@ -115,6 +126,9 @@ function BlueprintSidebarSettings() {
             wp_version: data.preferredVersions.wp,
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
+            login: data.login || false,
+            siteOptions: data.siteOptions || undefined,
+            extra_libraries: data.extraLibraries || undefined, 
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
@@ -146,7 +160,9 @@ function BlueprintSidebarSettings() {
                         wp_version: blueprint_config.wp_version,
                         landing_page: blueprint_config.landing_page,
                         php_extension_bundles: blueprint_config.php_extension_bundles,
-                        networking: blueprint_config.networking
+                        networking: blueprint_config.networking,
+                        login: blueprint_config.login,
+                        extra_libraries: blueprint_config.extra_libraries,
                     }}
                     fields={[
                         {
@@ -193,6 +209,42 @@ function BlueprintSidebarSettings() {
                                 );
                             },
                         },
+                        {
+                            id: 'login',
+                            label: __('Login', 'wp-playground-blueprint-editor'),
+                            type: 'integer',
+                            Edit: ({ field, onChange, data, hideLabelFromVision }) => {
+                                const { id, getValue } = field;
+                                return (
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label={hideLabelFromVision ? '' : field.label}
+                                        checked={getValue({ item: data })}
+                                        onChange={() =>
+                                            onChange({ [id]: !getValue({ item: data }) })
+                                        }
+                                    />
+                                );
+                            },
+                        },
+                        {
+                            id: 'extra_libraries',
+                            label: __('Extra Libraries (WP-CLI)', 'wp-playground-blueprint-editor'),
+                            type: 'integer',
+                            Edit: ({ field, onChange, data, hideLabelFromVision }) => {
+                                const { id, getValue } = field;
+                                return (
+                                    <ToggleControl
+                                        __nextHasNoMarginBottom
+                                        label={hideLabelFromVision ? '' : field.label}
+                                        checked={getValue({ item: data })}
+                                        onChange={() =>
+                                            onChange({ [id]: !getValue({ item: data }) })
+                                        }
+                                    />
+                                );
+                            },
+                        },    
                     ]}
                     form={{
                         fields: [
@@ -205,11 +257,33 @@ function BlueprintSidebarSettings() {
                                 layout: 'regular',
                                 labelPosition: 'side',
                             },
+                            {
+                                id: 'login',
+                                layout: 'regular',
+                                labelPosition: 'side',
+                            },
+                            {
+                                id: 'extra_libraries',
+                                layout: 'regular',
+                                labelPosition: 'side',
+                            },
                         ],
                         type: 'panel',
                     }}
                     onChange={updateBlueprintConfig}
                 />
+                <HStack  style={{ justifyContent: 'space-between',
+                    marginTop:'6px'
+                }}>
+                    <Text>Site Options</Text>
+                {/* Site Options Button */}
+                <SiteOptionsSettings
+                    attributes={{ siteOptions: blueprint_config.siteOptions }}
+                    setAttributes={(updatedAttributes) =>
+                        updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
+                    }
+                />
+                </HStack>
             </PluginDocumentSettingPanel>
         </>
     );

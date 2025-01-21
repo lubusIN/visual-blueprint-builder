@@ -16,7 +16,7 @@
 			"type": "string",
 			"default": "installPlugin"
 		},
-		"pluginZipFile": {
+		"pluginData": {
 			"type": "object",
 			"default": {
 				"resource": "url",
@@ -46,5 +46,6 @@
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js"
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css"
 }
