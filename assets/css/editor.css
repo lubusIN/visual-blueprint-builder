@@ -132,3 +132,6 @@ body.editor-styles-wrapper {
   .dataforms-layouts-panel__dropdown-header {
   margin-bottom: 16px;
 }
+.dataforms-layouts-regular__field{
+  min-height: 32px!important
+}

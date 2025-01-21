@@ -39,6 +39,9 @@ class RegisterCustomMeta
                 'landing_page'          => '/wp-admin/',
                 'php_extension_bundles' => 'kitchen-sink',
                 'networking'            => true,
+                'login'                 => false,
+                'extraLibraries'        => false,
+                'siteOptions'           => [],
             ],
             'show_in_rest' => [
                 'schema' => [
@@ -49,6 +52,9 @@ class RegisterCustomMeta
                         'landing_page'          => ['type' => 'string'],
                         'php_extension_bundles' => ['type' => 'string'],
                         'networking'            => ['type' => 'boolean'],
+                        'login'                 => ['type' => 'boolean'],
+                        'extraLibraries'        => ['type' => 'boolean'],
+                        'siteOptions'           => ['type' => 'object'],
                     ],
                 ],
             ],
