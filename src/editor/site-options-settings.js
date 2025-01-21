@@ -7,7 +7,6 @@ import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
-    Icon,
     __experimentalInputControl as InputControl,
     __experimentalHStack as HStack,
     __experimentalVStack as VStack,
@@ -62,8 +61,8 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
 
     return (
         <div>
-            {/* Trigger Modal */}
-            <Icon icon={cog}  size={28} className='site-icon' onClick={() => setModalOpen(true)}/>
+            {/* Trigger Button */}
+            <Button icon={cog} iconSize={30} onClick={()=> setModalOpen(true)}/>
             {/* Modal */}
             {isModalOpen && (
                 <Modal

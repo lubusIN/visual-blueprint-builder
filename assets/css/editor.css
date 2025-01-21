@@ -94,11 +94,6 @@ body.editor-styles-wrapper {
   padding: 6px;
   border-radius: 4px;
 }
-.site-icon {
-  margin-right: 10px;
-} && .site-icon:hover{  
-  fill: #3858e9 !important;
-}
 
 .custom-skeleton {
   width: 100%;
