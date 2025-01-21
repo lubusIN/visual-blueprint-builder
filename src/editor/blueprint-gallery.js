@@ -75,6 +75,7 @@ function Gallery({ onSubmitData }) {
             {/* Open modal button */}
             <Button
                 className='blueprint_gallery_json'
+                __next40pxDefaultSize
                 onClick={() => setModalOpen(true)}>
                 {__('Gallery', 'wp-playground-blueprint-editor')}
             </Button>

@@ -16,6 +16,10 @@ import {
     ToolbarButton,
     ToggleControl,
     __experimentalVStack as VStack,
+    Flex,
+    FlexBlock,
+
+
 } from '@wordpress/components';
 
 /**
@@ -69,9 +73,9 @@ function BlueprintSidebarSettings() {
         try {
             const preparedSchema = prepareSchema();
             downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
-            createSuccessNotice(__('Blueprint downloaded successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+            createSuccessNotice(__('Blueprint downloaded successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
         } catch (error) {
-            createErrorNotice(__('Failed to download Blueprint JSON.','wp-playground-blueprint-editor'));
+            createErrorNotice(__('Failed to download Blueprint JSON.', 'wp-playground-blueprint-editor'));
         }
     };
 
@@ -80,10 +84,10 @@ function BlueprintSidebarSettings() {
      */
     const handleCopy = useCopyToClipboard(() => {
         if (!schema.steps.length) {
-            createErrorNotice(__('No Blueprint steps to copy!','wp-playground-blueprint-editor'));
+            createErrorNotice(__('No Blueprint steps to copy!', 'wp-playground-blueprint-editor'));
             return ''; // Return empty string for invalid data
         }
-        createSuccessNotice(__('Blueprint schema copied to clipboard!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+        createSuccessNotice(__('Blueprint schema copied to clipboard!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
         return prepareSchema();
     });
 
@@ -102,7 +106,7 @@ function BlueprintSidebarSettings() {
      */
     const handleJsonDataSubmit = (data) => {
         if (!data) {
-            createErrorNotice(__('Failed to update Blueprint configuration.','wp-playground-blueprint-editor'));
+            createErrorNotice(__('Failed to update Blueprint configuration.', 'wp-playground-blueprint-editor'));
             return;
         }
         updateBlueprintConfig({
@@ -112,21 +116,27 @@ function BlueprintSidebarSettings() {
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
         });
-        createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
+        createSuccessNotice(__('Blueprint configuration updated successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
 
     return (
         <>
             <PluginPostStatusInfo>
-            <VStack spacing={5} style={{ width: '100%' }}>
-                    <OpenJson onSubmitData={handleJsonDataSubmit} />
-                    <Gallery onSubmitData={handleJsonDataSubmit}/>
+                <VStack spacing={5} style={{ width: '100%' }}>
+                    <Flex>
+                        <FlexBlock>
+                            <OpenJson onSubmitData={handleJsonDataSubmit} />
+                        </FlexBlock>
+                        <FlexBlock>
+                            <Gallery onSubmitData={handleJsonDataSubmit} />
+                        </FlexBlock>
+                    </Flex>
                     <Toolbar style={{ justifyContent: 'space-between' }}>
-                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
-                    <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
-                    <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
-                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BUILDER_BASE + prepareSchema()} target="_blank" />
-                </Toolbar>
+                        <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
+                        <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
+                        <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
+                        <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BUILDER_BASE + prepareSchema()} target="_blank" />
+                    </Toolbar>
                 </VStack>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
