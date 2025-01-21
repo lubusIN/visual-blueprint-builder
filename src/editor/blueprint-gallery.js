@@ -20,13 +20,12 @@ import {
 /**
  * Internal dependencies
  */
-import OpenJson from './open-json';
+import { handleBlueprintData } from './utils';
 
-function BlueprintGallery() {
+function BlueprintGallery({ onSubmitData }) {
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
-    const [selectedBlueprintData, setSelectedBlueprintData] = useState(null);
 
 
     /**
@@ -56,7 +55,7 @@ function BlueprintGallery() {
         const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${blueprintName}`;
         try {
             const response = await fetch(blueprintUrl);
-            if (!response.ok) throw new Error('Failed to fetch blueprint details');
+            if (!response.ok) throw new Error(`Failed to fetch blueprint details: ${response.statusText}`);
             const data = await response.json();
 
             // Replace 'mu-plugins' with 'plugins' in the blueprint data
@@ -66,20 +65,20 @@ function BlueprintGallery() {
                 }
                 return step;
             });
-
-            setSelectedBlueprintData({ ...data, steps: updatedSteps });
+            handleBlueprintData({ ...data, steps: updatedSteps }, createNotice, onSubmitData);
         } catch (error) {
-            createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor'));
+            // Only trigger the notice if there is a true error
+            createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
     };
 
     return (
         <>
             {/* Open modal button */}
-            <Button 
-            className='blueprint_gallery_json'
-            variant="secondary" 
-            onClick={() => setModalOpen(true)}>
+            <Button
+                className='blueprint_gallery_json'
+                variant="secondary"
+                onClick={() => setModalOpen(true)}>
                 {__('Open Blueprint Gallery', 'wp-playground-blueprint-editor')}
             </Button>
 
@@ -117,14 +116,6 @@ function BlueprintGallery() {
                         </Grid>
                     ) : (
                         <Text>{__('Loading blueprints...', 'wp-playground-blueprint-editor')}</Text>
-                    )}
-
-                    {/* Pass selected blueprint data to child component */}
-                    {selectedBlueprintData && (
-                        <OpenJson
-                            galleryData={selectedBlueprintData}
-                            onSubmitData={(data) => console.log('Validated Blueprint:', data)}
-                        />
                     )}
                 </Modal>
             )}
