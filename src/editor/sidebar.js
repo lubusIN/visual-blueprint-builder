@@ -16,6 +16,8 @@ import {
     ToolbarButton,
     ToggleControl,
     __experimentalVStack as VStack,
+    __experimentalHStack as HStack,
+    __experimentalText as Text,
 } from '@wordpress/components';
 
 /**
@@ -23,6 +25,7 @@ import {
  */
 import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
+import SiteOptionsSettings from './site-options-settings';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -46,6 +49,7 @@ function BlueprintSidebarSettings() {
         phpExtensionBundles: [blueprint_config.php_extension_bundles],
         features: blueprint_config.networking ? { networking: true } : {},
         login: blueprint_config.login,
+        siteOptions: blueprint_config.siteOptions,
         extraLibraries: blueprint_config.extra_libraries,
         steps: []
     };
@@ -64,6 +68,8 @@ function BlueprintSidebarSettings() {
         const cleanedSchema = {
             ...schema,
             login: blueprint_config.login ? blueprint_config.login : undefined,
+            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
+            ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
             extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
@@ -118,6 +124,7 @@ function BlueprintSidebarSettings() {
             php_extension_bundles: data.phpExtensionBundles,
             networking: data.features.networking || false,
             login: data.login || false,
+            siteOptions: data.siteOptions || undefined,
             extra_libraries: data.extraLibraries || undefined, 
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!','wp-playground-blueprint-editor'), { type: 'snackbar' });
@@ -255,6 +262,18 @@ function BlueprintSidebarSettings() {
                     }}
                     onChange={updateBlueprintConfig}
                 />
+                <HStack  style={{ justifyContent: 'space-between',
+                    marginTop:'6px'
+                }}>
+                    <Text>Site Options</Text>
+                {/* Site Options Button */}
+                <SiteOptionsSettings
+                    attributes={{ siteOptions: blueprint_config.siteOptions }}
+                    setAttributes={(updatedAttributes) =>
+                        updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
+                    }
+                />
+                </HStack>
             </PluginDocumentSettingPanel>
         </>
     );
