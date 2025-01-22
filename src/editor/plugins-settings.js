@@ -7,9 +7,9 @@ import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
+    Flex,
+    FlexBlock,
     __experimentalInputControl as InputControl,
-    __experimentalHStack as HStack,
-    __experimentalVStack as VStack,
 } from '@wordpress/components';
 
 function PluginSettings({ attributes = [], setAttributes }) {
@@ -43,32 +43,32 @@ function PluginSettings({ attributes = [], setAttributes }) {
         <div>
             {/* Trigger Button */}
             <Button icon={cog} iconSize={30} onClick={() => setModalOpen(true)} />
-
             {/* Modal */}
             {isModalOpen && (
                 <Modal
                     title={__('Plugins', 'wp-playground-blueprint-editor')}
                     onRequestClose={savePlugins}
                 >
-                    <VStack spacing={4}>
-                        {/* Add New Plugin */}
-                        <HStack justify="left" alignment="bottom">
+                    {/* Add New Plugin */}
+                    <Flex align='end'>
+                        <FlexBlock>
                             <InputControl
                                 label={__('Plugin URL or Slug', 'wp-playground-blueprint-editor')}
                                 value={newPlugin}
                                 onChange={(value) => setNewPlugin(value)}
                                 placeholder={__('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
                             />
-                            <Button
-                                icon={plus}
-                                label={__('Add Plugin', 'wp-playground-blueprint-editor')}
-                                onClick={addPlugin}
-                            />
-                        </HStack>
-
-                        {/* Existing Plugins */}
-                        {pluginList.map((plugin, index) => (
-                            <HStack key={index} justify="left" alignment="bottom">
+                        </FlexBlock>
+                        <Button
+                            icon={plus}
+                            label={__('Add Plugin', 'wp-playground-blueprint-editor')}
+                            onClick={addPlugin}
+                        />
+                    </Flex>
+                    {/* Existing Plugins */}
+                    {pluginList.map((plugin, index) => (
+                        <Flex align='end'>
+                            <FlexBlock>
                                 <InputControl
                                     value={plugin}
                                     onChange={(value) => {
@@ -76,16 +76,15 @@ function PluginSettings({ attributes = [], setAttributes }) {
                                         updatedList[index] = value;
                                         setPluginList(updatedList);
                                     }}
-                                />
-                                <Button
-                                    isDestructive
-                                    icon={trash}
-                                    label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
-                                    onClick={() => removePlugin(index)}
-                                />
-                            </HStack>
-                        ))}
-                    </VStack>
+                                /></FlexBlock>
+                            <Button
+                                isDestructive
+                                icon={trash}
+                                label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
+                                onClick={() => removePlugin(index)}
+                            />
+                        </Flex>
+                    ))}
                 </Modal>
             )}
         </div>
