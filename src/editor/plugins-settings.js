@@ -47,7 +47,7 @@ function PluginSettings({ attributes = [], setAttributes }) {
             {/* Modal */}
             {isModalOpen && (
                 <Modal
-                    title={__('Plugin Settings', 'wp-playground-blueprint-editor')}
+                    title={__('Plugins', 'wp-playground-blueprint-editor')}
                     onRequestClose={savePlugins}
                 >
                     <VStack spacing={4}>
