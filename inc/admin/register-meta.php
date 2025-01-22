@@ -42,6 +42,7 @@ class RegisterCustomMeta
                 'login'                 => false,
                 'extraLibraries'        => false,
                 'siteOptions'           => [],
+                'plugins'               => [],
             ],
             'show_in_rest' => [
                 'schema' => [
@@ -55,6 +56,7 @@ class RegisterCustomMeta
                         'login'                 => ['type' => 'boolean'],
                         'extraLibraries'        => ['type' => 'boolean'],
                         'siteOptions'           => ['type' => 'object'],
+                        'plugins'               => ['type' => 'array'],
                     ],
                 ],
             ],
