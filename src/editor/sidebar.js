@@ -29,6 +29,7 @@ import OpenJson from './open-json';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
 import Gallery from './blueprint-gallery';
 import SiteOptionsSettings from './site-options-settings';
+import PluginSettings from './plugins-settings';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -54,6 +55,7 @@ function BlueprintSidebarSettings() {
         login: blueprint_config.login,
         siteOptions: blueprint_config.siteOptions,
         extraLibraries: blueprint_config.extra_libraries,
+        plugins: blueprint_config.plugins,
         steps: []
     };
 
@@ -74,6 +76,8 @@ function BlueprintSidebarSettings() {
             siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
             ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
             extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
+            plugins: blueprint_config.plugins && Object(blueprint_config.plugins).length > 0 
+            ? blueprint_config.plugins : undefined, // Include only if plugins is non-empty
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
     }, [blocks, schema, blueprint_config]);
@@ -128,7 +132,8 @@ function BlueprintSidebarSettings() {
             networking: data.features.networking || false,
             login: data.login || false,
             siteOptions: data.siteOptions || undefined,
-            extra_libraries: data.extraLibraries || undefined, 
+            extra_libraries: data.extraLibraries || undefined,
+            plugins: data.plugins || undefined,
         });
         createSuccessNotice(__('Blueprint configuration updated successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
     };
@@ -282,6 +287,16 @@ function BlueprintSidebarSettings() {
                     setAttributes={(updatedAttributes) =>
                         updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
                     }
+                />
+                </HStack>
+                <HStack>
+                <Text>Plugins</Text>
+                {/* Plugins Button */}
+                <PluginSettings
+                attributes={{ plugins: blueprint_config.plugins }}
+                setAttributes={(updatedAttributes) =>
+                    updateBlueprintConfig({ plugins: updatedAttributes.plugins })
+                }
                 />
                 </HStack>
             </PluginDocumentSettingPanel>
