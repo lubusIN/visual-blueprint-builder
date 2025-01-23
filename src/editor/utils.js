@@ -39,6 +39,42 @@ export const validateBlueprintSteps = (steps) => {
 };
 
 /**
+ * Updates deprecated fields in blueprint steps before validation.
+ * Replaces `pluginZipFile` with `pluginData` and `themeZipFile` with `themeData`.
+ */
+const updateDeprecatedFields = (jsonData) => {
+    if (!jsonData || !jsonData.steps) {
+        return jsonData;
+    }
+
+    const updatedSteps = jsonData.steps.map((step) => {
+        if (step.step === 'installPlugin' && step.pluginZipFile) {
+            return {
+                ...step,
+                pluginData: step.pluginZipFile,
+                pluginZipFile: undefined, // Remove deprecated field
+            };
+        }
+
+        if (step.step === 'installTheme' && step.themeZipFile) {
+            return {
+                ...step,
+                themeData: step.themeZipFile,
+                themeZipFile: undefined, // Remove deprecated field
+            };
+        }
+
+        return step;
+    });
+
+    return {
+        ...jsonData,
+        steps: updatedSteps,
+    };
+};
+
+
+/**
  * Processes JSON blueprint data, validates it, and inserts valid blocks into the WordPress editor.
  *
  * jsonData - The parsed JSON data from the openJson and Gallery.
@@ -51,7 +87,9 @@ export const handleBlueprintData = (jsonData, createNotice, onSubmitData) => {
         return;
     }
     
-    const { meta, ...filteredData } = jsonData;// Exclude metadata
+    const updatedData = updateDeprecatedFields(jsonData);
+    const { meta, ...filteredData } = updatedData;// Exclude metadata
+    
     const { steps } = filteredData;
     const { validBlocks, invalidSteps } = validateBlueprintSteps(steps);
 
