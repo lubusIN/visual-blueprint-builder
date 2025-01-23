@@ -50,8 +50,9 @@ export const handleBlueprintData = (jsonData, createNotice, onSubmitData) => {
         createNotice('error', __('Invalid blueprint schema.', 'wp-playground-blueprint-editor'));
         return;
     }
-
-    const { steps } = jsonData;
+    
+    const { meta, ...filteredData } = jsonData;// Exclude metadata
+    const { steps } = filteredData;
     const { validBlocks, invalidSteps } = validateBlueprintSteps(steps);
 
     if (validBlocks.length > 0) {
@@ -67,7 +68,7 @@ export const handleBlueprintData = (jsonData, createNotice, onSubmitData) => {
     }
 
     if (onSubmitData) {
-        onSubmitData(jsonData);
+        onSubmitData(filteredData);
     }
 };
 
