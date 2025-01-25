@@ -73,11 +73,11 @@ function BlueprintSidebarSettings() {
         const cleanedSchema = {
             ...schema,
             login: blueprint_config.login ? blueprint_config.login : undefined,
-            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0 
-            ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
+            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0
+                ? blueprint_config.siteOptions : undefined, // Include only if siteOptions is non-empty
             extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
-            plugins: blueprint_config.plugins && Object(blueprint_config.plugins).length > 0 
-            ? blueprint_config.plugins : undefined, // Include only if plugins is non-empty
+            plugins: blueprint_config.plugins && Object(blueprint_config.plugins).length > 0
+                ? blueprint_config.plugins : undefined, // Include only if plugins is non-empty
         };
         return JSON.stringify(cleanedSchema, null, 2); // Format the schema as a pretty JSON string
     }, [blocks, schema, blueprint_config]);
@@ -249,7 +249,7 @@ function BlueprintSidebarSettings() {
                                     />
                                 );
                             },
-                        },    
+                        },
                     ]}
                     form={{
                         fields: [
@@ -277,27 +277,28 @@ function BlueprintSidebarSettings() {
                     }}
                     onChange={updateBlueprintConfig}
                 />
-                <HStack  style={{ justifyContent: 'space-between',
-                    marginTop:'6px'
+                <HStack style={{
+                    justifyContent: 'space-between',
+                    marginTop: '6px'
                 }}>
                     <Text>Site Options</Text>
-                {/* Site Options Button */}
-                <SiteOptionsSettings
-                    attributes={{ siteOptions: blueprint_config.siteOptions }}
-                    setAttributes={(updatedAttributes) =>
-                        updateBlueprintConfig({ siteOptions: updatedAttributes.siteOptions })
-                    }
-                />
+                    {/* Site Options Button */}
+                    <SiteOptionsSettings
+                        attributes={{ siteOptions: blueprint_config.siteOptions }}
+                        setAttributes={(updatedAttributes) =>
+                            updateBlueprintConfig(updatedAttributes)
+                        }
+                    />
                 </HStack>
                 <HStack>
-                <Text>Plugins</Text>
-                {/* Plugins Button */}
-                <PluginSettings
-                attributes={{ plugins: blueprint_config.plugins }}
-                setAttributes={(updatedAttributes) =>
-                    updateBlueprintConfig({ plugins: updatedAttributes.plugins })
-                }
-                />
+                    <Text>Plugins</Text>
+                    {/* Plugins Button */}
+                    <PluginSettings
+                        attributes={{ plugins: blueprint_config.plugins }}
+                        setAttributes={(updatedAttributes) =>
+                            updateBlueprintConfig({ plugins: updatedAttributes.plugins })
+                        }
+                    />
                 </HStack>
             </PluginDocumentSettingPanel>
         </>

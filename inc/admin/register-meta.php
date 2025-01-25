@@ -55,7 +55,7 @@ class RegisterCustomMeta
                         'networking'            => ['type' => 'boolean'],
                         'login'                 => ['type' => 'boolean'],
                         'extraLibraries'        => ['type' => 'boolean'],
-                        'siteOptions'           => ['type' => 'object'],
+                        'siteOptions'           => ['type' => 'object', 'additionalProperties' => true],
                         'plugins'               => ['type' => 'array'],
                     ],
                 ],
