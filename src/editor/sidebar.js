@@ -154,7 +154,7 @@ function BlueprintSidebarSettings() {
                         <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + prepareSchema()} target="_blank" />
                         <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
                         <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
-                        <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BUILDER_BASE + prepareSchema()} target="_blank" />
+                        <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={encodeURI(PLAYGROUND_BUILDER_BASE + prepareSchema())} target="_blank" />
                     </Toolbar>
                 </VStack>
             </PluginPostStatusInfo>

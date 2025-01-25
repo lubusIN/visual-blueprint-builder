@@ -49,26 +49,57 @@ function Gallery({ onSubmitData }) {
     /**
      * Fetches details for a selected blueprint.
      * @param {string} blueprintName - The name of the blueprint to fetch.
+     * defaultValues - Default values are used to ensure that the blueprint data has all the required properties.
      */
+
+    const defaultValues = {
+        preferredVersions: {
+            php: 'latest',
+            wp: 'nightly',
+        },
+        features: {
+            networking: true,
+        },
+        steps: []
+    };
+    
     const fetchBlueprintDetails = async (blueprintName) => {
         const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${blueprintName}`;
         try {
             const response = await fetch(blueprintUrl);
             if (!response.ok) throw new Error(`Failed to fetch blueprint details: ${response.statusText}`);
             const data = await response.json();
-
-            // Replace 'mu-plugins' with 'plugins' in the blueprint data
-            const updatedSteps = data.steps.map((step) => {
+    
+            // Ensure default values for required properties
+            const validatedData = {
+                preferredVersions: data.preferredVersions || defaultValues.preferredVersions,
+                features: data.features || defaultValues.features,
+                steps: data.steps || defaultValues.steps,
+                ...data, // Merge in other properties from the fetched data
+            };
+    
+            // Replace 'mu-plugins' with 'plugins' in the steps
+            const updatedSteps = validatedData.steps.map((step) => {
                 if (step.path?.includes('mu-plugins')) {
                     return { ...step, path: step.path.replace('mu-plugins', 'plugins') };
                 }
                 return step;
             });
-            handleBlueprintData({ ...data, steps: updatedSteps }, createNotice, onSubmitData);
+    
+            // Merge the updated steps and other data with default values
+            const mergedData = {
+                ...defaultValues,
+                ...validatedData,
+                steps: updatedSteps
+            };
+    
+            // Pass the processed data to the handler
+            handleBlueprintData(mergedData, createNotice, onSubmitData);
         } catch (error) {
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
     };
+    
 
     return (
         <>
