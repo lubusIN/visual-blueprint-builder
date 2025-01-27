@@ -7,87 +7,109 @@ import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
-    Flex,
-    FlexBlock,
     __experimentalInputControl as InputControl,
+    __experimentalHStack as HStack,
+    __experimentalVStack as VStack,
 } from '@wordpress/components';
 
-function PluginSettings({ attributes = [], setAttributes }) {
+/**
+ * Plugin Settings Component
+ * 
+ * @param {Object} props - The props for the component.
+ * @param {Object} props.attributes - The block's attributes, containing `plugins`.
+ * @param {Function} props.setAttributes - Function to update the block's attributes.
+ * 
+ * @returns {JSX.Element} The PluginSettings component.
+ */
+function PluginSettings({ attributes = {}, setAttributes }) {
     const { plugins } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
     const [pluginList, setPluginList] = useState(plugins || []);
-    const [newPlugin, setNewPlugin] = useState('');
 
+    // Sync local state with attributes when plugins update
     useEffect(() => {
         setPluginList(plugins || []);
     }, [plugins]);
-    
+
+    /**
+     * Add new plugin
+     */
     const addPlugin = () => {
-        if (newPlugin.trim()) {
-            setPluginList([...pluginList, newPlugin]);
-            setNewPlugin('');
+        if (pluginList.some((plugin) => plugin === '')) {
+            return;
         }
+        setPluginList([...pluginList, '']); // Add a new empty plugin entry
     };
 
-    const removePlugin = (index) => {
-        const updatedList = pluginList.filter((_, i) => i !== index);
+    /**
+     * Update a plugin entry
+     */
+    const updatePlugin = (index, value) => {
+        const updatedList = pluginList.map((plugin, i) => (i === index ? value : plugin));
         setPluginList(updatedList);
     };
 
+    /**
+     * Delete a plugin entry
+     */
+    const deletePlugin = (index) => {
+        setPluginList(pluginList.filter((_, i) => i !== index));
+    };
+
+    /**
+     * Save plugins to attributes
+     */
     const savePlugins = () => {
-        setAttributes({ plugins: pluginList });
+        const filteredList = pluginList.filter((plugin) => plugin.trim() !== '');
+        setAttributes({ plugins: filteredList });
+        setPluginList(filteredList);
         setModalOpen(false);
     };
 
+    // Disable the "Add Plugin" button if the last plugin is empty
+    const isAddButtonDisabled = pluginList.some((plugin) => plugin.trim() === '');
+
     return (
-        <div>
+        <>
             {/* Trigger Button */}
             <Button icon={cog} iconSize={30} onClick={() => setModalOpen(true)} />
-            {/* Modal */}
             {isModalOpen && (
                 <Modal
                     title={__('Plugins', 'wp-playground-blueprint-editor')}
-                    onRequestClose={savePlugins}
+                    onRequestClose={() => savePlugins()}
+                    size="medium"
                 >
-                    {/* Add New Plugin */}
-                    <Flex align='end'>
-                        <FlexBlock>
-                            <InputControl
-                                label={__('Plugin URL or Slug', 'wp-playground-blueprint-editor')}
-                                value={newPlugin}
-                                onChange={(value) => setNewPlugin(value)}
-                                placeholder={__('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
-                            />
-                        </FlexBlock>
+                    <VStack spacing={4}>
+                        {pluginList.map((plugin, index) => (
+                            <HStack key={index} justify="space-between" alignment="center">
+                                <InputControl
+                                    label={__('Plugin', 'wp-playground-blueprint-editor')}
+                                    value={plugin}
+                                    __next40pxDefaultSize
+                                    __unstableInputWidth={'400px'}
+                                    onChange={(value) => updatePlugin(index, value)}
+                                />
+                                <Button
+                                    isDestructive
+                                    icon={trash}
+                                    label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
+                                    onClick={() => deletePlugin(index)}
+                                    style={{ width: '40px', marginTop: '24px' }}
+                                />
+                            </HStack>
+                        ))}
+
                         <Button
                             icon={plus}
+                            variant="secondary"
                             label={__('Add Plugin', 'wp-playground-blueprint-editor')}
                             onClick={addPlugin}
+                            disabled={isAddButtonDisabled}
                         />
-                    </Flex>
-                    {/* Existing Plugins */}
-                    {pluginList.map((plugin, index) => (
-                        <Flex align='end'>
-                            <FlexBlock>
-                                <InputControl
-                                    value={plugin}
-                                    onChange={(value) => {
-                                        const updatedList = [...pluginList];
-                                        updatedList[index] = value;
-                                        setPluginList(updatedList);
-                                    }}
-                                /></FlexBlock>
-                            <Button
-                                isDestructive
-                                icon={trash}
-                                label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
-                                onClick={() => removePlugin(index)}
-                            />
-                        </Flex>
-                    ))}
+                    </VStack>
                 </Modal>
             )}
-        </div>
+        </>
     );
 }
 
