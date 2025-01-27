@@ -3,14 +3,13 @@
  */
 import { __ } from '@wordpress/i18n';
 import { plus, trash, cog } from '@wordpress/icons';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
     __experimentalInputControl as InputControl,
     __experimentalHStack as HStack,
     __experimentalVStack as VStack,
-    Notice,
 } from '@wordpress/components';
 
 /**
@@ -26,18 +25,19 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
     const { siteOptions } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
     const [optionList, updateOptionList] = useState(Object.entries(siteOptions || {}));
-    const [duplicateError, setDuplicateError] = useState('');
 
+    // Sync local state with attributes when siteOptions updates
+    useEffect(() => {
+        updateOptionList(Object.entries(siteOptions || {}));
+    }, [siteOptions]);
     /**
      * Add new option
      */
     const addOption = () => {
         // Prevent adding duplicate empty entries
         if (optionList.some(([key, value]) => key === '' && value === '')) {
-            setDuplicateError(__('Duplicate empty entries are not allowed.', 'wp-playground-blueprint-editor'));
             return;
         }
-        setDuplicateError('');
         updateOptionList([...optionList, ['', '']]);
     };
 
@@ -59,9 +59,7 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
      */
     const deleteOption = (key) => {
         updateOptionList(optionList.filter((_, index) => index !== key));
-        setDuplicateError('');
     };
-
 
     const saveOptions = () => {
         const filteredOptions = optionList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
@@ -84,15 +82,6 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
                     size='medium'
                 >
                     <VStack spacing={4}>
-                        {/* Display Error Notice */}
-                        {duplicateError && (
-                            <Notice
-                                status="error"
-                                onRemove={() => setDuplicateError('')} // Dismiss error
-                            >
-                                {duplicateError}
-                            </Notice>
-                        )}
                         {optionList.map(([key, value], index) => (
                             <HStack key={index} justify='space-between' alignment='center'>
                                 <InputControl
