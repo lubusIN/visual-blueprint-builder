@@ -85,6 +85,7 @@ function PluginSettings({ attributes = {}, setAttributes }) {
                                 <InputControl
                                     label={__('Plugin', 'wp-playground-blueprint-editor')}
                                     value={plugin}
+                                    placeholder={ __('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
                                     __next40pxDefaultSize
                                     __unstableInputWidth={'400px'}
                                     onChange={(value) => updatePlugin(index, value)}
