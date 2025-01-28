@@ -26,7 +26,6 @@ function Gallery({ onSubmitData }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
 
-
     /**
      * Fetches the list of blueprints from the remote JSON file.
      */
@@ -42,7 +41,6 @@ function Gallery({ onSubmitData }) {
                 createNotice('error', __('Error fetching blueprint list:', error, 'wp-playground-blueprint-editor'));
             }
         };
-
         fetchBlueprintList();
     }, []);
 
@@ -51,7 +49,6 @@ function Gallery({ onSubmitData }) {
      * @param {string} blueprintName - The name of the blueprint to fetch.
      * defaultValues - Default values are used to ensure that the blueprint data has all the required properties.
      */
-
     const defaultValues = {
         preferredVersions: {
             php: 'latest',
@@ -78,28 +75,18 @@ function Gallery({ onSubmitData }) {
                 ...data, // Merge in other properties from the fetched data
             };
     
-            // Replace 'mu-plugins' with 'plugins' in the steps
-            const updatedSteps = validatedData.steps.map((step) => {
-                if (step.path?.includes('mu-plugins')) {
-                    return { ...step, path: step.path.replace('mu-plugins', 'plugins') };
-                }
-                return step;
-            });
-    
             // Merge the updated steps and other data with default values
             const mergedData = {
                 ...defaultValues,
                 ...validatedData,
-                steps: updatedSteps
             };
-    
+            
             // Pass the processed data to the handler
             handleBlueprintData(mergedData, createNotice, onSubmitData);
         } catch (error) {
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
     };
-    
 
     return (
         <>
@@ -144,21 +131,17 @@ function Gallery({ onSubmitData }) {
                                                 {blueprintDetails.description}
                                             </Text>
                                             </VStack>
-                                      
-
                                         {/* Action Button */}
                                         <Button
                                             variant="secondary"
                                             style={{
                                                 borderRadius: '4px',
-                                                alignSelf: 'flex-end',
-                                                
+                                                alignSelf: 'flex-end',   
                                             }}
                                             onClick={() => fetchBlueprintDetails(blueprintName)}
                                         >
                                             {__('Import', 'wp-playground-blueprint-editor')}
                                         </Button>
-                                        
                                     </CardBody>
                                 </Card>
                             ))}
