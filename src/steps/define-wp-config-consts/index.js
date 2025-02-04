@@ -31,50 +31,52 @@ import metadata from './block.json';
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { consts } = attributes;
 	const [isOpen, setIsOpen] = useState(false);
-	const [configName, setConfigName] = useState('');
-	const [configValue, setConfigValue] = useState('');
 	const [configList, updateConfigList] = useState(Object.entries(consts));
 	const [selectedConfig, setSelectedConfig] = useState(undefined);
 
 	useEffect(() => {
-		setAttributes({
-			consts: Object.fromEntries(configList)
-		});
-	}, [configList]);
+		const filteredList = configList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
+		setAttributes({ consts: Object.fromEntries(filteredList)});
+		
+		if (!isSelected) {
+			handleClose();
+		}
+	}, [configList, isSelected]);
 
 	const addConfig = () => {
+		if (configList.some(([key, value]) => key === '' && value === '')) {
+			return;
+		}
 		// Update list
-		updateConfigList([
-			...configList,
-			[configName, configValue]
-		]);
-
-		// Clear add form
-		setConfigName('');
-		setConfigValue('');
+		updateConfigList([...configList, ['', '']]);
 	};
 
 	const updateConfig = (index, field, fieldValue) => {
 		const updated = configList.map(([key, value], i) => {
 			if (i === index) {
-				if ('key' === field) {
-					return [fieldValue, value]
-				}
-
-				if ('value' === field) {
-					return [key, fieldValue]
-				}
-			} else {
-				return [key, value];
+				return field === 'key' ? [fieldValue, value] : [key, fieldValue];
 			}
+			return [key, value];
 		});
-
 		updateConfigList(updated);
 	};
 
 	const removeConfig = () => {
 		updateConfigList(configList.filter((config, index) => index !== selectedConfig));
 	};
+
+	/**
+	 * Remove blank option when clicking outside or closing
+	 */
+	const handleClose = () => {
+		updateConfigList(configList.filter(([key, value]) => key.trim() && value.trim()));
+		setIsOpen(false);
+	};
+
+	// Disable Add Button if the last entry has an empty key or value
+	const isAddButtonDisabled =
+		configList.length > 0 &&
+		(configList[configList.length - 1][0] === '' || configList[configList.length - 1][1] === '');
 
 	return (
 		<div {...useBlockProps()}>
@@ -87,41 +89,28 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
 									<Text weight={600}>
-										{(<pre>{JSON.stringify(consts, null, " " )}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
+										{(<pre style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(consts, null, " ")}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
 									</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
-							<VStack>
-								<HStack alignment='bottom'>
-									<InputControl
-										label={__('Name', 'wp-playground-blueprint-editor')}
-										value={configName}
-										onChange={(value) => { setConfigName(value) }}
-									/>
-									<InputControl
-										label={__('Value', 'wp-playground-blueprint-editor')}
-										value={configValue}
-										onChange={(value) => setConfigValue(value)}
-									/>
-									<Button
-										icon={plus}
-										label={__('Add Config', 'wp-playground-blueprint-editor')}
-										onClick={addConfig}
-									/>
-								</HStack>
-								{consts && configList.map(([key, value], index) => {
+							<VStack spacing={4}>
+								{configList.map(([key, value], index) => {
 									return (
-										<HStack key={index} alignment='bottom'>
+										<HStack key={index} justify="space-between" alignment="center">
 											<InputControl
 												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateConfig(index, 'key', value)}
 											/>
 											<InputControl
 												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateConfig(index, 'value', value)}
 											/>
 											<Button
@@ -132,10 +121,18 @@ function Edit({ attributes, setAttributes, isSelected }) {
 													setSelectedConfig(index);
 													setIsOpen(true);
 												}}
+												style={{ width: '40px', marginTop: '24px' }}
 											/>
 										</HStack>
 									)
 								})}
+								<Button
+									icon={plus}
+									variant="secondary"
+									label={__('Add Option', 'wp-playground-blueprint-editor')}
+									onClick={addConfig}
+									disabled={isAddButtonDisabled}
+								/>
 							</VStack>
 						)}
 					</VStack>

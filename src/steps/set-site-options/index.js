@@ -31,97 +31,99 @@ import metadata from './block.json';
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { options } = attributes;
 	const [isOpen, setIsOpen] = useState(false);
-	const [optionName, setOptionName] = useState('');
-	const [optionValue, setOptionValue] = useState('');
 	const [optionList, updateOptionList] = useState(Object.entries(options));
 	const [selectedOption, setSelectedOption] = useState(undefined);
 
 	useEffect(() => {
-		setAttributes({
-			options: Object.fromEntries(optionList)
-		});
-	}, [optionList]);
+		const filteredOptions = optionList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
+		setAttributes({ options: Object.fromEntries(filteredOptions) });
 
+		if (!isSelected) {
+			handleClose();
+		}
+	}, [optionList, isSelected]);
+
+	/**
+	 * Add a new option.
+	 */
 	const addOption = () => {
-		// Update list
-		updateOptionList([
-			...optionList,
-			[optionName, optionValue]
-		]);
-
-		// Clear add form
-		setOptionName('');
-		setOptionValue('');
+		if (optionList.some(([key, value]) => key === '' && value === '')) {
+			return;
+		}
+		updateOptionList([...optionList, ['', '']]);
 	};
 
+	/**
+	 * Update an option.
+	 */
 	const updateOption = (index, field, fieldValue) => {
-		const updated = optionList.map(([key, value], i) => {
+		const updatedList = optionList.map(([key, value], i) => {
 			if (i === index) {
-				if ('key' === field) {
-					return [fieldValue, value]
-				}
-
-				if ('value' === field) {
-					return [key, fieldValue]
-				}
-			} else {
-				return [key, value];
+				return field === 'key' ? [fieldValue, value] : [key, fieldValue];
 			}
+			return [key, value];
 		});
-
-		updateOptionList(updated);
+		updateOptionList(updatedList);
 	};
 
-	const removeOption = () => {
+	/**
+	 * Remove blank option when clicking outside or closing
+	 */
+	const handleClose = () => {
+		updateOptionList(optionList.filter(([key, value]) => key.trim() && value.trim()));
+		setIsOpen(false);
+	};
+
+	/**
+	 * Delete an option by index.
+	 */
+	const deleteOption = () => {
 		updateOptionList(optionList.filter((option, index) => index !== selectedOption));
+		setIsOpen(false);
 	};
+
+	// Disable Add Button if the last entry has an empty key or value
+	const isAddButtonDisabled =
+		optionList.length > 0 &&
+		(optionList[optionList.length - 1][0] === '' || optionList[optionList.length - 1][1] === '');
 
 	return (
 		<div {...useBlockProps()}>
 			<Placeholder
 				preview={
 					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={settings} size={28} className='step-icon' />
+						<HStack justify="left" align="center" spacing={3}>
+							<Icon icon={settings} size={28} className="step-icon" />
 							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
+								<Text upperCase size={12} weight={500} color="#949494">
+									{metadata.title}
+								</Text>
 								{!isSelected && (
 									<Text weight={600}>
-										{(<pre>{JSON.stringify(options, null, " ")}</pre> || __('{config site options}', 'wp-playground-blueprint-editor'))}
+										{(
+											<pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(options, null, ' ')}</pre> || __('{config site options}', 'wp-playground-blueprint-editor')
+										)}
 									</Text>
 								)}
 							</VStack>
 						</HStack>
 						{isSelected && (
-							<VStack>
-								<HStack justify='left' alignment='bottom'>
-									<InputControl
-										label={__('Name', 'wp-playground-blueprint-editor')}
-										value={optionName}
-										onChange={(value) => { setOptionName(value) }}
-									/>
-									<InputControl
-										label={__('Value', 'wp-playground-blueprint-editor')}
-										value={optionValue}
-										onChange={(value) => setOptionValue(value)}
-									/>
-									<Button
-										icon={plus}
-										label={__('Add Config', 'wp-playground-blueprint-editor')}
-										onClick={addOption}
-									/>
-								</HStack>
-								{options && optionList.map(([key, value], index) => {
+							<VStack spacing={4}>
+								{optionList.map(([key, value], index) => {
 									return (
-										<HStack justify='left' key={index} alignment='bottom'>
+										<HStack key={index} justify="space-between" alignment="center">
 											<InputControl
 												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateOption(index, 'key', value)}
 											/>
 											<InputControl
 												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateOption(index, 'value', value)}
 											/>
 											<Button
@@ -132,10 +134,18 @@ function Edit({ attributes, setAttributes, isSelected }) {
 													setSelectedOption(index);
 													setIsOpen(true);
 												}}
+												style={{ width: '40px', marginTop: '24px' }}
 											/>
 										</HStack>
-									)
+									);
 								})}
+								<Button
+									icon={plus}
+									variant="secondary"
+									label={__('Add Option', 'wp-playground-blueprint-editor')}
+									onClick={addOption}
+									disabled={isAddButtonDisabled}
+								/>
 							</VStack>
 						)}
 					</VStack>
@@ -144,11 +154,11 @@ function Edit({ attributes, setAttributes, isSelected }) {
 			<ConfirmDialog
 				isOpen={isOpen}
 				onConfirm={() => {
-					removeOption();
+					deleteOption();
 					setSelectedOption(undefined);
 					setIsOpen(false);
 				}}
-				onCancel={() => setIsOpen(false)}
+				onCancel={() => { setIsOpen(false) }}
 			>
 				{__('Delete Option?', 'wp-playground-blueprint-editor')}
 			</ConfirmDialog>

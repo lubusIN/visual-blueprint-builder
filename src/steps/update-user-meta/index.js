@@ -31,50 +31,52 @@ import metadata from './block.json';
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { meta, userId } = attributes;
 	const [isOpen, setIsOpen] = useState(false);
-	const [metaName, setMetaName] = useState('');
-	const [metaValue, setMetaValue] = useState('');
 	const [metaList, updateMetaList] = useState(Object.entries(meta));
 	const [selectedMeta, setSelectedMeta] = useState(undefined);
 
 	useEffect(() => {
-		setAttributes({
-			meta: Object.fromEntries(metaList)
-		});
-	}, [metaList]);
+		const filteredMetaList = metaList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
+		setAttributes({ meta: Object.fromEntries(filteredMetaList)});
+
+		if (!isSelected) {
+            handleClose();
+        }	
+	}, [metaList, isSelected]);
 
 	const addOption = () => {
+		if (metaList.some(([key, value]) => key === '' && value === '')) {
+			return;
+		}
 		// Update list
-		updateMetaList([
-			...metaList,
-			[metaName, metaValue]
-		]);
-
-		// Clear add form
-		setMetaName('');
-		setMetaValue('');
+		updateMetaList([...metaList,['', '']]);
 	};
 
 	const updateOption = (index, field, fieldValue) => {
 		const updated = metaList.map(([key, value], i) => {
 			if (i === index) {
-				if ('key' === field) {
-					return [fieldValue, value]
-				}
-
-				if ('value' === field) {
-					return [key, fieldValue]
-				}
-			} else {
-				return [key, value];
+				return field === 'key' ? [fieldValue, value] : [key, fieldValue];
 			}
+			return [key, value];
 		});
-
 		updateMetaList(updated);
 	};
 
 	const removeOption = () => {
 		updateMetaList(metaList.filter((meta, index) => index !== selectedMeta));
 	};
+
+	/**
+	 * Remove blank option when clicking outside or closing
+	 */
+	const handleClose = () => {
+		updateMetaList(metaList.filter(([key, value]) => key.trim() && value.trim()));
+		setIsOpen(false);
+	};
+
+	// Disable Add Button if the last entry has an empty key or value
+	const isAddButtonDisabled =
+	metaList.length > 0 &&
+		(metaList[metaList.length - 1][0] === '' || metaList[metaList.length - 1][1] === '');
 
 	return (
 		<div {...useBlockProps()}>
@@ -88,7 +90,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								{!isSelected && (
 									<VStack>
 										<Text weight={600}>
-											{meta ? <pre>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
+											{meta ? <pre style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
 										</Text>
 										<Text weight={600}>
 											{userId ? `${__('for UserId', 'wp-playground-blueprint-editor')} ${userId}` : __('{user Id}', 'wp-playground-blueprint-editor')}
@@ -98,36 +100,22 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							</VStack>
 						</HStack>
 						{isSelected && (
-							<VStack>
-
-								<HStack justify='left' alignment='bottom'>
-									<InputControl
-										label={__('Name', 'wp-playground-blueprint-editor')}
-										value={metaName}
-										onChange={(value) => { setMetaName(value) }}
-									/>
-									<InputControl
-										label={__('Value', 'wp-playground-blueprint-editor')}
-										value={metaValue}
-										onChange={(value) => setMetaValue(value)}
-									/>
-									<Button
-										icon={plus}
-										label={__('Add Config', 'wp-playground-blueprint-editor')}
-										onClick={addOption}
-									/>
-								</HStack>
-								{meta && metaList.map(([key, value], index) => {
+							<VStack spacing={4}>
+								{metaList.map(([key, value], index) => {
 									return (
-										<HStack justify='left' key={index} alignment='bottom'>
+										<HStack key={index} justify="space-between" alignment="center">
 											<InputControl
 												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateOption(index, 'key', value)}
 											/>
 											<InputControl
 												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
+												__next40pxDefaultSize
+												__unstableInputWidth="200px"
 												onChange={(value) => updateOption(index, 'value', value)}
 											/>
 											<Button
@@ -138,6 +126,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 													setSelectedMeta(index);
 													setIsOpen(true);
 												}}
+												style={{ width: '40px', marginTop: '24px' }}
 											/>
 										</HStack>
 									)
@@ -149,6 +138,13 @@ function Edit({ attributes, setAttributes, isSelected }) {
 										onChange={(value) => setAttributes({ userId: Number(value) })}
 									/>
 								</HStack>
+								<Button
+									icon={plus}
+									variant="secondary"
+									label={__('Add Option', 'wp-playground-blueprint-editor')}
+									onClick={addOption}
+									disabled={isAddButtonDisabled}
+								/>
 							</VStack>
 						)}
 					</VStack>
