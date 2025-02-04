@@ -26,7 +26,6 @@ function Gallery({ onSubmitData }) {
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
 
-
     /**
      * Fetches the list of blueprints from the remote JSON file.
      */
@@ -42,29 +41,48 @@ function Gallery({ onSubmitData }) {
                 createNotice('error', __('Error fetching blueprint list:', error, 'wp-playground-blueprint-editor'));
             }
         };
-
         fetchBlueprintList();
     }, []);
 
     /**
      * Fetches details for a selected blueprint.
      * @param {string} blueprintName - The name of the blueprint to fetch.
+     * defaultValues - Default values are used to ensure that the blueprint data has all the required properties.
      */
+    const defaultValues = {
+        preferredVersions: {
+            php: 'latest',
+            wp: 'nightly',
+        },
+        features: {
+            networking: true,
+        },
+        steps: []
+    };
+    
     const fetchBlueprintDetails = async (blueprintName) => {
         const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${blueprintName}`;
         try {
             const response = await fetch(blueprintUrl);
             if (!response.ok) throw new Error(`Failed to fetch blueprint details: ${response.statusText}`);
             const data = await response.json();
-
-            // Replace 'mu-plugins' with 'plugins' in the blueprint data
-            const updatedSteps = data.steps.map((step) => {
-                if (step.path?.includes('mu-plugins')) {
-                    return { ...step, path: step.path.replace('mu-plugins', 'plugins') };
-                }
-                return step;
-            });
-            handleBlueprintData({ ...data, steps: updatedSteps }, createNotice, onSubmitData);
+    
+            // Ensure default values for required properties
+            const validatedData = {
+                preferredVersions: data.preferredVersions || defaultValues.preferredVersions,
+                features: data.features || defaultValues.features,
+                steps: data.steps || defaultValues.steps,
+                ...data, // Merge in other properties from the fetched data
+            };
+    
+            // Merge the updated steps and other data with default values
+            const mergedData = {
+                ...defaultValues,
+                ...validatedData,
+            };
+            
+            // Pass the processed data to the handler
+            handleBlueprintData(mergedData, createNotice, onSubmitData);
         } catch (error) {
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
@@ -113,21 +131,17 @@ function Gallery({ onSubmitData }) {
                                                 {blueprintDetails.description}
                                             </Text>
                                             </VStack>
-                                      
-
                                         {/* Action Button */}
                                         <Button
                                             variant="secondary"
                                             style={{
                                                 borderRadius: '4px',
-                                                alignSelf: 'flex-end',
-                                                
+                                                alignSelf: 'flex-end',   
                                             }}
                                             onClick={() => fetchBlueprintDetails(blueprintName)}
                                         >
                                             {__('Import', 'wp-playground-blueprint-editor')}
                                         </Button>
-                                        
                                     </CardBody>
                                 </Card>
                             ))}
