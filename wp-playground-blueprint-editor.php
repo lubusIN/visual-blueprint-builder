@@ -9,6 +9,7 @@
  * Author URI: https://lubus.in/
  * Contributor: Lubus, https://lubus.in/
  * Text Domain: wp-playground-blueprint-editor
+ * Domain Path: /languages
  * 
  * @package wp-playground-blueprint-editor
  */
@@ -61,6 +62,7 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
         {
             $this->setup_constants();
             $this->bootstrap();
+            $this->load_textdomain(); // Load translations
         }
 
         /**
@@ -104,7 +106,20 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
             new BlueprintSteps();
             new RegisterCustomMeta();
         }
+
+        /**
+         * Load the plugin textdomain for translations.
+         */
+        public function load_textdomain()
+        {
+            load_plugin_textdomain(
+                'wp-playground-blueprint-editor',
+                false,
+                dirname(plugin_basename(__FILE__)) . '/languages'
+            );
+        }
     }
 }
 
+// Initialize the plugin
 return PlaygroundBlueprintEditor::instance();

@@ -22,22 +22,22 @@ function filter_allowed_block_types($allowed_block_types, $block_editor_context)
         'playground-step/install-theme',
         'playground-step/enable-multisite',
         'playground-step/define-site-url',
-        'playground-step/copy',
+        'playground-step/cp',
         'playground-step/activate-theme',
         'playground-step/activate-plugin',
         'playground-step/import-wordpress-files',
-        'playground-step/remove-dir',
-        'playground-step/remove-file',
+        'playground-step/rmdir',
+        'playground-step/rm',
         'playground-step/reset-data',
         'playground-step/write-file',
-        'playground-step/move',
+        'playground-step/mv',
         'playground-step/define-wp-config-consts',
         'playground-step/wp-cli',
         'playground-step/run-php',
         'playground-step/unzip',
         'playground-step/update-user-meta',
         'playground-step/set-site-options',
-        'playground-step/make-dir',
+        'playground-step/mkdir',
         'playground-step/import-wxr',
         'playground-step/set-site-language',
         'playground-step/import-theme-starter-content',
@@ -83,23 +83,23 @@ function add_new_block_category($block_categories, $block_editor_context)
     $steps_categories = [
         [
             'slug'  => 'config',
-            'title' => esc_html__('Config', 'text-domain')
+            'title' => esc_html__('Config', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'extend',
-            'title' => esc_html__('Extend', 'text-domain'),
+            'title' => esc_html__('Extend', 'wp-playground-blueprint-editor'),
         ],
         [
             'slug'  => 'file-system',
-            'title' => esc_html__('File System', 'text-domain')
+            'title' => esc_html__('File System', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'data',
-            'title' => esc_html__('Data', 'text-domain')
+            'title' => esc_html__('Data', 'wp-playground-blueprint-editor')
         ],
         [
             'slug'  => 'scripts',
-            'title' => esc_html__('Scripts', 'text-domain')
+            'title' => esc_html__('Scripts', 'wp-playground-blueprint-editor')
         ],
     ];
 

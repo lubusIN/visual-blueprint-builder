@@ -26,6 +26,5 @@
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css"
+	"editorScript": "file:./index.js"
 }

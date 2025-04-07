@@ -15,7 +15,7 @@
 			"type": "string",
 			"default": "installTheme"
 		},
-		"themeZipFile": {
+		"themeData": {
 			"type": "object",
 			"default": {
 				"resource": "url",

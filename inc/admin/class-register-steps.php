@@ -8,40 +8,37 @@
 
 namespace WP\Admin\PlaygroundBlueprintEditor;
 
-class BlueprintSteps
-{
+class BlueprintSteps {
     /**
      * Construct that hooks into WordPress to initialize blueprint steps.
      */
-    public function __construct()
-    {
+    public function __construct() {
         add_action('init', [$this, 'register_blueprint_steps']);
     }
 
     /**
      * Registers the 'blueprint steps' with necessary arguments and labels.
      */
-    public function register_blueprint_steps()
-    {
+    public function register_blueprint_steps() {
         $blueprint_steps = [
             'login',
             'install-plugin',
             'enable-multisite',
-            'copy',
+            'cp',
             'install-theme',
             'define-site-url',
             'activate-theme',
             'activate-plugin',
             'import-wordpress-files',
-            'remove-dir',
-            'remove-file',
+            'rmdir',
+            'rm',
             'reset-data',
-            'move',
+            'mv',
             'define-wp-config-consts',
             'write-file',
             'wp-cli',
             'run-php',
-            'make-dir',
+            'mkdir',
             'import-wxr',
             'update-user-meta',
             'unzip',
