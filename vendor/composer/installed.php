@@ -3,7 +3,7 @@
         'name' => 'wp/playground-blueprint-editor',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd9fec521ae47da124d7e3be261d947827c69f7aa',
+        'reference' => '27dc0d95885eb51c1ed8bff4a5c1629dc2ad152d',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'wp/playground-blueprint-editor' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd9fec521ae47da124d7e3be261d947827c69f7aa',
+            'reference' => '27dc0d95885eb51c1ed8bff4a5c1629dc2ad152d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
