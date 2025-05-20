@@ -1,10 +1,13 @@
-# Playground Blueprint Editor
+<p align="center"><img width="200" src=".github/vbb-logo.svg"></p>
+
+![Visual Blueprint Builder](.github/visual-blueprint-builder.jpg)
 
 [![Try in WordPress Playground](https://img.shields.io/badge/Try%20in%20WordPress%20Playground-blue?style=for-the-badge)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/lubusIN/visual-blueprint-builder/playground/_playground/blueprint-github.json)
 
+### Overview
 Playground Blueprint Editor is block based editing experience for building blueprint.json
 
-### Key features
+### Features
 
 - UI based json generation
 - blocks to build steps
@@ -17,13 +20,65 @@ Playground Blueprint Editor is block based editing experience for building bluep
 - WordPress 6.4+
 - PHP 7.4+
 
+## Installation
+
+1. Download latest release from GitHub
+2. Visit `Plugins > Add New`
+3. Upload `visual-blueprint-builder.zip`  file
+4. Activate `Visual Blueprint Builder` from plugins page
+
 ## Development
 
-1. Clone `git clone git@github.com:lubusIN/visual-blueprint-builder.git`.
-2. Navigate to Folder `cd visual-blueprint-builder`.
-3. Run `npm install` to install the plugin's dependencies within a `/node_modules/` folder.
-4. Run `composer install` to install the additional WordPress composer tools within a `/vendor/` folder.
-5. Run `npm run build` or `npm run start` to compile and watch source files for changes while developing.
-6. Launch local playground using wp-now `npx @wp-now/wp-now start`
+### 1. Clone the Repository
+Clone the repository to your local system:
 
-Refer to `package.json` for additional npm commands.
+```bash
+git clone git@github.com:lubusIN/visual-blueprint-builder.git 
+```
+
+### 2. Go to package folder
+
+```bash
+cd visual-blueprint-builder
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+composer install
+```
+
+### 4. Build Plugin
+Build or start the development environment:
+
+```bash
+npm run build       # Compile the source files
+# OR
+npm run start       # Watch for changes and auto-compile
+```
+
+### 5. Launch Playground
+Start a local WordPress playground using wp-now:
+
+```bash
+npx @wp-now/wp-now start
+```
+> [!NOTE]
+> Refer to `package.json` for additional available npm commands.
+
+## Meet Your Artisans
+
+[LUBUS](http://lubus.in) is a web design agency based in Mumbai.
+
+<img src="https://user-images.githubusercontent.com/1039236/40877801-3fa8ccf6-66a4-11e8-8f42-19ed4e883ce9.png" />
+
+## Credits
+
+<a href="https://github.com/lubusIN/visual-blueprint-builder/graphs/contributors">
+  <img height="36px" src="https://contrib.rocks/image?repo=lubusIN/visual-blueprint-builder" />
+</a>
+
+## License
+
+Visual Blueprint Builder is open-sourced plugin licensed under the [MIT license](LICENSE)
