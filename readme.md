@@ -81,4 +81,4 @@ npx @wp-now/wp-now start
 
 ## License
 
-Visual Blueprint Builder is open-sourced plugin licensed under the [MIT license](LICENSE)
+Visual Blueprint Builder is open-sourced plugin licensed under the [GPL-3.0 license](LICENSE)
