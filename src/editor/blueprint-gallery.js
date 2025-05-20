@@ -127,6 +127,7 @@ function Gallery({ onSubmitData }) {
                                                 lineHeight={'1.5em'}
                                                 size={15}   
                                                 color='#777'
+                                                style={{wordBreak: 'break-word'}}
                                             >
                                                 {blueprintDetails.description}
                                             </Text>
