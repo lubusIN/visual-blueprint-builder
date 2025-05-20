@@ -11,10 +11,17 @@ wp.hooks.addFilter(
             return blockOrder[blockOrder.length - 1]; // Get the last block's clientId
         }, []);
 
+        const rootClientId = useSelect((select) =>
+            select('core/block-editor').getBlockRootClientId(props.clientId),
+            [props.clientId]
+        );
+        // Only show if it's the last root-level block (not inside reusable or inner blocks)
+        const shouldShowAppender = props.clientId === lastBlockClientId && rootClientId === null;
+
         return (
             <>
                 <BlockEdit {...props} />
-                {props.clientId === lastBlockClientId && (
+                {shouldShowAppender && (
                     <div className={'block-list-appender wp-block'}>
                         <ButtonBlockAppender
                             rootClientId={null} // Since we don't have nested blocks
