@@ -1,4 +1,4 @@
-<p align="center"><img width="200" src=".github/vbb-logo.svg"></p>
+<p align="center"><img width="300" src=".github/vbb-logo.svg"></p>
 
 ![Visual Blueprint Builder](.github/visual-blueprint-builder.jpg)
 
