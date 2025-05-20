@@ -2,7 +2,7 @@
 
 ![Visual Blueprint Builder](.github/visual-blueprint-builder.jpg)
 
-[![Try in WordPress Playground](https://img.shields.io/badge/Try%20in%20WordPress%20Playground-blue?style=for-the-badge)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/lubusIN/visual-blueprint-builder/playground/_playground/blueprint-github.json)
+[![Playground Demo Link](https://img.shields.io/badge/Playground_Demo-v3.7.1-blue?logo=wordpress&logoColor=%23fff&labelColor=%233858e9&color=%233858e9)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/lubusIN/visual-blueprint-builder/playground/_playground/blueprint-github.json)
 
 ### Overview
 Playground Blueprint Editor is block based editing experience for building blueprint.json
