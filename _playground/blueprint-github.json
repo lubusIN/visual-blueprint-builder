@@ -17,21 +17,14 @@
 		{
 			"step": "setSiteOptions",
 			"options": {
-				"blogname": "Playground Blueprint Editor"
+				"blogname": "Visual Blueprint Builder"
 			}
 		},
 		{
 			"step": "installPlugin",
-			"pluginZipFile": {
+			"pluginData": {
 				"resource": "url",
-				"url": "https://github-proxy.com/proxy/?repo=lubusIN/block-editor-for-playground-blueprint&branch=demo"
-			}
-		},
-		{
-			"step": "installTheme",
-			"themeZipFile": {
-				"resource": "wordpress.org/themes",
-				"slug": "twentytwentyfour"
+				"url": "https://github-proxy.com/proxy/?repo=lubusIN/visual-blueprint-builder&branch=playground"
 			}
 		}
 	]
