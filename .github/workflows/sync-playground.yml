@@ -12,6 +12,9 @@ on:
       force-folder:
         required: true
         type: string
+      vendor-folder:
+        required: true
+        type: string
 
 jobs:
   build-and-push:
@@ -35,8 +38,11 @@ jobs:
         run: |
           TARGET_BRANCH=${{ github.event_name == 'workflow_call' && inputs.target-branch || 'playground' }}
           FORCE_FOLDER=${{ github.event_name == 'workflow_call' && inputs.force-folder || 'build/' }}
+          VENDOR_FOLDER=${{ github.event_name == 'workflow_call' && inputs.vendor-folder || 'vendor/' }}
           echo "target-branch=$TARGET_BRANCH" >> $GITHUB_OUTPUT
           echo "force-folder=$FORCE_FOLDER" >> $GITHUB_OUTPUT
+          echo "vendor-folder=$VENDOR_FOLDER" >> $GITHUB_OUTPUT
+
 
       - name: Delete existing target branch (if any)
         run: |
@@ -57,9 +63,9 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Add build files (force)
+      - name: Add build & vendor files (force)
         run: |
-          git add -f ${{ steps.set-vars.outputs.force-folder }}
+          git add -f ${{ steps.set-vars.outputs.force-folder }} ${{ steps.set-vars.outputs.vendor-folder }}
 
       - name: Commit and push
         run: |
