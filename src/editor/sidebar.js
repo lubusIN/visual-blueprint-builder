@@ -35,7 +35,7 @@ import { useBlueprintData } from './utils';
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
-    const createNotice = useDispatch(noticesStore);
+    const { createNotice } = useDispatch(noticesStore);
     const {
         schema,
         prepareSchema,
