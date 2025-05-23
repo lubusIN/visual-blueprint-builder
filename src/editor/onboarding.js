@@ -41,15 +41,15 @@ const OnboardingModal = () => {
 
     return (
         <Modal
-            title={__('Start Building Your Blueprint', 'wp-playground-blueprint-editor')}
+            title={__('Start Blueprint From', 'wp-playground-blueprint-editor')}
             onRequestClose={handleClose}
             shouldCloseOnClickOutside
             shouldCloseOnEsc
             size="medium"
         >
             <Grid columns={3} spacing={4}>
-                <OpenJson label='Json' icon={code} onClick={handleClose} />
-                <Gallery label='Gallery' icon={gallery} onClick={handleClose} />
+                <OpenJson label='JSON' icon={code} handleClose={handleClose} />
+                <Gallery label='Gallery' icon={gallery} handleClose={handleClose} />
                 <Button
                     onClick={handleClose}
                     icon={plus}
@@ -60,7 +60,7 @@ const OnboardingModal = () => {
                         padding: '13px'
                     }}
                 >
-                    {__('Start Blank', 'wp-playground-blueprint-editor')}
+                    {__('Blank', 'wp-playground-blueprint-editor')}
                 </Button>
                 <Button variant="tertiary" onClick={handleClose}>
                     {__('Skip', 'wp-playground-blueprint-editor')}

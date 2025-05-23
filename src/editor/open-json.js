@@ -4,7 +4,7 @@ import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
 import { handleBlueprintData, useBlueprintData } from './utils'
 
-const OpenJson = ({ label = 'Open', icon = null, onClick }) => {
+const OpenJson = ({ label = 'Open', icon = null, handleClose }) => {
     const { createNotice } = useDispatch(noticesStore);
     const { updateBlueprintConfig } = useBlueprintData();
 
@@ -32,7 +32,7 @@ const OpenJson = ({ label = 'Open', icon = null, onClick }) => {
         const file = event.target.files[0];
         if (file) {
             processJsonFile(file);
-            onClick(onClick);
+            handleClose();
         }
     };
 

@@ -21,7 +21,7 @@ import {
  */
 import { handleBlueprintData, useBlueprintData } from './utils';
 
-function Gallery({ label = 'Gallery', icon = null, onClick }) {
+function Gallery({ label = 'Gallery', icon = null, handleClose }) {
     const { updateBlueprintConfig } = useBlueprintData();
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -146,7 +146,7 @@ function Gallery({ label = 'Gallery', icon = null, onClick }) {
                                                 borderRadius: '4px',
                                                 alignSelf: 'flex-end',
                                             }}
-                                            onClick={() => { fetchBlueprintDetails(blueprintName), onClick(onClick) }}
+                                            onClick={() => { fetchBlueprintDetails(blueprintName); handleClose(); }}
                                         >
                                             {__('Import', 'wp-playground-blueprint-editor')}
                                         </Button>
