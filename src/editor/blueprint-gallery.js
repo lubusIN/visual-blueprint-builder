@@ -19,9 +19,10 @@ import {
 /**
  * Internal dependencies
  */
-import { handleBlueprintData } from './utils';
+import { handleBlueprintData, useBlueprintData } from './utils';
 
-function Gallery({ onSubmitData }) {
+function Gallery({ label = 'Gallery', icon = null, onClick }) {
+    const { updateBlueprintConfig } = useBlueprintData();
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
@@ -59,14 +60,14 @@ function Gallery({ onSubmitData }) {
         },
         steps: []
     };
-    
+
     const fetchBlueprintDetails = async (blueprintName) => {
         const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${blueprintName}`;
         try {
             const response = await fetch(blueprintUrl);
             if (!response.ok) throw new Error(`Failed to fetch blueprint details: ${response.statusText}`);
             const data = await response.json();
-    
+
             // Ensure default values for required properties
             const validatedData = {
                 preferredVersions: data.preferredVersions || defaultValues.preferredVersions,
@@ -74,15 +75,15 @@ function Gallery({ onSubmitData }) {
                 steps: data.steps || defaultValues.steps,
                 ...data, // Merge in other properties from the fetched data
             };
-    
+
             // Merge the updated steps and other data with default values
             const mergedData = {
                 ...defaultValues,
                 ...validatedData,
             };
-            
+
             // Pass the processed data to the handler
-            handleBlueprintData(mergedData, createNotice, onSubmitData);
+            handleBlueprintData(mergedData, createNotice, updateBlueprintConfig);
         } catch (error) {
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
         }
@@ -93,9 +94,15 @@ function Gallery({ onSubmitData }) {
             {/* Open modal button */}
             <Button
                 className='blueprint_gallery_json'
-                __next40pxDefaultSize
-                onClick={() => setModalOpen(true)}>
-                {__('Gallery', 'wp-playground-blueprint-editor')}
+                onClick={() => setModalOpen(true)}
+                icon={icon}
+                style={{
+                    height: '100%',
+                    flexDirection: 'column',
+                    padding: '13px'
+                }}
+            >
+                {__(label, 'wp-playground-blueprint-editor')}
             </Button>
 
             {/* Blueprint gallery modal */}
@@ -125,21 +132,21 @@ function Gallery({ onSubmitData }) {
                                             </Text>
                                             <Text
                                                 lineHeight={'1.5em'}
-                                                size={15}   
+                                                size={15}
                                                 color='#777'
                                                 style={{wordBreak: 'break-word'}}
                                             >
                                                 {blueprintDetails.description}
                                             </Text>
-                                            </VStack>
+                                        </VStack>
                                         {/* Action Button */}
                                         <Button
                                             variant="secondary"
                                             style={{
                                                 borderRadius: '4px',
-                                                alignSelf: 'flex-end',   
+                                                alignSelf: 'flex-end',
                                             }}
-                                            onClick={() => fetchBlueprintDetails(blueprintName)}
+                                            onClick={() => { fetchBlueprintDetails(blueprintName), onClick(onClick) }}
                                         >
                                             {__('Import', 'wp-playground-blueprint-editor')}
                                         </Button>

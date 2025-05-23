@@ -1,11 +1,12 @@
 import { __ } from '@wordpress/i18n';
-import {  useDispatch } from '@wordpress/data';
+import { useDispatch } from '@wordpress/data';
 import { FormFileUpload, DropZone } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
-import {handleBlueprintData} from './utils'
+import { handleBlueprintData, useBlueprintData } from './utils'
 
-const OpenJson = ({ onSubmitData }) => {
+const OpenJson = ({ label = 'Open', icon = null, onClick }) => {
     const { createNotice } = useDispatch(noticesStore);
+    const { updateBlueprintConfig } = useBlueprintData();
 
     // Process JSON file content
     const processJsonFile = (file) => {
@@ -14,7 +15,7 @@ const OpenJson = ({ onSubmitData }) => {
             reader.onload = () => {
                 try {
                     const jsonData = JSON.parse(reader.result);
-                    handleBlueprintData(jsonData , createNotice, onSubmitData); 
+                    handleBlueprintData(jsonData, createNotice, updateBlueprintConfig);
                 }
                 catch (err) {
                     createNotice('error', __('Invalid JSON file.', 'wp-playground-blueprint-editor'));
@@ -31,6 +32,7 @@ const OpenJson = ({ onSubmitData }) => {
         const file = event.target.files[0];
         if (file) {
             processJsonFile(file);
+            onClick(onClick);
         }
     };
 
@@ -46,11 +48,17 @@ const OpenJson = ({ onSubmitData }) => {
     return (
         <FormFileUpload
             className='upload_blueprint_json'
-            __next40pxDefaultSize
             accept="application/json"
             onChange={handleFileSelection}
-        >
-            {__('Open', 'wp-playground-blueprint-editor')}
+            icon={icon}
+            style={{
+                height: '100%',
+                flexDirection: 'column',
+                padding:'13px'
+            }}
+            >
+            {__(label, 'wp-playground-blueprint-editor')}
+
             <DropZone
                 onFilesDrop={handleFileDrop}
                 accept="application/json"
