@@ -3,8 +3,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { createBlock } from "@wordpress/blocks";
-import { dispatch } from '@wordpress/data';
+import { dispatch, useSelect, useDispatch } from '@wordpress/data';
 import { PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
+import { useCallback } from '@wordpress/element';
 
 /**
  * External dependencies
@@ -126,8 +127,10 @@ const validateAgainstSchema = async (data, createNotice) => {
  * jsonData - The parsed JSON data from the openJson and Gallery.
  * createNotice - Function to create notices in the WordPress admin.
  *  onSubmitData - Optional callback for additional data handling.
+ * @param {Function} updateBlueprintConfig - Function to update blueprint config in post meta.
  */
-export const handleBlueprintData = async (jsonData, createNotice, onSubmitData) => {
+
+export const handleBlueprintData = async (jsonData, createNotice, updateBlueprintConfig) => {
     if (!jsonData) {
         createNotice('error', __('Invalid blueprint schema.', 'wp-playground-blueprint-editor'));
         return;
@@ -138,14 +141,14 @@ export const handleBlueprintData = async (jsonData, createNotice, onSubmitData) 
         const updatedData = updateDeprecatedFields(jsonData);
 
         // Validate updated JSON against schema
-        const isValid = await validateAgainstSchema(updatedData);
+        const isValid = await validateAgainstSchema(updatedData, createNotice);
         if (!isValid) {
             return;
         }
 
         const { meta, ...filteredData } = updatedData; // Exclude metadata
         const { steps } = filteredData;
-        
+
         const { validBlocks, invalidSteps } = validateBlueprintSteps(steps);
 
         if (validBlocks.length > 0) {
@@ -159,10 +162,110 @@ export const handleBlueprintData = async (jsonData, createNotice, onSubmitData) 
                 .join(', ');
             createNotice('warning', __(`Some steps are invalid: ${errorDetails}.`, 'wp-playground-blueprint-editor'));
         }
+        handleJsonDataSubmit(filteredData, updateBlueprintConfig, createNotice);
 
-        if (onSubmitData) {
-            onSubmitData(filteredData);
-        }
     } catch (err) { return err; }
 };
 
+
+/**
+ * React hook to retrieve and manage the blueprint configuration from post meta.
+ * @returns {{
+ *   schema: Object,
+ *   prepareSchema: Function,
+ *   updateBlueprintConfig: Function,
+ *   blueprint_config: Object
+ * }}
+ */
+export const useBlueprintData = () => {
+    const { editPost } = useDispatch('core/editor');
+    const blocks = useSelect((select) => select('core/block-editor').getBlocks(), []);
+    const blueprint_config = useSelect((select) => {
+        return select('core/editor').getEditedPostAttribute('meta')['_blueprint_config'] || {};
+    });
+
+    const schema = {
+        $schema: PLAYGROUND_BLUEPRINT_SCHEMA_URL,
+        landingPage: blueprint_config.landing_page,
+        preferredVersions: {
+            php: blueprint_config.php_version,
+            wp: blueprint_config.wp_version,
+        },
+        phpExtensionBundles: [blueprint_config.php_extension_bundles],
+        features: blueprint_config.networking ? { networking: true } : {},
+        login: blueprint_config.login,
+        siteOptions: blueprint_config.siteOptions,
+        extraLibraries: blueprint_config.extra_libraries,
+        plugins: blueprint_config.plugins,
+        steps: [],
+    };
+
+    /**
+     * Prepares the schema by extracting attributes from blocks.
+     * Blocks' metadata is excluded to keep the schema clean.
+     */
+
+    const prepareSchema = useCallback(() => {
+        const blockAttributes = blocks.map((block) => {
+            const { metadata, ...rest } = block.attributes;
+            return rest;
+        });
+
+        schema.steps = blockAttributes;
+
+        const cleanedSchema = {
+            ...schema,
+            login: blueprint_config.login || undefined,
+            siteOptions: blueprint_config.siteOptions && Object.keys(blueprint_config.siteOptions).length > 0
+                ? blueprint_config.siteOptions : undefined,
+            extraLibraries: blueprint_config.extra_libraries && ['wp-cli'] || undefined,
+            plugins: blueprint_config.plugins && Object.keys(blueprint_config.plugins).length > 0
+                ? blueprint_config.plugins : undefined,
+        };
+
+        return JSON.stringify(cleanedSchema, null, 2);
+    }, [blocks, schema, blueprint_config]);
+
+    /**
+     * Updates the blueprint configuration stored in the post meta.
+     * @param {Object} updatedValues - Partial blueprint configuration to update.
+     */
+    const updateBlueprintConfig = (updatedValues) => {
+        editPost({ meta: { _blueprint_config: { ...blueprint_config, ...updatedValues } } });
+    };
+
+    return {
+        schema,
+        prepareSchema,
+        updateBlueprintConfig,
+        blueprint_config,
+    };
+};
+
+/**
+ * Updates the post meta with data from parsed JSON and triggers success/failure notices.
+ *
+ * @param {Object} data - Parsed JSON data from blueprint file.
+ * @param {Function} updateBlueprintConfig - Function to save new config.
+ * @param {Function} createNotice - Function to show admin notices.
+ */
+
+const handleJsonDataSubmit = (data, updateBlueprintConfig, createNotice) => {
+    if (!data) {
+        createNotice('error', __('Failed to update Blueprint configuration.', 'wp-playground-blueprint-editor'));
+        return;
+    }
+
+    updateBlueprintConfig({
+        landing_page: data.landingPage,
+        php_version: data.preferredVersions.php,
+        wp_version: data.preferredVersions.wp,
+        php_extension_bundles: data.phpExtensionBundles,
+        networking: data.features.networking || false,
+        login: data.login || false,
+        siteOptions: data.siteOptions || undefined,
+        extra_libraries: data.extraLibraries || undefined,
+        plugins: data.plugins || undefined,
+    });
+    createNotice('success', __('Blueprint configuration updated successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
+};
