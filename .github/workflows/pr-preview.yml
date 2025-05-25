@@ -1,0 +1,44 @@
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR Branch
+        uses: actions/checkout@v2
+
+      - name: Create new branch for Playground Preview
+        run: git checkout -b pr-${{ github.event.number }}-playground
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Install Composer Dependencies
+        run: composer install
+
+      - name: Run npm build
+        run: npm run build
+
+      - name: Add build files for Playground
+        run: |
+          git add -f build/
+          git add -f vendors/
+
+      - name: Commit build files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Add build and vendors folders for PR ${{ github.event.number }}"
+
+      - name: Share Playground detais on PR
+        run: |
+          echo "WordPress Playground PR [Preview](https://playground.wordpress.net?plugin=https://github-proxy.com/proxy/?repo=ajitbohra/visual-blueprint-builder&branch=pr-${{github.event.number}}-playground)."
+
+      - name: Delete playground branch
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' || github.event_name == 'pull_request' && github.event.action == 'deleted'
+        run: |
+          git push origin --delete pr-${{ github.event.number }}-playground
