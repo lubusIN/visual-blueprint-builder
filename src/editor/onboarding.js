@@ -62,9 +62,6 @@ const OnboardingModal = () => {
                 >
                     {__('Blank', 'wp-playground-blueprint-editor')}
                 </Button>
-                <Button variant="tertiary" onClick={handleClose}>
-                    {__('Skip', 'wp-playground-blueprint-editor')}
-                </Button>
             </Grid>
         </Modal>
     );
