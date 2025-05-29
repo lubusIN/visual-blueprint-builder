@@ -14,17 +14,20 @@ import {
     __experimentalHeading as Heading,
     __experimentalGrid as Grid,
     __experimentalVStack as VStack,
+    Spinner,
 } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
-import { handleBlueprintData } from './utils';
+import { handleBlueprintData, useBlueprintData } from './utils';
 
-function Gallery({ onSubmitData }) {
+function Gallery({ label = 'Gallery', icon = null, handleClose }) {
+    const { updateBlueprintConfig } = useBlueprintData();
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
     const [blueprintList, setBlueprintList] = useState(null);
+    const [importingBlueprint, setImportingBlueprint] = useState(null);
 
     /**
      * Fetches the list of blueprints from the remote JSON file.
@@ -59,14 +62,16 @@ function Gallery({ onSubmitData }) {
         },
         steps: []
     };
-    
+
     const fetchBlueprintDetails = async (blueprintName) => {
+        setImportingBlueprint(blueprintName);
+
         const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${blueprintName}`;
         try {
             const response = await fetch(blueprintUrl);
             if (!response.ok) throw new Error(`Failed to fetch blueprint details: ${response.statusText}`);
             const data = await response.json();
-    
+
             // Ensure default values for required properties
             const validatedData = {
                 preferredVersions: data.preferredVersions || defaultValues.preferredVersions,
@@ -74,17 +79,20 @@ function Gallery({ onSubmitData }) {
                 steps: data.steps || defaultValues.steps,
                 ...data, // Merge in other properties from the fetched data
             };
-    
+
             // Merge the updated steps and other data with default values
             const mergedData = {
                 ...defaultValues,
                 ...validatedData,
             };
-            
             // Pass the processed data to the handler
-            handleBlueprintData(mergedData, createNotice, onSubmitData);
+            await handleBlueprintData(mergedData, createNotice, updateBlueprintConfig);
         } catch (error) {
             createNotice('error', __('Error fetching blueprint from Gallery', 'wp-playground-blueprint-editor') + `: ${error.message}`);
+        } finally {
+            setImportingBlueprint(null); // Stop loader
+            setModalOpen(false);
+            if (handleClose) handleClose();
         }
     };
 
@@ -93,9 +101,15 @@ function Gallery({ onSubmitData }) {
             {/* Open modal button */}
             <Button
                 className='blueprint_gallery_json'
-                __next40pxDefaultSize
-                onClick={() => setModalOpen(true)}>
-                {__('Gallery', 'wp-playground-blueprint-editor')}
+                onClick={() => setModalOpen(true)}
+                icon={icon}
+                style={{
+                    height: '100%',
+                    flexDirection: 'column',
+                    padding: '13px'
+                }}
+            >
+                {__(label, 'wp-playground-blueprint-editor')}
             </Button>
 
             {/* Blueprint gallery modal */}
@@ -112,7 +126,6 @@ function Gallery({ onSubmitData }) {
                             {Object.entries(blueprintList).map(([blueprintName, blueprintDetails], index) => (
                                 <Card
                                     key={index}
-                                    elevation={3}
                                 >
                                     <CardBody style={{ height: '100%', justifyContent: 'space-between', display: 'flex', flexDirection: 'column' }}>
                                         {/* Blueprint Info */}
@@ -125,23 +138,31 @@ function Gallery({ onSubmitData }) {
                                             </Text>
                                             <Text
                                                 lineHeight={'1.5em'}
-                                                size={15}   
+                                                size={15}
                                                 color='#777'
-                                                style={{wordBreak: 'break-word'}}
+                                                style={{ wordBreak: 'break-word' }}
                                             >
                                                 {blueprintDetails.description}
                                             </Text>
-                                            </VStack>
+                                        </VStack>
                                         {/* Action Button */}
                                         <Button
                                             variant="secondary"
                                             style={{
                                                 borderRadius: '4px',
-                                                alignSelf: 'flex-end',   
+                                                alignSelf: 'flex-end',
+                                                marginTop: '16px'
                                             }}
                                             onClick={() => fetchBlueprintDetails(blueprintName)}
+                                            disabled={importingBlueprint === blueprintName}
                                         >
-                                            {__('Import', 'wp-playground-blueprint-editor')}
+                                            {importingBlueprint === blueprintName ? (
+                                                <>
+                                                    <Spinner /> {' '} {__('Importing...', 'wp-playground-blueprint-editor')}
+                                                </>
+                                            ) : (
+                                                __('Import', 'wp-playground-blueprint-editor')
+                                            )}
                                         </Button>
                                     </CardBody>
                                 </Card>
