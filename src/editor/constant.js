@@ -11,7 +11,8 @@ export const PLAYGROUND_BUILDER_BASE = "https://href.li/?https://playground.word
 /**
  * Playground blueprint schema url
  */
-export const PLAYGROUND_BLUEPRINT_SCHEMA_URL = "https://raw.githubusercontent.com/WordPress/wordpress-playground/refs/heads/trunk/packages/playground/blueprints/public/blueprint-schema.json";
+export const PLAYGROUND_BLUEPRINT_SCHEMA_URL = "https://playground.wordpress.net/blueprint-schema.json";
+export const PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH = "https://raw.githubusercontent.com/WordPress/wordpress-playground/refs/heads/trunk/packages/playground/blueprints/public/blueprint-schema.json";
 
 /**
  * PHP versions.
