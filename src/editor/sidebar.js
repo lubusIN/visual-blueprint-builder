@@ -25,7 +25,7 @@ import {
  * Internal dependencies.
  */
 import OpenJson from './open-json';
-import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE, PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
+import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE } from './constant';
 import Gallery from './blueprint-gallery';
 import SiteOptionsSettings from './site-options-settings';
 import PluginSettings from './plugins-settings';

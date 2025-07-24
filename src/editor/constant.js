@@ -1,12 +1,12 @@
 /**
  * Playground base url
  */
-export const PLAYGROUND_BASE = "https://playground.wordpress.net/#";
+export const PLAYGROUND_BASE = "https://href.li/?https://playground.wordpress.net/#";
 
 /**
  * Playground blueprint builder base url
  */
-export const PLAYGROUND_BUILDER_BASE = "https://playground.wordpress.net/builder/builder.html#";
+export const PLAYGROUND_BUILDER_BASE = "https://href.li/?https://playground.wordpress.net/builder/builder.html#";
 
 /**
  * Playground blueprint schema url
