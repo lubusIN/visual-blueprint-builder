@@ -82,7 +82,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
-            const branch = `pr-${prNumber}-playground`;
+            const branch = `playground-${prNumber}`;
 
             const blueprint = {
               "$schema": "https://playground.wordpress.net/blueprint-schema.json",
