@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { createBlock } from "@wordpress/blocks";
 import { dispatch, useSelect, useDispatch } from '@wordpress/data';
-import { PLAYGROUND_BLUEPRINT_SCHEMA_URL } from './constant';
+import { PLAYGROUND_BLUEPRINT_SCHEMA_URL, PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH } from './constant';
 import { useCallback } from '@wordpress/element';
 
 /**
@@ -88,7 +88,7 @@ const updateDeprecatedFields = (jsonData) => {
  */
 const validateAgainstSchema = async (data, createNotice) => {
     try {
-        const response = await fetch(PLAYGROUND_BLUEPRINT_SCHEMA_URL);
+        const response = await fetch(PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH);
         if (!response.ok) {
             throw new Error('Failed to fetch schema.');
         }
