@@ -24,7 +24,7 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-function Edit() {
+function Edit({isSelected}) {
 
 	return (
 		<p {...useBlockProps()}>
