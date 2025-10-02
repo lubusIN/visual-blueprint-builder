@@ -85,6 +85,14 @@ function Gallery({ icon = null, handleClose }) {
                 ...defaultValues,
                 ...validatedData,
             };
+
+            if (!Array.isArray(mergedData.steps) || mergedData.steps.length === 0) {
+                createNotice(
+                    'warning',
+                    __('No steps were found in this blueprint.', 'wp-playground-blueprint-editor')
+                );
+            }
+
             // Pass the processed data to the handler
             await handleBlueprintData(mergedData, createNotice, updateBlueprintConfig);
         } catch (error) {

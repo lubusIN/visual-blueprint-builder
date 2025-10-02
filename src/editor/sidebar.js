@@ -24,7 +24,7 @@ import {
  */
 import { Gallery, OpenJson, SiteOptionsSettings, PluginSettings, ConstantsSettings } from '../components/sidebar';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE } from './constant';
-import { useBlueprintData } from './utils';
+import { sanitizePreparedSchemaString, useBlueprintData } from './utils';
 
 /**
  * Main component for displaying blueprint sidebar setting.
@@ -44,7 +44,8 @@ function BlueprintSidebarSettings() {
     const handleDownload = () => {
         try {
             const preparedSchema = prepareSchema();
-            downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
+            const sanitized = sanitizePreparedSchemaString(preparedSchema);
+            downloadBlob('playground-blueprint.json', sanitized, 'application/json');
             createSuccessNotice(__('Blueprint downloaded successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
         } catch (error) {
             createErrorNotice(__('Failed to download Blueprint JSON.', 'wp-playground-blueprint-editor'));
@@ -63,8 +64,9 @@ function BlueprintSidebarSettings() {
         return prepareSchema();
     });
 
+    const sanitizedForUrl = sanitizePreparedSchemaString(prepareSchema());
     const minifiedBlueprintJson = btoa(
-        String.fromCharCode(...new Uint8Array(new TextEncoder().encode(prepareSchema())))
+        String.fromCharCode(...new Uint8Array(new TextEncoder().encode(sanitizedForUrl)))
     );
 
     return (

@@ -287,6 +287,21 @@ const handleJsonDataSubmit = (data, updateBlueprintConfig, createNotice) => {
 };
 
 /**
+ * Remove empty steps from a prepared schema JSON string.
+ */
+export const sanitizePreparedSchemaString = (schemaStr) => {
+    try {
+        const obj = JSON.parse(schemaStr);
+        if (!obj?.steps || (Array.isArray(obj.steps) && obj.steps.length === 0)) {
+            delete obj.steps;
+        }
+        return JSON.stringify(obj);
+    } catch (e) {
+        return schemaStr;
+    }
+}
+
+/**
  * Utility functions for managing key-value pairs.
  */
 
