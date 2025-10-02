@@ -14,28 +14,23 @@ import {
     Toolbar,
     ToolbarButton,
     ToggleControl,
-    Flex,
-    FlexBlock,
-    __experimentalVStack as VStack,
-    __experimentalHStack as HStack,
+    __experimentalGrid as Grid,
     __experimentalText as Text,
+    __experimentalHStack as HStack,
 } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
-import OpenJson from './open-json';
+import { Gallery, OpenJson, SiteOptionsSettings, PluginSettings, ConstantsSettings } from '../components/sidebar';
 import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE } from './constant';
-import Gallery from './blueprint-gallery';
-import SiteOptionsSettings from './site-options-settings';
-import PluginSettings from './plugins-settings';
 import { useBlueprintData } from './utils';
 
 /**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
-    const { createNotice } = useDispatch(noticesStore);
+    const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore);
     const {
         schema,
         prepareSchema,
@@ -50,9 +45,9 @@ function BlueprintSidebarSettings() {
         try {
             const preparedSchema = prepareSchema();
             downloadBlob('playground-blueprint.json', preparedSchema, 'application/json');
-            createNotice('success', __('Blueprint downloaded successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
+            createSuccessNotice(__('Blueprint downloaded successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
         } catch (error) {
-            createNotice('error', __('Failed to download Blueprint JSON.', 'wp-playground-blueprint-editor'));
+            createErrorNotice(__('Failed to download Blueprint JSON.', 'wp-playground-blueprint-editor'));
         }
     };
 
@@ -61,33 +56,30 @@ function BlueprintSidebarSettings() {
      */
     const handleCopy = useCopyToClipboard(() => {
         if (!schema.steps.length) {
-            createNotice('error', __('No Blueprint steps to copy!', 'wp-playground-blueprint-editor'));
+            createErrorNotice(__('No Blueprint steps to copy!', 'wp-playground-blueprint-editor'));
             return ''; // Return empty string for invalid data
         }
-        createNotice('success', __('Blueprint schema copied to clipboard!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
+        createSuccessNotice(__('Blueprint schema copied to clipboard!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
         return prepareSchema();
     });
 
+    const minifiedBlueprintJson = btoa(
+        String.fromCharCode(...new Uint8Array(new TextEncoder().encode(prepareSchema())))
+    );
 
     return (
         <>
-            <PluginPostStatusInfo>
-                <VStack spacing={5} style={{ width: '100%' }}>
-                    <Flex>
-                        <FlexBlock>
-                            <OpenJson />
-                        </FlexBlock>
-                        <FlexBlock>
-                            <Gallery />
-                        </FlexBlock>
-                    </Flex>
-                    <Toolbar style={{ justifyContent: 'space-between' }}>
-                        <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + btoa(prepareSchema())} target="_blank" />
-                        <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
-                        <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
-                        <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={encodeURI(PLAYGROUND_BUILDER_BASE + prepareSchema())} target="_blank" />
-                    </Toolbar>
-                </VStack>
+            <PluginPostStatusInfo className='playground-blueprint-sidebar'>
+                <Grid columns={2}>
+                    <OpenJson />
+                    <Gallery />
+                </Grid>
+                <Toolbar style={{ justifyContent: 'space-between' }}>
+                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + minifiedBlueprintJson} target="_blank" />
+                    <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
+                    <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
+                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={encodeURI(PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson)} target="_blank" />
+                </Toolbar>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
                 <DataForm
@@ -95,10 +87,9 @@ function BlueprintSidebarSettings() {
                         php_version: blueprint_config.php_version,
                         wp_version: blueprint_config.wp_version,
                         landing_page: blueprint_config.landing_page,
-                        php_extension_bundles: blueprint_config.php_extension_bundles,
-                        networking: blueprint_config.networking,
-                        login: blueprint_config.login,
-                        extra_libraries: blueprint_config.extra_libraries,
+                        networking: blueprint_config.networking || false,
+                        login: blueprint_config.login || false,
+                        extraLibraries: blueprint_config.extraLibraries || false,
                     }}
                     fields={[
                         {
@@ -117,15 +108,6 @@ function BlueprintSidebarSettings() {
                             id: 'landing_page',
                             label: __('Landing Page', 'wp-playground-blueprint-editor'),
                             type: 'text'
-                        },
-                        {
-                            id: 'php_extension_bundles',
-                            label: __('PHP Extension Bundles', 'wp-playground-blueprint-editor'),
-                            type: 'text',
-                            elements: [
-                                { label: __('Kitchen Sink', 'wp-playground-blueprint-editor'), value: 'kitchen-sink' },
-                                { label: __('Light', 'wp-playground-blueprint-editor'), value: 'light' },
-                            ]
                         },
                         {
                             id: 'networking',
@@ -164,7 +146,7 @@ function BlueprintSidebarSettings() {
                             },
                         },
                         {
-                            id: 'extra_libraries',
+                            id: 'extraLibraries',
                             label: __('Extra Libraries (WP-CLI)', 'wp-playground-blueprint-editor'),
                             type: 'integer',
                             Edit: ({ field, onChange, data, hideLabelFromVision }) => {
@@ -187,7 +169,6 @@ function BlueprintSidebarSettings() {
                             'php_version',
                             'wp_version',
                             'landing_page',
-                            'php_extension_bundles',
                             {
                                 id: 'networking',
                                 layout: 'regular',
@@ -199,7 +180,7 @@ function BlueprintSidebarSettings() {
                                 labelPosition: 'side',
                             },
                             {
-                                id: 'extra_libraries',
+                                id: 'extraLibraries',
                                 layout: 'regular',
                                 labelPosition: 'side',
                             },
@@ -213,7 +194,6 @@ function BlueprintSidebarSettings() {
                     marginTop: '6px'
                 }}>
                     <Text>Site Options</Text>
-                    {/* Site Options Button */}
                     <SiteOptionsSettings
                         attributes={{ siteOptions: blueprint_config.siteOptions }}
                         setAttributes={(updatedAttributes) =>
@@ -223,11 +203,19 @@ function BlueprintSidebarSettings() {
                 </HStack>
                 <HStack>
                     <Text>Plugins</Text>
-                    {/* Plugins Button */}
                     <PluginSettings
                         attributes={{ plugins: blueprint_config.plugins }}
                         setAttributes={(updatedAttributes) =>
                             updateBlueprintConfig({ plugins: updatedAttributes.plugins })
+                        }
+                    />
+                </HStack>
+                <HStack>
+                    <Text>WP Config Constants</Text>
+                    <ConstantsSettings
+                        attributes={{ constants: blueprint_config.constants }}
+                        setAttributes={(updatedAttributes) =>
+                            updateBlueprintConfig(updatedAttributes)
                         }
                     />
                 </HStack>
