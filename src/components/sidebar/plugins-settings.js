@@ -2,17 +2,15 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cog } from '@wordpress/icons';
+import { plus, trash, cog } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
 import {
     Modal,
     Button,
-    FormTokenField,
-    Spinner,
+    __experimentalInputControl as InputControl,
+    __experimentalHStack as HStack,
     __experimentalVStack as VStack,
-    __experimentalText as Text,
 } from '@wordpress/components';
-
 
 /**
  * Plugin Settings Component
@@ -24,67 +22,52 @@ import {
  * @returns {JSX.Element} The PluginSettings component.
  */
 function PluginSettings({ attributes = {}, setAttributes }) {
-    const { plugins = [] } = attributes;
+    const { plugins } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
-    const [isLoading, setLoading] = useState(false);
+    const [pluginList, setPluginList] = useState(plugins || []);
+
+    // Sync local state with attributes when plugins update
+    useEffect(() => {
+        setPluginList(plugins || []);
+    }, [plugins]);
 
     /**
-     * Fetch plugin suggestions from WordPress.org API
+     * Add new plugin
      */
-    const fetchPluginSuggestions = async (query) => {
-        if (!query || query.length < 2) {
-            setSuggestions([]);
+    const addPlugin = () => {
+        if (pluginList.some((plugin) => plugin === '')) {
             return;
         }
-
-        setLoading(true);
-        const url = `https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&request[search]=${encodeURIComponent(query)}&request[per_page]=10`;
-
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-
-            // Extract plugin slugs from the response
-            const pluginSlugs = (data.plugins || []).map(plugin => plugin.slug);
-            setSuggestions(pluginSlugs);
-        } catch (error) {
-            console.error('Error fetching plugins:', error);
-            setSuggestions([]);
-        } finally {
-            setLoading(false);
-        }
+        setPluginList([...pluginList, '']); // Add a new empty plugin entry
     };
 
     /**
-     * Handle search input change with debouncing
+     * Update a plugin entry
      */
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (searchTerm) {
-                fetchPluginSuggestions(searchTerm);
-            }
-        }, 300);
-
-        return () => clearTimeout(timer);
-    }, [searchTerm]);
-
-    /**
-     * Handle plugin tokens change
-     */
-    const handleTokensChange = (tokens) => {
-        setAttributes({ plugins: tokens });
+    const updatePlugin = (index, value) => {
+        const updatedList = pluginList.map((plugin, i) => (i === index ? value : plugin));
+        setPluginList(updatedList);
     };
 
     /**
-     * Close modal
+     * Delete a plugin entry
      */
-    const closeModal = () => {
+    const deletePlugin = (index) => {
+        setPluginList(pluginList.filter((_, i) => i !== index));
+    };
+
+    /**
+     * Save plugins to attributes
+     */
+    const savePlugins = () => {
+        const filteredList = pluginList.filter((plugin) => plugin.trim() !== '');
+        setAttributes({ plugins: filteredList });
+        setPluginList(filteredList);
         setModalOpen(false);
-        setSearchTerm('');
-        setSuggestions([]);
     };
+
+    // Disable the "Add Plugin" button if the last plugin is empty
+    const isAddButtonDisabled = pluginList.some((plugin) => plugin.trim() === '');
 
     return (
         <>
@@ -93,35 +76,38 @@ function PluginSettings({ attributes = {}, setAttributes }) {
             {isModalOpen && (
                 <Modal
                     title={__('Plugins', 'wp-playground-blueprint-editor')}
-                    onRequestClose={closeModal}
+                    onRequestClose={() => savePlugins()}
                     size="medium"
                 >
-                    <VStack spacing={4} className={'vpb-plugin-token-field'}>
-                        <Text>
-                            {__('Enter plugin slugs or URLs. Start typing to search WordPress.org plugins.', 'wp-playground-blueprint-editor')}
-                        </Text>
+                    <VStack spacing={4}>
+                        {pluginList.map((plugin, index) => (
+                            <HStack key={index} justify="space-between" alignment="center">
+                                <InputControl
+                                    label={__('Plugin', 'wp-playground-blueprint-editor')}
+                                    hideLabelFromVision
+                                    value={plugin}
+                                    placeholder={__('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
+                                    __next40pxDefaultSize
+                                    __unstableInputWidth={'400px'}
+                                    onChange={(value) => updatePlugin(index, value)}
+                                />
+                                <Button
+                                    isDestructive
+                                    icon={trash}
+                                    label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
+                                    onClick={() => deletePlugin(index)}
+                                    style={{ width: '40px' }}
+                                />
+                            </HStack>
+                        ))}
 
-                        <FormTokenField
-                            value={plugins}
-                            suggestions={suggestions}
-                            onChange={handleTokensChange}
-                            onInputChange={setSearchTerm}
-                            placeholder={__('Type to search or enter plugin slug/URL', 'wp-playground-blueprint-editor')}
-                            __experimentalShowHowTo={false}
+                        <Button
+                            icon={plus}
+                            variant="secondary"
+                            label={__('Add Plugin', 'wp-playground-blueprint-editor')}
+                            onClick={addPlugin}
+                            disabled={isAddButtonDisabled}
                         />
-
-                        {isLoading && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Spinner />
-                                <Text>{__('Searching plugins...', 'wp-playground-blueprint-editor')}</Text>
-                            </div>
-                        )}
-
-                        {plugins.length > 0 && (
-                            <Text variant="muted">
-                                {__(`${plugins.length} plugin(s) added`, 'wp-playground-blueprint-editor')}
-                            </Text>
-                        )}
                     </VStack>
                 </Modal>
             )}
