@@ -84,8 +84,9 @@ function PluginSettings({ attributes = {}, setAttributes }) {
                             <HStack key={index} justify="space-between" alignment="center">
                                 <InputControl
                                     label={__('Plugin', 'wp-playground-blueprint-editor')}
+                                    hideLabelFromVision
                                     value={plugin}
-                                    placeholder={ __('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
+                                    placeholder={__('Enter plugin slug or URL', 'wp-playground-blueprint-editor')}
                                     __next40pxDefaultSize
                                     __unstableInputWidth={'400px'}
                                     onChange={(value) => updatePlugin(index, value)}
@@ -95,7 +96,7 @@ function PluginSettings({ attributes = {}, setAttributes }) {
                                     icon={trash}
                                     label={__('Delete Plugin', 'wp-playground-blueprint-editor')}
                                     onClick={() => deletePlugin(index)}
-                                    style={{ width: '40px', marginTop: '24px' }}
+                                    style={{ width: '40px' }}
                                 />
                             </HStack>
                         ))}

@@ -37,7 +37,9 @@ const formatNumber = (num) => {
 /**
  * Theme Component
  */
-const ThemeComponent = ({ item, onSelect }) => {
+const ThemeComponent = ({ item, onSelect, selectedSlug }) => {
+	const isSelected = selectedSlug === item.slug;
+
 	return (
 		<Card key={item.slug} size="small">
 			<CardBody style={{ padding: '0' }}>
@@ -48,10 +50,14 @@ const ThemeComponent = ({ item, onSelect }) => {
 					<HStack align="center">
 						<Heading level={5}>{item.name}</Heading>
 						<Button
-							variant="secondary"
+							variant={isSelected ? "primary" : "secondary"}
 							style={{ borderRadius: '4px' }}
-							onClick={() => onSelect(item.slug)}>
-							{__('Select', 'wp-playground-blueprint-editor')}
+							onClick={() => onSelect(item.slug)}
+							disabled={isSelected}>
+							{isSelected
+								? __('Selected', 'wp-playground-blueprint-editor')
+								: __('Select', 'wp-playground-blueprint-editor')
+							}
 						</Button>
 					</HStack>
 				</CardBody>
@@ -63,7 +69,9 @@ const ThemeComponent = ({ item, onSelect }) => {
 /**
  * Plugin Component
  */
-const PluginComponent = ({ item, onSelect }) => {
+const PluginComponent = ({ item, onSelect, selectedSlug }) => {
+	const isSelected = selectedSlug === item.slug;
+
 	return (
 		<Card key={item.slug} size="small">
 			<CardBody style={{ height: '100%' }}>
@@ -106,10 +114,14 @@ const PluginComponent = ({ item, onSelect }) => {
 					</VStack>
 					<HStack justify='right'>
 						<Button
-							variant="secondary"
+							variant={isSelected ? "primary" : "secondary"}
 							style={{ borderRadius: '4px' }}
-							onClick={() => onSelect(item.slug)} >
-							{__('Select', 'wp-playground-blueprint-editor')}
+							onClick={() => onSelect(item.slug)}
+							disabled={isSelected}>
+							{isSelected
+								? __('Selected', 'wp-playground-blueprint-editor')
+								: __('Select', 'wp-playground-blueprint-editor')
+							}
 						</Button>
 					</HStack>
 				</VStack>
@@ -121,7 +133,7 @@ const PluginComponent = ({ item, onSelect }) => {
 /**
  * Theme & Plugin Picker
  */
-function Picker({ type, onSelect }) {
+function Picker({ type, onSelect, selectedSlug }) {
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState('');
 	const [results, setResults] = useState([]);
@@ -212,9 +224,9 @@ function Picker({ type, onSelect }) {
 								<Grid columns={2} gap={5}>
 									{(searchTerm ? results : popularItems).map((item) =>
 										type === 'themes' ? (
-											<ThemeComponent key={item.slug} item={item} onSelect={handleSelectItem} />
+											<ThemeComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
 										) : (
-											<PluginComponent key={item.slug} item={item} onSelect={handleSelectItem} />
+											<PluginComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
 										)
 									)}
 								</Grid>

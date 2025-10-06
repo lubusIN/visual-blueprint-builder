@@ -35,6 +35,7 @@ export const PHP_VERSIONS = [
  */
 export const WP_VERSIONS = [
     { label: 'Wordpress nightly', value: 'nightly' },
+    { label: 'Latest', value: 'latest' },
     { label: '6.7', value: '6.7' },
     { label: '6.6', value: '6.6' },
     { label: '6.5', value: '6.5' },

@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies.
  */
-import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { useState, useEffect } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { cog, plus, trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
@@ -21,6 +21,14 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import {
+	addKeyValuePair,
+	updateKeyValuePair,
+	removeKeyValuePair,
+	filterEmptyKeyValuePairs,
+	isAddButtonDisabled as checkAddButtonDisabled,
+	keyValuePairsToObject
+} from '../../editor/utils';
 
 /**
  * Edit function for the plugin installation block.
@@ -35,48 +43,35 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const [selectedConfig, setSelectedConfig] = useState(undefined);
 
 	useEffect(() => {
-		const filteredList = configList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
-		setAttributes({ consts: Object.fromEntries(filteredList)});
-		
+		setAttributes({ consts: keyValuePairsToObject(configList) });
+
 		if (!isSelected) {
 			handleClose();
 		}
 	}, [configList, isSelected]);
 
 	const addConfig = () => {
-		if (configList.some(([key, value]) => key === '' && value === '')) {
-			return;
-		}
-		// Update list
-		updateConfigList([...configList, ['', '']]);
+		addKeyValuePair(configList, updateConfigList);
 	};
 
 	const updateConfig = (index, field, fieldValue) => {
-		const updated = configList.map(([key, value], i) => {
-			if (i === index) {
-				return field === 'key' ? [fieldValue, value] : [key, fieldValue];
-			}
-			return [key, value];
-		});
-		updateConfigList(updated);
+		updateKeyValuePair(configList, updateConfigList, index, field, fieldValue);
 	};
 
 	const removeConfig = () => {
-		updateConfigList(configList.filter((config, index) => index !== selectedConfig));
+		removeKeyValuePair(configList, updateConfigList, selectedConfig);
 	};
 
 	/**
 	 * Remove blank option when clicking outside or closing
 	 */
 	const handleClose = () => {
-		updateConfigList(configList.filter(([key, value]) => key.trim() && value.trim()));
+		filterEmptyKeyValuePairs(configList, updateConfigList);
 		setIsOpen(false);
 	};
 
-	// Disable Add Button if the last entry has an empty key or value
-	const isAddButtonDisabled =
-		configList.length > 0 &&
-		(configList[configList.length - 1][0] === '' || configList[configList.length - 1][1] === '');
+	// Check if Add Button should be disabled
+	const isAddButtonDisabled = checkAddButtonDisabled(configList);
 
 	return (
 		<div {...useBlockProps()}>
@@ -89,7 +84,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
 									<Text weight={600}>
-										{(<pre style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(consts, null, " ")}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
+										{(<pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(consts, null, " ")}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
 									</Text>
 								)}
 							</VStack>

@@ -13,6 +13,8 @@ import {
 	__experimentalVStack as VStack,
 	__experimentalHStack as HStack,
 	__experimentalText as Text,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 
 /**
@@ -29,6 +31,37 @@ import metadata from './block.json';
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { path, data } = attributes;
 
+	// Determine the current data type
+	const dataType = typeof data === 'string' ? 'string' : 'url';
+	const stringValue = typeof data === 'string' ? data : '';
+	const urlValue = typeof data === 'object' && data?.url ? data.url : '';
+
+	const handleDataTypeChange = (value) => {
+		// Only change if switching to a different type
+		if (value === dataType) {
+			return;
+		}
+
+		if (value === 'string') {
+			setAttributes({ data: stringValue || '' });
+		} else {
+			setAttributes({
+				data: {
+					resource: 'url',
+					url: urlValue || ''
+				}
+			});
+		}
+	};
+	const handleUrlChange = (value) => {
+		setAttributes({
+			data: {
+				resource: 'url',
+				url: value
+			}
+		});
+	};
+
 	return (
 		<p {...useBlockProps()}>
 			<Placeholder
@@ -44,20 +77,52 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							</VStack>
 						</HStack>
 						{isSelected && (
-							<VStack>
+							<VStack spacing={3}>
 								<TextControl
 									label={__('Path', 'wp-playground-blueprint-editor')}
-									value={path}
+									value={path || ''}
 									placeholder={__('The path of the file to write to', 'wp-playground-blueprint-editor')}
 									onChange={(value) => setAttributes({ path: value })}
 								/>
-								<TextareaControl
-									__nextHasNoMarginBottom
+
+								<ToggleGroupControl
 									label={__('Data', 'wp-playground-blueprint-editor')}
-									onChange={(value) => setAttributes({ data: value })}
-									placeholder={__('The data to write', 'wp-playground-blueprint-editor')}
-									value={data}
-								/>
+									value={dataType}
+									onChange={handleDataTypeChange}
+									__next40pxDefaultSize
+									__nextHasNoMarginBottom
+									isBlock
+								>
+									<ToggleGroupControlOption
+										value="string"
+										label={__('Text', 'wp-playground-blueprint-editor')}
+									/>
+									<ToggleGroupControlOption
+										value="url"
+										label={__('File URL', 'wp-playground-blueprint-editor')}
+									/>
+								</ToggleGroupControl>
+
+								{dataType === 'string' ? (
+									<TextareaControl
+										__nextHasNoMarginBottom
+										label={__('Content', 'wp-playground-blueprint-editor')}
+										hideLabelFromVision
+										onChange={(value) => setAttributes({ data: value })}
+										placeholder={__('The data to write', 'wp-playground-blueprint-editor')}
+										value={stringValue}
+										rows={6}
+									/>
+								) : (
+									<TextControl
+										label={__('File URL', 'wp-playground-blueprint-editor')}
+										hideLabelFromVision
+										value={urlValue}
+										placeholder={__('https://example.com/file.txt', 'wp-playground-blueprint-editor')}
+										onChange={handleUrlChange}
+										type="url"
+									/>
+								)}
 							</VStack>
 						)}
 					</VStack>

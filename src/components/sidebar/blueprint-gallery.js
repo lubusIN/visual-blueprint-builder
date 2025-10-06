@@ -20,9 +20,9 @@ import {
 /**
  * Internal dependencies
  */
-import { handleBlueprintData, useBlueprintData } from './utils';
+import { handleBlueprintData, useBlueprintData } from '../../editor/utils';
 
-function Gallery({ label = 'Gallery', icon = null, handleClose }) {
+function Gallery({ icon = null, handleClose }) {
     const { updateBlueprintConfig } = useBlueprintData();
     const { createNotice } = useDispatch(noticesStore);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -85,6 +85,14 @@ function Gallery({ label = 'Gallery', icon = null, handleClose }) {
                 ...defaultValues,
                 ...validatedData,
             };
+
+            if (!Array.isArray(mergedData.steps) || mergedData.steps.length === 0) {
+                createNotice(
+                    'warning',
+                    __('No steps were found in this blueprint.', 'wp-playground-blueprint-editor')
+                );
+            }
+
             // Pass the processed data to the handler
             await handleBlueprintData(mergedData, createNotice, updateBlueprintConfig);
         } catch (error) {
@@ -103,13 +111,8 @@ function Gallery({ label = 'Gallery', icon = null, handleClose }) {
                 className='blueprint_gallery_json'
                 onClick={() => setModalOpen(true)}
                 icon={icon}
-                style={{
-                    height: '100%',
-                    flexDirection: 'column',
-                    padding: '13px'
-                }}
             >
-                {__(label, 'wp-playground-blueprint-editor')}
+                {__('Gallery', 'wp-playground-blueprint-editor')}
             </Button>
 
             {/* Blueprint gallery modal */}

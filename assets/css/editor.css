@@ -8,16 +8,13 @@ body.editor-styles-wrapper {
 
 .editor-styles-wrapper
   .is-root-container
-  .block-editor-block-list__block.wp-block:not(:first-child, :last-child) {
+  .block-editor-block-list__block.wp-block:not(:first-child) {
   margin-top: 65px;
 }
 
 .editor-styles-wrapper
   .is-root-container
-  .block-editor-block-list__block.wp-block:not(
-    :first-child,
-    :last-child
-  )::before {
+  .block-editor-block-list__block.wp-block:not(:first-child)::before {
   content: "";
   position: absolute;
   width: 1.5px;
@@ -93,6 +90,7 @@ body.editor-styles-wrapper {
   background: #f5f8f7;
   padding: 6px;
   border-radius: 4px;
+  margin-bottom: auto;
 }
 
 .custom-skeleton {
@@ -132,8 +130,8 @@ body.editor-styles-wrapper {
   .dataforms-layouts-panel__dropdown-header {
   margin-bottom: 16px;
 }
-.dataforms-layouts-regular__field{
-  min-height: 32px!important
+.dataforms-layouts-regular__field {
+  min-height: 32px !important;
 }
 .blueprint_gallery_json {
   box-shadow: inset 0 0 0 1px #ccc;
@@ -141,3 +139,52 @@ body.editor-styles-wrapper {
   justify-content: center;
   position: relative;
 }
+
+.playground-blueprint-sidebar {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.wp-playground-onboarding-modal .components-grid button,
+.playground-blueprint-sidebar .components-grid .components-button {
+  height: 100% !important;
+  flex-direction: column;
+  padding: 13px !important;
+  justify-content: space-between !important;
+  gap: 6px;
+}
+
+.wp-playground-onboarding-modal .components-grid button:last-child {
+  box-shadow: inset 0 0 0 1px #ccc;
+}
+
+.vpb-tree-children-key .components-base-control {
+  width: 100%;
+}
+
+.vpb-object-tree {
+  td:nth-child(2) {
+    padding-inline-start: 10px;
+    padding-inline-end: 10px;
+  }
+  td {
+    padding-bottom: 10px;
+  }
+}
+
+.vpb-plugin-token-field label {
+  display: none !important;
+}
+
+/* .dataforms-layouts-panel__field-label,
+.dataforms-layouts-regular__field-label {
+  align-items: center;
+  display: flex;
+  flex-shrink: 0;
+  hyphens: auto;
+  line-height: 20px;
+  min-height: 32px;
+  padding: 6px 0;
+  width: 50%;
+} */

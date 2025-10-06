@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies.
  */
-import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { useState, useEffect } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { postAuthor, plus, trash } from '@wordpress/icons';
 import { useBlockProps } from '@wordpress/block-editor';
@@ -10,6 +10,7 @@ import {
 	Placeholder,
 	Button,
 	Icon,
+	__experimentalGrid as Grid,
 	__experimentalConfirmDialog as ConfirmDialog,
 	__experimentalInputControl as InputControl,
 	__experimentalHStack as HStack,
@@ -21,6 +22,14 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import {
+	addKeyValuePair,
+	updateKeyValuePair,
+	removeKeyValuePair,
+	filterEmptyKeyValuePairs,
+	isAddButtonDisabled as checkAddButtonDisabled,
+	keyValuePairsToObject
+} from '../../editor/utils';
 
 /**
  * Edit function for the plugin installation block.
@@ -35,48 +44,35 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const [selectedMeta, setSelectedMeta] = useState(undefined);
 
 	useEffect(() => {
-		const filteredMetaList = metaList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
-		setAttributes({ meta: Object.fromEntries(filteredMetaList)});
+		setAttributes({ meta: keyValuePairsToObject(metaList) });
 
 		if (!isSelected) {
-            handleClose();
-        }	
+			handleClose();
+		}
 	}, [metaList, isSelected]);
 
 	const addOption = () => {
-		if (metaList.some(([key, value]) => key === '' && value === '')) {
-			return;
-		}
-		// Update list
-		updateMetaList([...metaList,['', '']]);
+		addKeyValuePair(metaList, updateMetaList);
 	};
 
 	const updateOption = (index, field, fieldValue) => {
-		const updated = metaList.map(([key, value], i) => {
-			if (i === index) {
-				return field === 'key' ? [fieldValue, value] : [key, fieldValue];
-			}
-			return [key, value];
-		});
-		updateMetaList(updated);
+		updateKeyValuePair(metaList, updateMetaList, index, field, fieldValue);
 	};
 
 	const removeOption = () => {
-		updateMetaList(metaList.filter((meta, index) => index !== selectedMeta));
+		removeKeyValuePair(metaList, updateMetaList, selectedMeta);
 	};
 
 	/**
 	 * Remove blank option when clicking outside or closing
 	 */
 	const handleClose = () => {
-		updateMetaList(metaList.filter(([key, value]) => key.trim() && value.trim()));
+		filterEmptyKeyValuePairs(metaList, updateMetaList);
 		setIsOpen(false);
 	};
 
-	// Disable Add Button if the last entry has an empty key or value
-	const isAddButtonDisabled =
-	metaList.length > 0 &&
-		(metaList[metaList.length - 1][0] === '' || metaList[metaList.length - 1][1] === '');
+	// Check if Add Button should be disabled
+	const isAddButtonDisabled = checkAddButtonDisabled(metaList);
 
 	return (
 		<div {...useBlockProps()}>
@@ -90,7 +86,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								{!isSelected && (
 									<VStack>
 										<Text weight={600}>
-											{meta ? <pre style={{whiteSpace: 'pre-wrap'}}>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
+											{meta ? <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
 										</Text>
 										<Text weight={600}>
 											{userId ? `${__('for UserId', 'wp-playground-blueprint-editor')} ${userId}` : __('{user Id}', 'wp-playground-blueprint-editor')}
@@ -103,47 +99,48 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<VStack spacing={4}>
 								{metaList.map(([key, value], index) => {
 									return (
-										<HStack key={index} justify="space-between" alignment="center">
+										<Grid templateColumns={'auto auto 40px'}>
 											<InputControl
 												label={__('Name', 'wp-playground-blueprint-editor')}
 												value={key}
 												__next40pxDefaultSize
-												__unstableInputWidth="200px"
+												__unstableInputWidth="100%"
 												onChange={(value) => updateOption(index, 'key', value)}
 											/>
 											<InputControl
 												label={__('Value', 'wp-playground-blueprint-editor')}
 												value={value}
 												__next40pxDefaultSize
-												__unstableInputWidth="200px"
+												__unstableInputWidth="100%"
 												onChange={(value) => updateOption(index, 'value', value)}
 											/>
 											<Button
 												isDestructive
 												icon={trash}
-												label={__('Delete Config', 'wp-playground-blueprint-editor')}
+												label={__('Delete Item', 'wp-playground-blueprint-editor')}
 												onClick={() => {
 													setSelectedMeta(index);
 													setIsOpen(true);
 												}}
 												style={{ width: '40px', marginTop: '24px' }}
 											/>
-										</HStack>
+										</Grid>
 									)
 								})}
-								<HStack justify='left'>
-									<InputControl
-										label={__('User Id', 'wp-playground-blueprint-editor')}
-										value={userId}
-										onChange={(value) => setAttributes({ userId: Number(value) })}
-									/>
-								</HStack>
 								<Button
 									icon={plus}
 									variant="secondary"
-									label={__('Add Option', 'wp-playground-blueprint-editor')}
+									label={__('Add Item', 'wp-playground-blueprint-editor')}
 									onClick={addOption}
 									disabled={isAddButtonDisabled}
+								/>
+								<InputControl
+									label={__('User Id', 'wp-playground-blueprint-editor')}
+									type='number'
+									value={userId}
+									__next40pxDefaultSize
+									__unstableInputWidth="120px"
+									onChange={(value) => setAttributes({ userId: Number(value) })}
 								/>
 							</VStack>
 						)}
@@ -161,7 +158,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 			>
 				{__('Delete User Meta?', 'wp-playground-blueprint-editor')}
 			</ConfirmDialog>
-		</div >
+		</div>
 	);
 }
 

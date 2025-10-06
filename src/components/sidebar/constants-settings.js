@@ -13,63 +13,64 @@ import {
 } from '@wordpress/components';
 
 /**
- * Site Options Settings Component
+ * Constants Settings Component
  * 
  * @param {Object} props - The props for the component.
- * @param {Object} props.attributes - The block's attributes, containing `siteOptions`.
+ * @param {Object} props.attributes - The block's attributes, containing `constants.
  * @param {Function} props.setAttributes - Function to update the block's attributes.
  * 
- * @returns {JSX.Element} The SiteOptionsSettings component.
+ * @returns {JSX.Element} The ConstantsSettings component.
  */
-function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
-    const { siteOptions } = attributes;
+function ConstantsSettings({ attributes = {}, setAttributes, }) {
+    const { constants } = attributes;
     const [isModalOpen, setModalOpen] = useState(false);
-    const [optionList, updateOptionList] = useState(Object.entries(siteOptions || {}));
+    const [constantsList, updateConstantsList] = useState(Object.entries(constants || {}));
 
-    // Sync local state with attributes when siteOptions updates
+    // Sync local state with attributes when constants updates
     useEffect(() => {
-        updateOptionList(Object.entries(siteOptions || {}));
-    }, [siteOptions]);
+        updateConstantsList(Object.entries(constants || {}));
+    }, [constants]);
+
     /**
      * Add new option
      */
     const addOption = () => {
         // Prevent adding duplicate empty entries
-        if (optionList.some(([key, value]) => key === '' && value === '')) {
+        if (constantsList.some(([key, value]) => key === '' && value === '')) {
             return;
         }
-        updateOptionList([...optionList, ['', '']]);
+        updateConstantsList([...constantsList, ['', '']]);
     };
 
     /**
      * Update option
      */
     const updateOption = (index, field, fieldValue) => {
-        const updatedList = optionList.map(([key, value], i) => {
+        const updatedList = constantsList.map(([key, value], i) => {
             if (i === index) {
                 return field === 'key' ? [fieldValue, value] : [key, fieldValue];
             }
             return [key, value];
         });
-        updateOptionList(updatedList);
+        updateConstantsList(updatedList);
     };
 
     /**
      * Delete option
      */
     const deleteOption = (key) => {
-        updateOptionList(optionList.filter((_, index) => index !== key));
+        updateConstantsList(constantsList.filter((_, index) => index !== key));
     };
 
     const saveOptions = () => {
-        const filteredOptions = optionList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
-        setAttributes({ siteOptions: Object.fromEntries(filteredOptions) });
-        updateOptionList(filteredOptions);
+        const filteredOptions = constantsList.filter(([key, value]) => key.trim() !== '' && value.trim() !== '');
+        setAttributes({ constants: Object.fromEntries(filteredOptions) });
+        updateConstantsList(filteredOptions);
         setModalOpen(false);
     };
 
     // Check if the last entry has an empty key or value
-    const isAddButtonDisabled = optionList.length > 0 && (optionList[optionList.length - 1][0] === '' || optionList[optionList.length - 1][1] === '');
+    const isAddButtonDisabled = constantsList.length > 0 && (constantsList[constantsList.length - 1][0] === '' || constantsList[constantsList.length - 1][1] === '');
 
     return (
         <>
@@ -77,12 +78,12 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
             <Button icon={cog} iconSize={30} onClick={() => setModalOpen(true)} />
             {isModalOpen && (
                 <Modal
-                    title={__('Site Options', 'wp-playground-blueprint-editor')}
+                    title={__('WP Config Constants', 'wp-playground-blueprint-editor')}
                     onRequestClose={() => saveOptions()}
                     size='medium'
                 >
                     <VStack spacing={4}>
-                        {optionList.map(([key, value], index) => (
+                        {constantsList.map(([key, value], index) => (
                             <HStack key={index} justify='space-between' alignment='center'>
                                 <InputControl
                                     label={__('Name', 'wp-playground-blueprint-editor')}
@@ -101,7 +102,7 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
                                 <Button
                                     isDestructive
                                     icon={trash}
-                                    label={__('Delete Config', 'wp-playground-blueprint-editor')}
+                                    label={__('Delete Constant', 'wp-playground-blueprint-editor')}
                                     onClick={() => deleteOption(index)}
                                     style={{ width: '40px', marginTop: '24px' }}
                                 />
@@ -110,7 +111,7 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
                         <Button
                             icon={plus}
                             variant={'secondary'}
-                            label={__('Add Option', 'wp-playground-blueprint-editor')}
+                            label={__('Add Constant', 'wp-playground-blueprint-editor')}
                             onClick={addOption}
                             disabled={isAddButtonDisabled}
                         />
@@ -121,4 +122,4 @@ function SiteOptionsSettings({ attributes = {}, setAttributes, }) {
     );
 }
 
-export default SiteOptionsSettings;
+export default ConstantsSettings;

@@ -1,11 +1,31 @@
+/**
+ * WordPress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 import { useDispatch } from '@wordpress/data';
 import { FormFileUpload, DropZone, Spinner } from '@wordpress/components';
 import { store as noticesStore } from '@wordpress/notices';
-import { handleBlueprintData, useBlueprintData } from './utils'
 import { useState } from '@wordpress/element';
 
-const OpenJson = ({ label = 'Open', icon = null, handleClose }) => {
+/**
+ * Internal dependencies
+ */
+import { handleBlueprintData, useBlueprintData } from '../../editor/utils'
+
+/**
+ * Renders an OpenJson component.
+ *
+ * The component renders a form file upload component that accepts JSON files.
+ * When a valid JSON file is uploaded, the component processes the file content
+ * and updates the blueprint config in the WordPress editor.
+ *
+ * The component also renders a spinner when the JSON file is being processed.
+ *
+ * @param {Object} props - Component props.
+ * @param {ReactElement} [props.icon=null] - The icon of the component.
+ * @param {Function} [props.handleClose] - A function to be called when the component is closed.
+ */
+const OpenJson = ({ icon = null, handleClose }) => {
     const { createNotice } = useDispatch(noticesStore);
     const { updateBlueprintConfig } = useBlueprintData();
     const [isUploadingJson, setIsUploadingJson] = useState(false);
@@ -50,18 +70,12 @@ const OpenJson = ({ label = 'Open', icon = null, handleClose }) => {
         }
     };
 
-
     return (
         <FormFileUpload
             className='upload_blueprint_json'
             accept="application/json"
             onChange={handleFileSelection}
             icon={null}
-            style={{
-                height: '100%',
-                flexDirection: 'column',
-                padding: '13px'
-            }}
         >
             {!isUploadingJson && (<>
                 {icon && (
@@ -69,7 +83,7 @@ const OpenJson = ({ label = 'Open', icon = null, handleClose }) => {
                         {icon}
                     </span>
                 )}
-                {__(label, 'wp-playground-blueprint-editor')}
+                {__('Import JSON', 'wp-playground-blueprint-editor')}
             </>)}
             {isUploadingJson && (<Spinner style={{ margin: 0 }} />)}
             <DropZone

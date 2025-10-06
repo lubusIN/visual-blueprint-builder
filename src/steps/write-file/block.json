@@ -20,7 +20,22 @@
 			"type": "string"
 		},
 		"data": {
-			"type": "string"
+			"type": [
+				"string",
+				"object"
+			],
+			"default": "",
+			"properties": {
+				"resource": {
+					"type": "string",
+					"default": "url"
+				},
+				"url": {
+					"type": "string",
+					"default": ""
+				}
+			},
+			"additionalProperties": false
 		}
 	},
 	"textdomain": "wp-playground-blueprint-editor",
