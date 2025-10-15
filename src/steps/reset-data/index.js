@@ -24,7 +24,7 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-function Edit({isSelected}) {
+function Edit() {
 
 	return (
 		<p {...useBlockProps()}>
@@ -34,11 +34,9 @@ function Edit({isSelected}) {
 						<Icon icon={reusableBlock} size={28} className='step-icon' />
 						<VStack spacing={1}>
 							<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-							{!isSelected && (
-								<Text weight={600}>
-									{__('Delete WordPress posts and comments', 'wp-playground-blueprint-editor')}
-								</Text>
-							)}
+							<Text weight={600}>
+								{__('Delete WordPress posts and comments', 'wp-playground-blueprint-editor')}
+							</Text>
 						</VStack>
 					</HStack>
 				}
