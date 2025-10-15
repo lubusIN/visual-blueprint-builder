@@ -156,7 +156,13 @@ export const handleBlueprintData = async (jsonData, createNotice, updateBlueprin
         const { validBlocks, invalidSteps } = validateBlueprintSteps(steps);
 
         if (validBlocks.length > 0) {
-            dispatch('core/block-editor').insertBlocks(validBlocks);
+            dispatch('core/block-editor').insertBlocks(
+                validBlocks,
+                undefined,
+                undefined,
+                false,
+                null
+            );
             createNotice(
                 'success',
                 __('Blueprint imported successfully.', 'wp-playground-blueprint-editor'),
