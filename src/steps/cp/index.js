@@ -39,7 +39,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
 								{!isSelected && (
 									<Text weight={600}>
-										{`${fromPath || __('From Path', 'wp-playground-blueprint-editor')} > ${toPath || __('To Path', 'wp-playground-blueprint-editor')}`}
+										{fromPath && toPath
+											? __(
+												`Copy all files and folders from “${fromPath}” to “${toPath}”.`,
+												'wp-playground-blueprint-editor'
+											)
+											: __(
+												'Copy all files and folders from the "From Path" location to the "To Path" location.',
+												'wp-playground-blueprint-editor'
+											)}
 									</Text>
 								)}
 							</VStack>
