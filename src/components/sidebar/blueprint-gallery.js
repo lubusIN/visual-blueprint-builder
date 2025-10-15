@@ -28,8 +28,8 @@ import { handleBlueprintData, useBlueprintData } from '../../editor/utils';
  * Blueprints Gallery component.
  *
  * @param {object} props - Component props.
- * @param {JSX.Element} [props.icon] - Icon to display in the button.
- * @param {function} [props.handleClose] - Callback function to close the modal.
+ * @param {JSX.Element} props.icon - Icon to display in the button.
+ * @param {function} props.handleClose - Callback function to close the modal.
  */
 function Gallery({ icon = null, handleClose }) {
     const { updateBlueprintConfig } = useBlueprintData();
