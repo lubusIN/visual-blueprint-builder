@@ -108,8 +108,8 @@ jobs:
                   "step": "installPlugin",
                   "pluginData": {
                     "resource": "git:directory",
-                    "url": 'https://github.com/lubusIN/visual-blueprint-builder/'
-                    "ref": branch,
+                    "url": 'https://github.com/lubusIN/visual-blueprint-builder/',
+                    "ref": branch
                   }
                 }
               ]
