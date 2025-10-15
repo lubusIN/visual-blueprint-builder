@@ -34,7 +34,7 @@ import { Picker } from '../../components';
  */
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { themeData, options } = attributes;
-	const { resource, path, url, slug } = themeData;
+	const { resource, path, url, slug, ref } = themeData;
 	const { activate, importStarterContent } = options;
 
 	const handleResourceChange = (newResource) => {
@@ -44,11 +44,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 
 		// Conditionally add attributes based on the selected resource
 		if (newResource === 'vfs') {
-			newAttributes.path = themeData.path || '';
+			newAttributes.path = '';
 		} else if (newResource === 'url') {
-			newAttributes.url = themeData.url || '';
+			newAttributes.url = '';
 		} else if (newResource === 'wordpress.org/themes') {
-			newAttributes.slug = themeData.slug || '';
+			newAttributes.slug = '';
+		} else if (newResource === 'git:directory') {
+			newAttributes.ref = '';
+			newAttributes.path = '';
+			newAttributes.url = '';
 		}
 
 		setAttributes({
@@ -71,6 +75,8 @@ function Edit({ attributes, setAttributes, isSelected }) {
 				return url;
 			case 'vfs':
 				return path;
+			case 'git:directory':
+				return `${ref || 'latest'}${path ? ` > ${path}` : ''}`;
 			default:
 				return slug;
 		}
@@ -94,6 +100,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 							<>
 								<ToggleGroupControl
 									label={__('Resource', 'wp-playground-blueprint-editor')}
+									__nextHasNoMarginBottom
 									value={resource}
 									isBlock
 									onChange={handleResourceChange}
@@ -101,21 +108,24 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									<ToggleGroupControlOption value="url" label={__('URL', 'wp-playground-blueprint-editor')} />
 									<ToggleGroupControlOption value="wordpress.org/themes" label={__('Theme', 'wp-playground-blueprint-editor')} />
 									<ToggleGroupControlOption value="vfs" label={__('VFS', 'wp-playground-blueprint-editor')} />
+									<ToggleGroupControlOption value="git:directory" label={__('Git Directory', 'wp-playground-blueprint-editor')} />
 								</ToggleGroupControl>
 
 								{resource === 'vfs' && (
 									<TextControl
 										label={__('Path', 'wp-playground-blueprint-editor')}
+										__next40pxDefaultSize
 										value={path}
 										placeholder={__('Enter the file path for the theme ZIP', 'wp-playground-blueprint-editor')}
 										onChange={(newPath) => handleInputChange('path', newPath)}
 									/>
 								)}
-								{resource === 'url' && (
+								{(resource === 'url' || resource === 'git:directory') && (
 									<TextControl
 										label={__('Url', 'wp-playground-blueprint-editor')}
+										__next40pxDefaultSize
 										value={url}
-										placeholder={__('Enter the URL of the theme ZIP file', 'wp-playground-blueprint-editor')}
+										placeholder={__(`${resource === 'git:directory' ? 'Enter Repository URL (https://, ssh git@..., etc.)' : 'Enter the URL of the theme ZIP file'}`, 'wp-playground-blueprint-editor')}
 										onChange={(newPath) => handleInputChange('url', newPath)}
 									/>
 								)}
@@ -123,6 +133,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									<InputControl
 										style={{ width: '100%', paddingBottom: '8px' }}
 										label={__('Slug', 'wp-playground-blueprint-editor')}
+										__next40pxDefaultSize
 										value={slug}
 										placeholder={__('Enter theme slug', 'wp-playground-blueprint-editor')}
 										onChange={(value) => handleInputChange('slug', value)}
@@ -130,6 +141,25 @@ function Edit({ attributes, setAttributes, isSelected }) {
 											onSelect={(selectedSlug) => handleInputChange('slug', selectedSlug)}
 											text={__('Picker', 'wp-playground-blueprint-editor')} />}
 									/>
+								)}
+
+								{resource === 'git:directory' && (
+									<>
+										<TextControl
+											label={__('Reference (Optional branch, tag, or commit SHA)', 'wp-playground-blueprint-editor')}
+											__next40pxDefaultSize
+											value={ref}
+											placeholder={__('Enter the git reference (branch, tag, or commit SHA)', 'wp-playground-blueprint-editor')}
+											onChange={(newRef) => handleInputChange('ref', newRef)}
+										/>
+										<TextControl
+											label={__('Directory Path (Optional subdirectory inside the repository)', 'wp-playground-blueprint-editor')}
+											__next40pxDefaultSize
+											value={path}
+											placeholder={__('Enter the directory path inside the repository', 'wp-playground-blueprint-editor')}
+											onChange={(newPath) => handleInputChange('path', newPath)}
+										/>
+									</>
 								)}
 
 								<ToggleControl
@@ -158,7 +188,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 					</VStack>
 				}
 			/>
-		</div>
+		</div >
 	);
 }
 

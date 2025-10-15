@@ -28,7 +28,8 @@
 					"enum": [
 						"url",
 						"wordpress.org/plugins",
-						"vfs"
+						"vfs",
+						"git:directory"
 					]
 				}
 			}
