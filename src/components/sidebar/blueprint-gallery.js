@@ -45,7 +45,7 @@ function Gallery({ icon = null, handleClose }) {
 
     // Debounce search input (200ms)
     useEffect(() => {
-        const t = setTimeout(() => setDebouncedTerm(searchTerm.trim().toLowerCase()), 50);
+        const t = setTimeout(() => setDebouncedTerm(searchTerm.trim().toLowerCase()), 200);
         return () => clearTimeout(t);
     }, [searchTerm]);
 
