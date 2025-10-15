@@ -117,6 +117,6 @@ export const STEP_DOCS_MAP = {
         link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#SetSiteLanguageStep',
     },
     'playground-step/import-theme-starter-content': {
-        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportThemeStarterContent',
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportThemeStarterContentStep',
     },
 };
