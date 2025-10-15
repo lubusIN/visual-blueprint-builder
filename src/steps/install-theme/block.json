@@ -27,7 +27,8 @@
 					"enum": [
 						"url",
 						"wordpress.org/themes",
-						"vfs"
+						"vfs",
+						"git:directory"
 					]
 				}
 			}
