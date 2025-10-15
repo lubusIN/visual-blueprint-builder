@@ -62,7 +62,6 @@ function Gallery({ icon = null, handleClose }) {
                 const data = await response.json();
                 setBlueprintList(data);
             } catch (error) {
-                // Keep the message stable for i18n; append error details separately
                 createNotice(
                     'error',
                     `${__('Error fetching blueprint list', 'wp-playground-blueprint-editor')}: ${error.message}`
