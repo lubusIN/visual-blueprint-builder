@@ -125,7 +125,7 @@ function Edit({ attributes, setAttributes, isSelected }) {
 										label={__('Url', 'wp-playground-blueprint-editor')}
 										__next40pxDefaultSize
 										value={url}
-										placeholder={__('Enter the URL of the plugin ZIP file', 'wp-playground-blueprint-editor')}
+										placeholder={__(`${resource === 'git:directory' ? 'Enter Repository URL (https://, ssh git@..., etc.)' : 'Enter the URL of the plugin ZIP file'}`, 'wp-playground-blueprint-editor')}
 										onChange={(newPath) => handleInputChange('url', newPath)}
 									/>
 								)}
