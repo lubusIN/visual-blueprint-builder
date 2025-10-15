@@ -96,7 +96,7 @@ export const STEP_DOCS_MAP = {
         link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#WPCLIStep',
     },
     'playground-step/run-php': {
-        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RunPhpStep',
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RunPHPStep',
     },
     'playground-step/mkdir': {
         link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#MkdirStep',
