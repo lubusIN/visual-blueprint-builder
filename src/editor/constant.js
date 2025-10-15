@@ -42,3 +42,81 @@ export const WP_VERSIONS = [
     { label: '6.4', value: '6.4' },
     { label: '6.3', value: '6.3' },
 ];
+
+/**
+ * Step documentation links.
+ */
+export const STEP_DOCS_MAP = {
+    'playground-step/login': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#LoginStep',
+    },
+    'playground-step/install-plugin': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#InstallPluginStep',
+    },
+    'playground-step/enable-multisite': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#EnableMultisiteStep',
+    },
+    'playground-step/install-theme': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#InstallThemeStep',
+    },
+    'playground-step/activate-theme': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ActivateThemeStep',
+    },
+    'playground-step/cp': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#CpStep',
+    },
+    'playground-step/define-site-url': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#DefineSiteUrlStep',
+    },
+    'playground-step/activate-plugin': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ActivatePluginStep',
+    },
+    'playground-step/import-wordpress-files': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWordPressFilesStep',
+    },
+    'playground-step/rmdir': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RmdirStep',
+    },
+    'playground-step/rm': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RmStep',
+    },
+    'playground-step/reset-data': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ResetDataStep',
+    },
+    'playground-step/mv': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#MvStep',
+    },
+    'playground-step/define-wp-config-consts': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#DefineWpConfigConstsStep',
+    },
+    'playground-step/write-file': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#WriteFileStep',
+    },
+    'playground-step/wp-cli': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#WPCLIStep',
+    },
+    'playground-step/run-php': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RunPHPStep',
+    },
+    'playground-step/mkdir': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#MkdirStep',
+    },
+    'playground-step/import-wxr': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWxrStep',
+    },
+    'playground-step/update-user-meta': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#UpdateUserMeta',
+    },
+    'playground-step/unzip': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#UnzipStep',
+    },
+    'playground-step/set-site-options': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#SetSiteOptionsStep',
+    },
+    'playground-step/set-site-language': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#SetSiteLanguageStep',
+    },
+    'playground-step/import-theme-starter-content': {
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportThemeStarterContentStep',
+    },
+};
