@@ -72,7 +72,7 @@ export const STEP_DOCS_MAP = {
         link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ActivatePluginStep',
     },
     'playground-step/import-wordpress-files': {
-        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWordpressFilesStep',
+        link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWordPressFilesStep',
     },
     'playground-step/rmdir': {
         link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RmdirStep',
