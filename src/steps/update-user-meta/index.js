@@ -40,16 +40,15 @@ import {
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { meta, userId } = attributes;
 	const [isOpen, setIsOpen] = useState(false);
-	const [metaList, updateMetaList] = useState(Object.entries(meta));
+	const [metaList, updateMetaList] = useState(Object.entries(meta || {}));
 	const [selectedMeta, setSelectedMeta] = useState(undefined);
 
 	useEffect(() => {
-		setAttributes({ meta: keyValuePairsToObject(metaList) });
-
-		if (!isSelected) {
-			handleClose();
+		const metaObject = keyValuePairsToObject(metaList);
+		if (JSON.stringify(meta) !== JSON.stringify(metaObject)) {
+			setAttributes({ meta: metaObject });
 		}
-	}, [metaList, isSelected]);
+	}, [metaList]);
 
 	const addOption = () => {
 		addKeyValuePair(metaList, updateMetaList);
