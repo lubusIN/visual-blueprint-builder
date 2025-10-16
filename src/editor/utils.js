@@ -283,7 +283,6 @@ const handleJsonDataSubmit = (data, updateBlueprintConfig, createNotice) => {
         extraLibraries: data.extraLibraries || false,
         plugins: data.plugins || undefined,
     });
-    createNotice('success', __('Blueprint configuration updated successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
 };
 
 /**
