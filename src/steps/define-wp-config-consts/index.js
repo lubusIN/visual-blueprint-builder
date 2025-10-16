@@ -39,16 +39,15 @@ import {
 function Edit({ attributes, setAttributes, isSelected }) {
 	const { consts } = attributes;
 	const [isOpen, setIsOpen] = useState(false);
-	const [configList, updateConfigList] = useState(Object.entries(consts));
+	const [configList, updateConfigList] = useState(Object.entries(consts || {}));
 	const [selectedConfig, setSelectedConfig] = useState(undefined);
 
 	useEffect(() => {
-		setAttributes({ consts: keyValuePairsToObject(configList) });
-
-		if (!isSelected) {
-			handleClose();
+		const configObject = keyValuePairsToObject(configList);
+		if (JSON.stringify(consts) !== JSON.stringify(configObject)) {
+			setAttributes({ consts: configObject });
 		}
-	}, [configList, isSelected]);
+	}, [configList]);
 
 	const addConfig = () => {
 		addKeyValuePair(configList, updateConfigList);
