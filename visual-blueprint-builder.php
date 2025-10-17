@@ -113,7 +113,7 @@ if (!class_exists('VisualBlueprintBuilder')) {
         public function load_textdomain()
         {
             load_plugin_textdomain(
-                'visul-blueprint-builder',
+                'visual-blueprint-builder',
                 false,
                 dirname(plugin_basename(__FILE__)) . '/languages'
             );
