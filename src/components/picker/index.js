@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import {
 	Button,
 	Modal,
@@ -139,6 +139,8 @@ function Picker({ type, onSelect, selectedSlug }) {
 	const [results, setResults] = useState([]);
 	const [popularItems, setPopularItems] = useState([]);
 	const [isLoading, setLoading] = useState(false);
+	const debounceTimerRef = useRef(null);
+	const DEBOUNCE_DELAY = 500;
 
 	// API endpoint based on type
 	const fetchItems = async (query = '') => {
@@ -164,7 +166,35 @@ function Picker({ type, onSelect, selectedSlug }) {
 		if (isModalOpen && !searchTerm) {
 			fetchItems();
 		}
-	}, [isModalOpen, searchTerm]);
+	}, [isModalOpen]);
+
+	// Debounced search handler
+	const handleSearchChange = (value) => {
+		setSearchTerm(value);
+
+		// Clear existing timer
+		if (debounceTimerRef.current) {
+			clearTimeout(debounceTimerRef.current);
+		}
+
+		// Set new timer for debounced search
+		debounceTimerRef.current = setTimeout(() => {
+			if (value.trim()) {
+				fetchItems(value);
+			} else {
+				fetchItems();
+			}
+		}, DEBOUNCE_DELAY);
+	};
+
+	// Cleanup timer on component unmount
+	useEffect(() => {
+		return () => {
+			if (debounceTimerRef.current) {
+				clearTimeout(debounceTimerRef.current);
+			}
+		};
+	}, []);
 
 	const handleSelectItem = (slug) => {
 		onSelect(slug);
@@ -196,10 +226,7 @@ function Picker({ type, onSelect, selectedSlug }) {
 							__next40pxDefaultSize
 							placeholder={__('Search by name or author', 'wp-playground-blueprint-editor')}
 							value={searchTerm}
-							onChange={(value) => {
-								setSearchTerm(value);
-								fetchItems(value);
-							}}
+							onChange={handleSearchChange}
 							suffix={
 								<Button
 									variant="link"
@@ -221,15 +248,31 @@ function Picker({ type, onSelect, selectedSlug }) {
 									)}
 								</Grid>
 							) : (
-								<Grid columns={2} gap={5}>
-									{(searchTerm ? results : popularItems).map((item) =>
-										type === 'themes' ? (
-											<ThemeComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
-										) : (
-											<PluginComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
-										)
+								<>
+									{(searchTerm ? results : popularItems).length > 0 ? (
+										<Grid columns={2} gap={5}>
+											{(searchTerm ? results : popularItems).map((item) =>
+												type === 'themes' ? (
+													<ThemeComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
+												) : (
+													<PluginComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
+												)
+											)}
+										</Grid>
+									) : (
+										<VStack justify="center" align="center" style={{ padding: '40px 0' }}>
+											<Heading level={4}>
+												{__('No results found', 'wp-playground-blueprint-editor')}
+											</Heading>
+											<Text color="#666">
+												{searchTerm
+													? __(`No ${type} found matching your search.`, 'wp-playground-blueprint-editor')
+													: __(`No ${type} available.`, 'wp-playground-blueprint-editor')
+												}
+											</Text>
+										</VStack>
 									)}
-								</Grid>
+								</>
 							)}
 						</VStack>
 					</VStack>
