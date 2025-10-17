@@ -4,15 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel, PluginPostStatusInfo } from '@wordpress/editor';
-import { copy, download, globe, code } from '@wordpress/icons';
-import { useDispatch } from '@wordpress/data';
-import { store as noticesStore } from '@wordpress/notices';
-import { useCopyToClipboard } from '@wordpress/compose';
-import { downloadBlob } from '@wordpress/blob';
 import { DataForm } from '@wordpress/dataviews';
 import {
-    Toolbar,
-    ToolbarButton,
     ToggleControl,
     __experimentalGrid as Grid,
     __experimentalText as Text,
@@ -23,51 +16,17 @@ import {
  * Internal dependencies.
  */
 import { Gallery, OpenJson, SiteOptionsSettings, PluginSettings, ConstantsSettings } from '../components/sidebar';
-import { PHP_VERSIONS, WP_VERSIONS, PLAYGROUND_BASE, PLAYGROUND_BUILDER_BASE } from './constant';
-import { sanitizePreparedSchemaString, useBlueprintData } from './utils';
+import { PHP_VERSIONS, WP_VERSIONS } from './constant';
+import { useBlueprintData } from './utils';
 
 /**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
-    const { createSuccessNotice, createErrorNotice } = useDispatch(noticesStore);
     const {
-        schema,
-        prepareSchema,
         updateBlueprintConfig,
-        blueprint_config,
+        blueprint_config
     } = useBlueprintData();
-
-    /**
-     * Handles downloading the prepared schema as a JSON file.
-     */
-    const handleDownload = () => {
-        try {
-            const preparedSchema = prepareSchema();
-            const sanitized = sanitizePreparedSchemaString(preparedSchema);
-            downloadBlob('playground-blueprint.json', sanitized, 'application/json');
-            createSuccessNotice(__('Blueprint downloaded successfully!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
-        } catch (error) {
-            createErrorNotice(__('Failed to download Blueprint JSON.', 'wp-playground-blueprint-editor'));
-        }
-    };
-
-    /**
-     * Copies the prepared schema to the clipboard.
-     */
-    const handleCopy = useCopyToClipboard(() => {
-        if (!schema.steps.length) {
-            createErrorNotice(__('No Blueprint steps to copy!', 'wp-playground-blueprint-editor'));
-            return ''; // Return empty string for invalid data
-        }
-        createSuccessNotice(__('Blueprint schema copied to clipboard!', 'wp-playground-blueprint-editor'), { type: 'snackbar' });
-        return prepareSchema();
-    });
-
-    const sanitizedForUrl = sanitizePreparedSchemaString(prepareSchema());
-    const minifiedBlueprintJson = btoa(
-        String.fromCharCode(...new Uint8Array(new TextEncoder().encode(sanitizedForUrl)))
-    );
 
     return (
         <>
@@ -76,12 +35,6 @@ function BlueprintSidebarSettings() {
                     <OpenJson />
                     <Gallery />
                 </Grid>
-                <Toolbar style={{ justifyContent: 'space-between' }}>
-                    <ToolbarButton icon={globe} label={__('Open in Playground', 'wp-playground-blueprint-editor')} href={PLAYGROUND_BASE + minifiedBlueprintJson} target="_blank" />
-                    <ToolbarButton icon={download} label={__('Download JSON', 'wp-playground-blueprint-editor')} onClick={handleDownload} />
-                    <ToolbarButton icon={copy} label={__('Copy JSON', 'wp-playground-blueprint-editor')} ref={handleCopy} />
-                    <ToolbarButton icon={code} label={__('Open in Builder', 'wp-playground-blueprint-editor')} href={encodeURI(PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson)} target="_blank" />
-                </Toolbar>
             </PluginPostStatusInfo>
             <PluginDocumentSettingPanel name='playground-settings' title={__('Playground Settings', 'wp-playground-blueprint-editor')}>
                 <DataForm

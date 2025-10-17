@@ -3,3 +3,4 @@ import './sidebar';
 import './on-boarding';
 import './steps-doc-link'
 import './disable-block-directory';
+import './blueprint-header-actions';
