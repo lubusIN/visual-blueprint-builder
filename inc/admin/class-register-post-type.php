@@ -3,10 +3,10 @@
 /**
  * This class defines a custom post type for creating and managing blueprint.
  *
- * @package wp-playground-blueprint-editor
+ * @package visual-blueprint-builder
  */
 
-namespace WP\Admin\PlaygroundBlueprintEditor;
+namespace WP\Admin\VisualBlueprintBuilder;
 
 class BlueprintPostType
 {
