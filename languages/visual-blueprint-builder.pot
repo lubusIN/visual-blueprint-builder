@@ -1,0 +1,35 @@
+# Copyright (C) 2025 Lubus
+# This file is distributed under the same license as the Visual blueprint builder plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Visual blueprint builder 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/visual-blueprint-builder\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-10-17T06:40:25+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: visual-blueprint-builder\n"
+
+#. Plugin Name of the plugin
+#: visual-blueprint-builder.php
+msgid "Visual blueprint builder"
+msgstr ""
+
+#. Description of the plugin
+#: visual-blueprint-builder.php
+msgid "Design playground blueprints with a specialized block editor interface in WordPress."
+msgstr ""
+
+#. Author of the plugin
+#: visual-blueprint-builder.php
+msgid "Lubus"
+msgstr ""
+
+#. Author URI of the plugin
+#: visual-blueprint-builder.php
+msgid "https://lubus.in/"
+msgstr ""

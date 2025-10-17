@@ -24,9 +24,9 @@
 			"step": "installPlugin",
 			"pluginData": {
 				"resource": "git:directory",
-				"url": "https://github.com/lubusIN/visual-blueprint-builder/",
-				"ref": "playground"
-		  	}
+				"url": "https: //github.com/lubusIN/visual-blueprint-builder/",
+				"ref": "HEAD"
+			}
 		}
 	]
 }

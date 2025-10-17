@@ -1,22 +1,22 @@
 <?php
 
 /**
- * Plugin Name: Playground blueprint editor
+ * Plugin Name: Visual Blueprint Builder
  * Description: Design playground blueprints with a specialized block editor interface in WordPress.
  * Version: 1.0.0
  * Requires PHP: 7.4
  * Author: Lubus
  * Author URI: https://lubus.in/
  * Contributor: Lubus, https://lubus.in/
- * Text Domain: wp-playground-blueprint-editor
+ * Text Domain: visual-blueprint-builder
  * Domain Path: /languages
  * 
- * @package wp-playground-blueprint-editor
+ * @package visual-blueprint-builder
  */
 
-namespace WP\PlaygroundBlueprintEditor;
+namespace WP\VisualBlueprintBuilde;
 
-use WP\Admin\PlaygroundBlueprintEditor\{
+use WP\Admin\VisualBlueprintBuilder\{
     BlueprintPostType,
     BlueprintSteps,
     EnqueueScripts,
@@ -28,17 +28,17 @@ defined('ABSPATH') || exit;
 require_once 'vendor/autoload.php';
 require_once 'inc/functions.php';
 
-if (!class_exists('PlaygroundBlueprintEditor')) {
+if (!class_exists('VisualBlueprintBuilder')) {
 
     /**
-     * Playground blueprint editor Main Class
+     * Visual blueprint builder Main Class
      */
-    class PlaygroundBlueprintEditor
+    class VisualBlueprintBuilder
     {
         /**
          * The single instance of the class.
          *
-         * @var PlaygroundBlueprintEditor
+         * @var VisualBlueprintBuilder
          */
         protected static $_instance = null;
 
@@ -62,7 +62,7 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
         {
             $this->setup_constants();
             $this->bootstrap();
-            $this->load_textdomain(); // Load translations
+            $this->load_textdomain();
         }
 
         /**
@@ -71,28 +71,28 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
         private function setup_constants()
         {
             // Plugin version.
-            if (!defined('BEPB_VERSION')) {
-                define('BEPB_VERSION', '0.1.0');
+            if (!defined('VBB_VERSION')) {
+                define('VBB_VERSION', '1.0.0');
             }
 
             // Plugin Root File.
-            if (!defined('BEPB_PLUGIN_FILE')) {
-                define('BEPB_PLUGIN_FILE', __FILE__);
+            if (!defined('VBB_PLUGIN_FILE')) {
+                define('VBB_PLUGIN_FILE', __FILE__);
             }
 
             // Plugin Folder Path.
-            if (!defined('BEPB_PLUGIN_DIR')) {
-                define('BEPB_PLUGIN_DIR', plugin_dir_path(BEPB_PLUGIN_FILE));
+            if (!defined('VBB_PLUGIN_DIR')) {
+                define('VBB_PLUGIN_DIR', plugin_dir_path(VBB_PLUGIN_FILE));
             }
 
             // Plugin Folder URL.
-            if (!defined('BEPB_PLUGIN_URL')) {
-                define('BEPB_PLUGIN_URL', plugin_dir_url(BEPB_PLUGIN_FILE));
+            if (!defined('VBB_PLUGIN_URL')) {
+                define('VBB_PLUGIN_URL', plugin_dir_url(VBB_PLUGIN_FILE));
             }
 
-            // Plugin Basename aka: "block-editor-for-playground-blueprint/wp-playground-blueprint-editor.php".
-            if (!defined('BEPB_PLUGIN_BASENAME')) {
-                define('BEPB_PLUGIN_BASENAME', plugin_basename(BEPB_PLUGIN_FILE));
+            // Plugin Basename aka: "visual-blueprint-builder/visual-blueprint-builder.php".
+            if (!defined('VBB_PLUGIN_BASENAME')) {
+                define('VBB_PLUGIN_BASENAME', plugin_basename(VBB_PLUGIN_FILE));
             }
         }
 
@@ -113,7 +113,7 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
         public function load_textdomain()
         {
             load_plugin_textdomain(
-                'wp-playground-blueprint-editor',
+                'visul-blueprint-builder',
                 false,
                 dirname(plugin_basename(__FILE__)) . '/languages'
             );
@@ -122,4 +122,4 @@ if (!class_exists('PlaygroundBlueprintEditor')) {
 }
 
 // Initialize the plugin
-return PlaygroundBlueprintEditor::instance();
+return VisualBlueprintBuilder::instance();
