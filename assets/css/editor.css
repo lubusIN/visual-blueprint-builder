@@ -177,6 +177,10 @@ body.editor-styles-wrapper {
   display: none !important;
 }
 
+.post-type-blueprint .editor-preview-dropdown {
+  display: none !important;
+}
+
 /* .dataforms-layouts-panel__field-label,
 .dataforms-layouts-regular__field-label {
   align-items: center;
