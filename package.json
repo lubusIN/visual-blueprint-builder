@@ -1,5 +1,5 @@
 {
-  "name": "wp-playground-blueprint-editor",
+  "name": "visual-blueprint-builder",
   "version": "1.0.0",
   "description": "Design playground blueprints with a specialized block editor interface in WordPress.",
   "main": "build/index.js",

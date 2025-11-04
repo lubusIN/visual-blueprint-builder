@@ -11,7 +11,7 @@
  *
  * @return array The array of allowed block types.
  */
-function filter_allowed_block_types($allowed_block_types, $block_editor_context)
+function vbb_filter_allowed_block_types($allowed_block_types, $block_editor_context)
 {
     // Get all registered block types
     $all_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
@@ -68,7 +68,7 @@ function filter_allowed_block_types($allowed_block_types, $block_editor_context)
     // Return the filtered list of allowed blocks
     return $filtered_blocks;
 }
-add_filter('allowed_block_types_all', 'filter_allowed_block_types', 10000, 2);
+add_filter('allowed_block_types_all', 'vbb_filter_allowed_block_types', 10000, 2);
 
 /**
  * Adds a custom block category 'Steps' to the block editor.

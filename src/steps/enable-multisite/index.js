@@ -1,5 +1,5 @@
 /**
- * Wordpress dependencies.
+ * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
@@ -24,7 +24,7 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-function Edit({isSelected}) {
+function Edit({ isSelected }) {
 
 	return (
 		<p {...useBlockProps()}>
