@@ -68,7 +68,7 @@ npm run start       # Watch for changes and auto-compile
 Start a local WordPress playground using wp-now:
 
 ```bash
-npx @wp-now/wp-now start
+npm run serve
 ```
 
 > [!NOTE]
