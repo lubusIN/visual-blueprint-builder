@@ -1,10 +1,10 @@
 {
     "$schema": "https://playground.wordpress.net/blueprint-schema.json",
-    "landingPage": "/wp-admin/post.php?post=9&action=edit",
-    "login": true,
-    "features": {
-        "networking": true
-    },
+	"landingPage": "/wp-admin/post-new.php?post_type=blueprint",
+	"login": true,
+	"features": {
+		"networking": true
+	},
     "steps": [
         {
             "step": "updateUserMeta",
