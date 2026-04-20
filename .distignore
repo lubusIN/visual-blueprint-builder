@@ -14,5 +14,4 @@ package-lock.json
 phpunit.xml
 src
 tests
-vendor
 webpack.config.js
