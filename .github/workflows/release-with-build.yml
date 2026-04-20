@@ -1,0 +1,16 @@
+name: Build & Package Everything on Release
+
+on:
+  release:
+    types: [created, edited]
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_package:
+    uses: lubusIN/.github/.github/workflows/release-package.yml@main
+    with:
+      release-tag: ${{ github.event.release.tag_name }}
+      checkout-ref: ${{ github.event.release.tag_name }}
+    secrets: inherit
