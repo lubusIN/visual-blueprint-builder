@@ -9,7 +9,6 @@ jobs:
   build-and-push-on-push:
     uses: lubusIN/.github/.github/workflows/sync-playground.yml@main
     with:
-      target-branch: playground
       force-folder: |
         build/
         vendor/
