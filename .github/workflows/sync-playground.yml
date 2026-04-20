@@ -4,35 +4,13 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      target-branch:
-        description: Target branch to sync generated files to
-        required: false
-        default: playground
-      force-folder:
-        description: Folder path to force-sync
-        required: false
-        default: |
-          build/
-          vendor/
-  workflow_call:
-    inputs:
-      target-branch:
-        required: false
-        type: string
-        default: playground
-      force-folder:
-        required: false
-        type: string
-        default: |
-          build/
-          vendor/
 
 jobs:
-  build-and-push:
+  build-and-push-on-push:
     uses: lubusIN/.github/.github/workflows/sync-playground.yml@main
     with:
-      target-branch: ${{ (github.event_name == 'workflow_call' && inputs.target-branch) || (github.event_name == 'workflow_dispatch' && github.event.inputs.target-branch) || 'playground' }}
-      force-folder: ${{ (github.event_name == 'workflow_call' && inputs.force-folder) || (github.event_name == 'workflow_dispatch' && github.event.inputs.force-folder) || 'build/' }}
+      target-branch: playground
+      force-folder: |
+        build/
+        vendor/
     secrets: inherit
