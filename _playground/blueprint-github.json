@@ -20,7 +20,7 @@
                 "blogname": "Visual Blueprint Builder"
             }
         },
-         {
+        {
             "step": "installPlugin",
             "pluginData": {
                 "resource": "git:directory",

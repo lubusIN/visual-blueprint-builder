@@ -13,7 +13,9 @@ on:
       force-folder:
         description: Folder path to force-sync
         required: false
-        default: build/
+        default: |
+          build/
+          vendor/
   workflow_call:
     inputs:
       target-branch:
@@ -23,7 +25,9 @@ on:
       force-folder:
         required: false
         type: string
-        default: build/
+        default: |
+          build/
+          vendor/
 
 jobs:
   build-and-push:
