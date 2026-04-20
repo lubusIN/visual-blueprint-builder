@@ -1,10 +1,48 @@
 {
-    "name": "wp/visual-blueprint-builder",
+    "name": "lubusin/visual-blueprint-builder",
     "description": "Design playground blueprints with a specialized block editor interface in WordPress.",
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "block-editor",
+        "playground",
+        "blueprint",
+        "editor"
+    ],
+    "homepage": "https://lubus.in",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Punit Verma",
+            "email": "punit@lubus.in",
+            "homepage": "https://lubus.in"
+        },
+        {
+            "name": "Ajit Bohra",
+            "email": "ajit@lubus.in",
+            "homepage": "https://lubus.in"
+        }
+    ],
+    "type": "wordpress-plugin",
+    "support": {
+        "issues": "https://github.com/lubusIN/visual-blueprint-builder/issues",
+        "source": "https://github.com/lubusIN/visual-blueprint-builder"
+    },
+    "extra": {
+        "installer-name": "visual-blueprint-builder"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "composer/installers": "^2.3"
+    },
     "autoload": {
         "classmap": [
             "inc/"
         ]
-    },
-    "require": {}
+    }
 }
