@@ -1,32 +1,36 @@
 {
-	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
-	"landingPage": "/wp-admin/post-new.php?post_type=blueprint",
-	"login": true,
-	"features": {
-		"networking": true
-	},
-	"steps": [
-		{
-			"step": "updateUserMeta",
-			"meta": {
-				"admin_color": "modern",
-				"show_welcome_panel": 0
-			},
-			"userId": 1
-		},
-		{
-			"step": "setSiteOptions",
-			"options": {
-				"blogname": "Visual Blueprint Builder"
-			}
-		},
-		{
-			"step": "installPlugin",
-			"pluginData": {
-				"resource": "git:directory",
-				"url": "https://github.com/lubusIN/visual-blueprint-builder/",
-				"ref": "playground"
-			}
-		}
-	]
+    "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "landingPage": "/wp-admin/post.php?post=9&action=edit",
+    "login": true,
+    "features": {
+        "networking": true
+    },
+    "steps": [
+        {
+            "step": "updateUserMeta",
+            "meta": {
+                "admin_color": "modern",
+                "show_welcome_panel": 0
+            },
+            "userId": 1
+        },
+        {
+            "step": "setSiteOptions",
+            "options": {
+                "blogname": "Visual Blueprint Builder"
+            }
+        },
+         {
+            "step": "installPlugin",
+            "pluginData": {
+                "resource": "git:directory",
+                "url": "https://github.com/lubusIN/visual-blueprint-builder.git",
+                "ref": "playground",
+                "refType": "branch"
+            },
+            "options": {
+                "targetFolderName": "visual-blueprint-builder"
+            }
+        }
+    ]
 }
