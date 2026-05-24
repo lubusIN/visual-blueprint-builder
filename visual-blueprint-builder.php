@@ -8,6 +8,8 @@
  * Author: Lubus
  * Author URI: https://lubus.in/
  * Contributor: Lubus, https://lubus.in/
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  * Text Domain: visual-blueprint-builder
  * Domain Path: /languages
  * 
@@ -62,7 +64,7 @@ if (!class_exists('VisualBlueprintBuilder')) {
         {
             $this->setup_constants();
             $this->bootstrap();
-            $this->load_textdomain();
+            add_action('init', [$this, 'load_textdomain']);
         }
 
         /**
@@ -115,7 +117,7 @@ if (!class_exists('VisualBlueprintBuilder')) {
             load_plugin_textdomain(
                 'visual-blueprint-builder',
                 false,
-                dirname(plugin_basename(__FILE__)) . '/languages'
+                dirname(plugin_basename(VBB_PLUGIN_FILE)) . '/languages'
             );
         }
     }

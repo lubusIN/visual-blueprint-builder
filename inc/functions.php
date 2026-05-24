@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 
 /**
  * Filters the list of allowed block types in the block editor.
@@ -83,23 +84,23 @@ function add_new_block_category($block_categories, $block_editor_context)
     $steps_categories = [
         [
             'slug'  => 'config',
-            'title' => esc_html__('Config', 'wp-playground-blueprint-editor')
+            'title' => esc_html__('Config', 'visual-blueprint-builder')
         ],
         [
             'slug'  => 'extend',
-            'title' => esc_html__('Extend', 'wp-playground-blueprint-editor'),
+            'title' => esc_html__('Extend', 'visual-blueprint-builder'),
         ],
         [
             'slug'  => 'file-system',
-            'title' => esc_html__('File System', 'wp-playground-blueprint-editor')
+            'title' => esc_html__('File System', 'visual-blueprint-builder')
         ],
         [
             'slug'  => 'data',
-            'title' => esc_html__('Data', 'wp-playground-blueprint-editor')
+            'title' => esc_html__('Data', 'visual-blueprint-builder')
         ],
         [
             'slug'  => 'scripts',
-            'title' => esc_html__('Scripts', 'wp-playground-blueprint-editor')
+            'title' => esc_html__('Scripts', 'visual-blueprint-builder')
         ],
     ];
 

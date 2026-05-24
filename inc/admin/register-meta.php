@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 
 /**
  * This class for registering a custom meta fields for block editor for playground blueprint.
