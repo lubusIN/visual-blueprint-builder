@@ -35,6 +35,22 @@ const formatNumber = ( num ) => {
 };
 
 /**
+ * Common Select Button Component
+ */
+const SelectButton = ( { isSelected, onSelect, slug } ) => (
+	<Button
+		variant={ isSelected ? 'primary' : 'secondary' }
+		style={ { borderRadius: '4px' } }
+		onClick={ () => onSelect( slug ) }
+		disabled={ isSelected }
+	>
+		{ isSelected
+			? __( 'Selected', 'wp-playground-blueprint-editor' )
+			: __( 'Select', 'wp-playground-blueprint-editor' ) }
+	</Button>
+);
+
+/**
  * Theme Component
  */
 const ThemeComponent = ( { item, onSelect, selectedSlug } ) => {
@@ -49,22 +65,11 @@ const ThemeComponent = ( { item, onSelect, selectedSlug } ) => {
 				<CardBody>
 					<HStack align="center">
 						<Heading level={ 5 }>{ item.name }</Heading>
-						<Button
-							variant={ isSelected ? 'primary' : 'secondary' }
-							style={ { borderRadius: '4px' } }
-							onClick={ () => onSelect( item.slug ) }
-							disabled={ isSelected }
-						>
-							{ isSelected
-								? __(
-										'Selected',
-										'wp-playground-blueprint-editor'
-								  )
-								: __(
-										'Select',
-										'wp-playground-blueprint-editor'
-								  ) }
-						</Button>
+						<SelectButton
+							isSelected={ isSelected }
+							onSelect={ onSelect }
+							slug={ item.slug }
+						/>
 					</HStack>
 				</CardBody>
 			</CardBody>
@@ -140,22 +145,11 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 						</HStack>
 					</VStack>
 					<HStack justify="right">
-						<Button
-							variant={ isSelected ? 'primary' : 'secondary' }
-							style={ { borderRadius: '4px' } }
-							onClick={ () => onSelect( item.slug ) }
-							disabled={ isSelected }
-						>
-							{ isSelected
-								? __(
-										'Selected',
-										'wp-playground-blueprint-editor'
-								  )
-								: __(
-										'Select',
-										'wp-playground-blueprint-editor'
-								  ) }
-						</Button>
+						<SelectButton
+							isSelected={ isSelected }
+							onSelect={ onSelect }
+							slug={ item.slug }
+						/>
 					</HStack>
 				</VStack>
 			</CardBody>
