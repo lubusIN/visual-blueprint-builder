@@ -18,6 +18,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -29,23 +30,17 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const { code } = attributes;
 
 	return (
-		<p {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={codeIcon} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={codeIcon} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>
 										{__('Code Snippet', 'wp-playground-blueprint-editor')}
 									</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<TextareaControl
+			}
+		>
+			<TextareaControl
 								__nextHasNoMarginBottom
 								help={__(
 									'When running WordPress functions, the code key must first load wp-load.php and start with "<?php require_once \'wordpress/wp-load.php\'; "',
@@ -56,18 +51,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								placeholder="<?php ?>"
 								value={code}
 							/>
-						)}
-					</VStack>
-				}
-			/>
-		</p>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: codeIcon,
-	edit: Edit,
-});
+		</StepWrapper>
+);
