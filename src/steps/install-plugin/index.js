@@ -5,20 +5,15 @@ import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { plugins } from '@wordpress/icons';
 import {
-	TextControl,
 	ToggleControl,
-	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 	__experimentalText as Text,
-	__experimentalInputControl as InputControl,
 } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
 import metadata from './block.json';
-import { StepWrapper } from '../../components';
-import { Picker } from '../../components';
+import { StepWrapper, ResourceSelector } from '../../components';
 
 /**
  * Edit function for the plugin installation block.
@@ -30,38 +25,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	const { pluginData, options } = attributes;
 	const { resource, path, url, slug, ref } = pluginData;
 	const { activate } = options;
-
-	const handleResourceChange = ( newResource ) => {
-		let newAttributes = {
-			resource: newResource,
-		};
-
-		// Conditionally add attributes based on the selected resource
-		if ( newResource === 'vfs' ) {
-			newAttributes.path = '';
-		} else if ( newResource === 'url' ) {
-			newAttributes.url = '';
-		} else if ( newResource === 'wordpress.org/plugins' ) {
-			newAttributes.slug = '';
-		} else if ( newResource === 'git:directory' ) {
-			newAttributes.ref = '';
-			newAttributes.path = '';
-			newAttributes.url = '';
-		}
-
-		setAttributes( {
-			pluginData: newAttributes,
-		} );
-	};
-
-	const handleInputChange = ( field, value ) => {
-		setAttributes( {
-			pluginData: {
-				...pluginData,
-				[ field ]: value,
-			},
-		} );
-	};
 
 	const getResourceInfo = ( resource ) => {
 		switch ( resource ) {
@@ -99,127 +62,13 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			}
 		>
 			<>
-				<ToggleGroupControl
-					label={ __( 'Resource', 'wp-playground-blueprint-editor' ) }
-					__nextHasNoMarginBottom
-					value={ resource }
-					isBlock
-					onChange={ handleResourceChange }
-				>
-					<ToggleGroupControlOption
-						value="url"
-						label={ __( 'URL', 'wp-playground-blueprint-editor' ) }
-					/>
-					<ToggleGroupControlOption
-						value="wordpress.org/plugins"
-						label={ __(
-							'Plugin',
-							'wp-playground-blueprint-editor'
-						) }
-					/>
-					<ToggleGroupControlOption
-						value="vfs"
-						label={ __( 'VFS', 'wp-playground-blueprint-editor' ) }
-					/>
-					<ToggleGroupControlOption
-						value="git:directory"
-						label={ __(
-							'Git Directory',
-							'wp-playground-blueprint-editor'
-						) }
-					/>
-				</ToggleGroupControl>
-
-				{ resource === 'vfs' && (
-					<TextControl
-						label={ __( 'Path', 'wp-playground-blueprint-editor' ) }
-						__next40pxDefaultSize
-						value={ path }
-						placeholder={ __(
-							'Enter the file path for the plugin ZIP',
-							'wp-playground-blueprint-editor'
-						) }
-						onChange={ ( newPath ) =>
-							handleInputChange( 'path', newPath )
-						}
-					/>
-				) }
-				{ ( resource === 'url' || resource === 'git:directory' ) && (
-					<TextControl
-						label={ __( 'Url', 'wp-playground-blueprint-editor' ) }
-						__next40pxDefaultSize
-						value={ url }
-						placeholder={ __(
-							`${
-								resource === 'git:directory'
-									? 'Enter Repository URL (https://, ssh git@..., etc.)'
-									: 'Enter the URL of the plugin ZIP file'
-							}`,
-							'wp-playground-blueprint-editor'
-						) }
-						onChange={ ( newPath ) =>
-							handleInputChange( 'url', newPath )
-						}
-					/>
-				) }
-				{ resource === 'wordpress.org/plugins' && (
-					<InputControl
-						style={ { width: '100%', paddingBottom: '8px' } }
-						__next40pxDefaultSize
-						label={ __( 'Slug', 'wp-playground-blueprint-editor' ) }
-						value={ slug }
-						placeholder={ __(
-							'Enter plugin slug',
-							'wp-playground-blueprint-editor'
-						) }
-						onChange={ ( value ) =>
-							handleInputChange( 'slug', value )
-						}
-						suffix={
-							<Picker
-								type="plugins"
-								onSelect={ ( selectedSlug ) =>
-									handleInputChange( 'slug', selectedSlug )
-								}
-							/>
-						}
-					/>
-				) }
-				{ /* Future Feature: Git Directory - To be implemented */ }
-				{ resource === 'git:directory' && (
-					<>
-						<TextControl
-							label={ __(
-								'Reference (Optional branch, tag, or commit SHA)',
-								'wp-playground-blueprint-editor'
-							) }
-							__next40pxDefaultSize
-							value={ ref }
-							placeholder={ __(
-								'Enter the git reference (branch, tag, or commit SHA)',
-								'wp-playground-blueprint-editor'
-							) }
-							onChange={ ( newRef ) =>
-								handleInputChange( 'ref', newRef )
-							}
-						/>
-						<TextControl
-							label={ __(
-								'Directory Path (Optional subdirectory inside the repository)',
-								'wp-playground-blueprint-editor'
-							) }
-							__next40pxDefaultSize
-							value={ path }
-							placeholder={ __(
-								'Enter the directory path inside the repository',
-								'wp-playground-blueprint-editor'
-							) }
-							onChange={ ( newPath ) =>
-								handleInputChange( 'path', newPath )
-							}
-						/>
-					</>
-				) }
+				<ResourceSelector
+					type="plugin"
+					data={ pluginData }
+					onChange={ ( newPluginData ) =>
+						setAttributes( { pluginData: newPluginData } )
+					}
+				/>
 				<ToggleControl
 					label={ __( 'Activate', 'wp-playground-blueprint-editor' ) }
 					checked={ activate }
