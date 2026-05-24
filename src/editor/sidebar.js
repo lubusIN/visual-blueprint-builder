@@ -50,6 +50,21 @@ const ToggleEdit = ( { field, onChange, data, hideLabelFromVision } ) => {
 };
 
 /**
+ * Sidebar Setting Row wrapper.
+ */
+const SidebarSettingRow = ( { label, children } ) => (
+	<HStack
+		style={ {
+			justifyContent: 'space-between',
+			marginTop: '6px',
+		} }
+	>
+		<Text>{ label }</Text>
+		{ children }
+	</HStack>
+);
+
+/**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
@@ -160,42 +175,26 @@ function BlueprintSidebarSettings() {
 					} }
 					onChange={ updateBlueprintConfig }
 				/>
-				<HStack
-					style={ {
-						justifyContent: 'space-between',
-						marginTop: '6px',
-					} }
-				>
-					<Text>Site Options</Text>
+				<SidebarSettingRow label="Site Options">
 					<SiteOptionsSettings
 						attributes={ {
 							siteOptions: blueprint_config.siteOptions,
 						} }
-						setAttributes={ ( updatedAttributes ) =>
-							updateBlueprintConfig( updatedAttributes )
-						}
+						setAttributes={ updateBlueprintConfig }
 					/>
-				</HStack>
-				<HStack>
-					<Text>Plugins</Text>
+				</SidebarSettingRow>
+				<SidebarSettingRow label="Plugins">
 					<PluginSettings
 						attributes={ { plugins: blueprint_config.plugins } }
-						setAttributes={ ( updatedAttributes ) =>
-							updateBlueprintConfig( {
-								plugins: updatedAttributes.plugins,
-							} )
-						}
+						setAttributes={ updateBlueprintConfig }
 					/>
-				</HStack>
-				<HStack>
-					<Text>WP Config Constants</Text>
+				</SidebarSettingRow>
+				<SidebarSettingRow label="WP Config Constants">
 					<ConstantsSettings
 						attributes={ { constants: blueprint_config.constants } }
-						setAttributes={ ( updatedAttributes ) =>
-							updateBlueprintConfig( updatedAttributes )
-						}
+						setAttributes={ updateBlueprintConfig }
 					/>
-				</HStack>
+				</SidebarSettingRow>
 			</PluginDocumentSettingPanel>
 		</>
 	);
