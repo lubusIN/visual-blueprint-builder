@@ -21,6 +21,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -63,21 +64,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	};
 
 	return (
-		<p {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={page} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>{__('write file at', 'wp-playground-blueprint-editor')} {path}</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<VStack spacing={3}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={page} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>{__('write file at', 'wp-playground-blueprint-editor')} {path}</Text>
+			}
+		>
+			<VStack spacing={3}>
 								<TextControl
 									label={__('Path', 'wp-playground-blueprint-editor')}
 									value={path || ''}
@@ -124,18 +119,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									/>
 								)}
 							</VStack>
-						)}
-					</VStack>
-				}
-			/>
-		</p>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: page,
-	edit: Edit,
-});
+		</StepWrapper>
+);

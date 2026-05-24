@@ -18,6 +18,7 @@ import { DataForm } from '@wordpress/dataviews';
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -29,26 +30,20 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const { themeSlug } = attributes;
 
 	return (
-		<p {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={receipt} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={receipt} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>
 										{__(
 											`for ${themeSlug || '{THEME SLUG}'}`,
 											'wp-playground-blueprint-editor'
 										)}
 									</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<DataForm
+			}
+		>
+			<DataForm
 								data={attributes}
 								fields={[
 									{
@@ -65,18 +60,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								}}
 								onChange={setAttributes}
 							/>
-						)}
-					</VStack>
-				}
-			/>
-		</p>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: receipt,
-	edit: Edit,
-});
+		</StepWrapper>
+);

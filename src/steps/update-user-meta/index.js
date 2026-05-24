@@ -22,6 +22,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 import {
 	addKeyValuePair,
 	updateKeyValuePair,
@@ -74,28 +75,20 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const isAddButtonDisabled = checkAddButtonDisabled(metaList);
 
 	return (
-		<div {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={postAuthor} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<VStack>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={postAuthor} 
+			isSelected={isSelected} 
+			summary={
+				<VStack>
 										<Text weight={600}>
 											{meta ? <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(meta, null, " ")}</pre> : <span>{__('{config user meta}', 'wp-playground-blueprint-editor')}</span>}
 										</Text>
 										<Text weight={600}>
-											{userId ? `${__('for UserId', 'wp-playground-blueprint-editor')} ${userId}` : __('{user Id}', 'wp-playground-blueprint-editor')}
-										</Text>
-									</VStack>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<VStack spacing={4}>
+											{userId ? `${__('for UserId', 'wp-playground-blueprint-editor')} ${userId}` : __('{user Id}', 'wp-playground-blueprint-editor'
+			}
+		>
+			<VStack spacing={4}>
 								{metaList.map(([key, value], index) => {
 									return (
 										<Grid templateColumns={'auto auto 40px'}>
@@ -142,29 +135,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									onChange={(value) => setAttributes({ userId: Number(value) })}
 								/>
 							</VStack>
-						)}
-					</VStack>
-				}
-			/>
-			<ConfirmDialog
-				isOpen={isOpen}
-				onConfirm={() => {
-					removeOption();
-					setSelectedMeta(undefined);
-					setIsOpen(false);
-				}}
-				onCancel={() => setIsOpen(false)}
-			>
-				{__('Delete User Meta?', 'wp-playground-blueprint-editor')}
-			</ConfirmDialog>
-		</div>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: postAuthor,
-	edit: Edit,
-});
+		</StepWrapper>
+);
