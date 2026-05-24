@@ -26,39 +26,52 @@ import { StepWrapper } from '../../components';
  *
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { themeSlug } = attributes;
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={receipt} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ receipt }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>
-										{__(
-											`for ${themeSlug || '{THEME SLUG}'}`,
-											'wp-playground-blueprint-editor'
-										)}
-									</Text>
+				<Text weight={ 600 }>
+					{ __(
+						`for ${ themeSlug || '{THEME SLUG}' }`,
+						'wp-playground-blueprint-editor'
+					) }
+				</Text>
 			}
 		>
 			<DataForm
-								data={attributes}
-								fields={[
-									{
-										id: 'themeSlug',
-										label: __('Theme Slug', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('e.g., twentytwentyfour', 'wp-playground-blueprint-editor'),
-									},
-								]}
-								form={{
-									fields: [
-										'themeSlug'
-									]
-								}}
-								onChange={setAttributes}
-							/>
+				data={ attributes }
+				fields={ [
+					{
+						id: 'themeSlug',
+						label: __(
+							'Theme Slug',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'e.g., twentytwentyfour',
+							'wp-playground-blueprint-editor'
+						),
+					},
+				] }
+				form={ {
+					fields: [ 'themeSlug' ],
+				} }
+				onChange={ setAttributes }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: receipt,
+	edit: Edit,
+} );

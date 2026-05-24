@@ -28,36 +28,42 @@ import { ThemeSkeleton, PluginSkeleton } from '../../components';
 /**
  * Utility function to format numbers
  */
-const formatNumber = (num) => {
-	if (num >= 1000000) return `${(num / 1000000)}M`;
-	if (num >= 1000) return `${(num / 1000)}K`;
-	return new Intl.NumberFormat("en-IN").format(num);
+const formatNumber = ( num ) => {
+	if ( num >= 1000000 ) return `${ num / 1000000 }M`;
+	if ( num >= 1000 ) return `${ num / 1000 }K`;
+	return new Intl.NumberFormat( 'en-IN' ).format( num );
 };
 
 /**
  * Theme Component
  */
-const ThemeComponent = ({ item, onSelect, selectedSlug }) => {
+const ThemeComponent = ( { item, onSelect, selectedSlug } ) => {
 	const isSelected = selectedSlug === item.slug;
 
 	return (
-		<Card key={item.slug} size="small">
-			<CardBody style={{ padding: '0' }}>
+		<Card key={ item.slug } size="small">
+			<CardBody style={ { padding: '0' } }>
 				<CardMedia>
-					<img src={item.screenshot_url} />
+					<img src={ item.screenshot_url } />
 				</CardMedia>
 				<CardBody>
 					<HStack align="center">
-						<Heading level={5}>{item.name}</Heading>
+						<Heading level={ 5 }>{ item.name }</Heading>
 						<Button
-							variant={isSelected ? "primary" : "secondary"}
-							style={{ borderRadius: '4px' }}
-							onClick={() => onSelect(item.slug)}
-							disabled={isSelected}>
-							{isSelected
-								? __('Selected', 'wp-playground-blueprint-editor')
-								: __('Select', 'wp-playground-blueprint-editor')
-							}
+							variant={ isSelected ? 'primary' : 'secondary' }
+							style={ { borderRadius: '4px' } }
+							onClick={ () => onSelect( item.slug ) }
+							disabled={ isSelected }
+						>
+							{ isSelected
+								? __(
+										'Selected',
+										'wp-playground-blueprint-editor'
+								  )
+								: __(
+										'Select',
+										'wp-playground-blueprint-editor'
+								  ) }
 						</Button>
 					</HStack>
 				</CardBody>
@@ -69,59 +75,86 @@ const ThemeComponent = ({ item, onSelect, selectedSlug }) => {
 /**
  * Plugin Component
  */
-const PluginComponent = ({ item, onSelect, selectedSlug }) => {
+const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 	const isSelected = selectedSlug === item.slug;
 
 	return (
-		<Card key={item.slug} size="small">
-			<CardBody style={{ height: '100%' }}>
-				<VStack justify={'space-between'} spacing={4} style={{ height: '100%' }}>
-					<VStack spacing={4}>
-						<HStack
-							justify="start"
-							spacing={4}>
+		<Card key={ item.slug } size="small">
+			<CardBody style={ { height: '100%' } }>
+				<VStack
+					justify={ 'space-between' }
+					spacing={ 4 }
+					style={ { height: '100%' } }
+				>
+					<VStack spacing={ 4 }>
+						<HStack justify="start" spacing={ 4 }>
 							<img
-								src={item.icons['1x'] || item.icons.default}
-								alt={`${item.name} Icon`}
-								style={{
+								src={ item.icons[ '1x' ] || item.icons.default }
+								alt={ `${ item.name } Icon` }
+								style={ {
 									minWidth: '70px',
 									maxHeight: '70px',
 									objectFit: 'contain',
 									borderRadius: '4px',
-								}} />
+								} }
+							/>
 							<ExternalLink
-								href={item.homepage}
-								style={{
+								href={ item.homepage }
+								style={ {
 									fontWeight: 'bold',
 									color: '#0073aa',
-								}}>
-								{decodeEntities(item.name)}
+								} }
+							>
+								{ decodeEntities( item.name ) }
 							</ExternalLink>
 						</HStack>
-						<Text lineHeight={'1.5em'}>
-							{item.short_description || __('No description available', 'wp-playground-blueprint-editor')}
+						<Text lineHeight={ '1.5em' }>
+							{ item.short_description ||
+								__(
+									'No description available',
+									'wp-playground-blueprint-editor'
+								) }
 						</Text>
-						<HStack spacing={10}>
-							<Text color='#666'>
-								{item.active_installs
-									? `${formatNumber(item.active_installs)}+ active installations`
-									: __('No data available', 'wp-playground-blueprint-editor')}
+						<HStack spacing={ 10 }>
+							<Text color="#666">
+								{ item.active_installs
+									? `${ formatNumber(
+											item.active_installs
+									  ) }+ active installations`
+									: __(
+											'No data available',
+											'wp-playground-blueprint-editor'
+									  ) }
 							</Text>
-							<Text color='#666'>
-								{__('Tested with', 'wp-playground-blueprint-editor')} {item.tested || __('Unknown', 'wp-playground-blueprint-editor')}
+							<Text color="#666">
+								{ __(
+									'Tested with',
+									'wp-playground-blueprint-editor'
+								) }{ ' ' }
+								{ item.tested ||
+									__(
+										'Unknown',
+										'wp-playground-blueprint-editor'
+									) }
 							</Text>
 						</HStack>
 					</VStack>
-					<HStack justify='right'>
+					<HStack justify="right">
 						<Button
-							variant={isSelected ? "primary" : "secondary"}
-							style={{ borderRadius: '4px' }}
-							onClick={() => onSelect(item.slug)}
-							disabled={isSelected}>
-							{isSelected
-								? __('Selected', 'wp-playground-blueprint-editor')
-								: __('Select', 'wp-playground-blueprint-editor')
-							}
+							variant={ isSelected ? 'primary' : 'secondary' }
+							style={ { borderRadius: '4px' } }
+							onClick={ () => onSelect( item.slug ) }
+							disabled={ isSelected }
+						>
+							{ isSelected
+								? __(
+										'Selected',
+										'wp-playground-blueprint-editor'
+								  )
+								: __(
+										'Select',
+										'wp-playground-blueprint-editor'
+								  ) }
 						</Button>
 					</HStack>
 				</VStack>
@@ -133,153 +166,202 @@ const PluginComponent = ({ item, onSelect, selectedSlug }) => {
 /**
  * Theme & Plugin Picker
  */
-function Picker({ type, onSelect, selectedSlug }) {
-	const [isModalOpen, setModalOpen] = useState(false);
-	const [searchTerm, setSearchTerm] = useState('');
-	const [results, setResults] = useState([]);
-	const [popularItems, setPopularItems] = useState([]);
-	const [isLoading, setLoading] = useState(false);
-	const debounceTimerRef = useRef(null);
+function Picker( { type, onSelect, selectedSlug } ) {
+	const [ isModalOpen, setModalOpen ] = useState( false );
+	const [ searchTerm, setSearchTerm ] = useState( '' );
+	const [ results, setResults ] = useState( [] );
+	const [ popularItems, setPopularItems ] = useState( [] );
+	const [ isLoading, setLoading ] = useState( false );
+	const debounceTimerRef = useRef( null );
 	const DEBOUNCE_DELAY = 500;
 
 	// API endpoint based on type
-	const fetchItems = async (query = '') => {
-		setLoading(true);
-		const isSearch = !!query.trim();
-		const url = `https://api.wordpress.org/${type}/info/1.2/?action=query_${type}${isSearch ? `&request[search]=${query}` : `&request[popular]=1`}`;
+	const fetchItems = async ( query = '' ) => {
+		setLoading( true );
+		const isSearch = !! query.trim();
+		const url = `https://api.wordpress.org/${ type }/info/1.2/?action=query_${ type }${
+			isSearch ? `&request[search]=${ query }` : `&request[popular]=1`
+		}`;
 		try {
-			const response = await fetch(url);
+			const response = await fetch( url );
 			const data = await response.json();
-			if (isSearch) {
-				setResults(data[type] || []);
+			if ( isSearch ) {
+				setResults( data[ type ] || [] );
 			} else {
-				setPopularItems(data[type] || []);
+				setPopularItems( data[ type ] || [] );
 			}
-		} catch (error) {
-			console.error(`Error fetching ${type}:`, error);
+		} catch ( error ) {
+			console.error( `Error fetching ${ type }:`, error );
 		} finally {
-			setLoading(false);
+			setLoading( false );
 		}
 	};
 
-	useEffect(() => {
-		if (isModalOpen && !searchTerm) {
+	useEffect( () => {
+		if ( isModalOpen && ! searchTerm ) {
 			fetchItems();
 		}
-	}, [isModalOpen]);
+	}, [ isModalOpen ] );
 
 	// Debounced search handler
-	const handleSearchChange = (value) => {
-		setSearchTerm(value);
+	const handleSearchChange = ( value ) => {
+		setSearchTerm( value );
 
 		// Clear existing timer
-		if (debounceTimerRef.current) {
-			clearTimeout(debounceTimerRef.current);
+		if ( debounceTimerRef.current ) {
+			clearTimeout( debounceTimerRef.current );
 		}
 
 		// Set new timer for debounced search
-		debounceTimerRef.current = setTimeout(() => {
-			if (value.trim()) {
-				fetchItems(value);
+		debounceTimerRef.current = setTimeout( () => {
+			if ( value.trim() ) {
+				fetchItems( value );
 			} else {
 				fetchItems();
 			}
-		}, DEBOUNCE_DELAY);
+		}, DEBOUNCE_DELAY );
 	};
 
 	// Cleanup timer on component unmount
-	useEffect(() => {
+	useEffect( () => {
 		return () => {
-			if (debounceTimerRef.current) {
-				clearTimeout(debounceTimerRef.current);
+			if ( debounceTimerRef.current ) {
+				clearTimeout( debounceTimerRef.current );
 			}
 		};
-	}, []);
+	}, [] );
 
-	const handleSelectItem = (slug) => {
-		onSelect(slug);
-		setModalOpen(false);
-	}
+	const handleSelectItem = ( slug ) => {
+		onSelect( slug );
+		setModalOpen( false );
+	};
 
 	return (
 		<>
 			<Button
 				variant="secondary"
-				size='compact'
-				onClick={() => setModalOpen(true)}
-				style={{
-					boxShadow: 'none'
-				}}
+				size="compact"
+				onClick={ () => setModalOpen( true ) }
+				style={ {
+					boxShadow: 'none',
+				} }
 			>
-				{__('Browse', 'wp-playground-blueprint-editor')}
+				{ __( 'Browse', 'wp-playground-blueprint-editor' ) }
 			</Button>
-			{isModalOpen && (
+			{ isModalOpen && (
 				<Modal
-					title={__(`Browse ${type[0].toUpperCase()}${type.slice(1)}`, 'wp-playground-blueprint-editor')}
-					onRequestClose={() => setModalOpen(false)}
-					shouldCloseOnClickOutside={false}
-					size='large'
-					style={{ height: '70%' }}
+					title={ __(
+						`Browse ${ type[ 0 ].toUpperCase() }${ type.slice(
+							1
+						) }`,
+						'wp-playground-blueprint-editor'
+					) }
+					onRequestClose={ () => setModalOpen( false ) }
+					shouldCloseOnClickOutside={ false }
+					size="large"
+					style={ { height: '70%' } }
 				>
-					<VStack spacing={6} justify='space-between'>
+					<VStack spacing={ 6 } justify="space-between">
 						<InputControl
 							__next40pxDefaultSize
-							placeholder={__('Search by name or author', 'wp-playground-blueprint-editor')}
-							value={searchTerm}
-							onChange={handleSearchChange}
+							placeholder={ __(
+								'Search by name or author',
+								'wp-playground-blueprint-editor'
+							) }
+							value={ searchTerm }
+							onChange={ handleSearchChange }
 							suffix={
 								<Button
 									variant="link"
-									onClick={() => fetchItems(searchTerm)}
-									disabled={isLoading}
-									style={{
+									onClick={ () => fetchItems( searchTerm ) }
+									disabled={ isLoading }
+									style={ {
 										textDecoration: 'none', // Removes underline
 										color: '#0073aa', // Matches theme
-									}}
-									icon={search}
+									} }
+									icon={ search }
 								/>
 							}
 						/>
 						<VStack>
-							{isLoading ? (
-								<Grid columns={2} gap={5}>
-									{Array.from({ length: 4 }).map((_, index) =>
-										type === 'themes' ? <ThemeSkeleton key={index} /> : <PluginSkeleton key={index} />
-									)}
+							{ isLoading ? (
+								<Grid columns={ 2 } gap={ 5 }>
+									{ Array.from( { length: 4 } ).map(
+										( _, index ) =>
+											type === 'themes' ? (
+												<ThemeSkeleton key={ index } />
+											) : (
+												<PluginSkeleton key={ index } />
+											)
+									) }
 								</Grid>
 							) : (
 								<>
-									{(searchTerm ? results : popularItems).length > 0 ? (
-										<Grid columns={2} gap={5}>
-											{(searchTerm ? results : popularItems).map((item) =>
+									{ ( searchTerm ? results : popularItems )
+										.length > 0 ? (
+										<Grid columns={ 2 } gap={ 5 }>
+											{ ( searchTerm
+												? results
+												: popularItems
+											).map( ( item ) =>
 												type === 'themes' ? (
-													<ThemeComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
+													<ThemeComponent
+														key={ item.slug }
+														item={ item }
+														onSelect={
+															handleSelectItem
+														}
+														selectedSlug={
+															selectedSlug
+														}
+													/>
 												) : (
-													<PluginComponent key={item.slug} item={item} onSelect={handleSelectItem} selectedSlug={selectedSlug} />
+													<PluginComponent
+														key={ item.slug }
+														item={ item }
+														onSelect={
+															handleSelectItem
+														}
+														selectedSlug={
+															selectedSlug
+														}
+													/>
 												)
-											)}
+											) }
 										</Grid>
 									) : (
-										<VStack justify="center" align="center" style={{ padding: '40px 0' }}>
-											<Heading level={4}>
-												{__('No results found', 'wp-playground-blueprint-editor')}
+										<VStack
+											justify="center"
+											align="center"
+											style={ { padding: '40px 0' } }
+										>
+											<Heading level={ 4 }>
+												{ __(
+													'No results found',
+													'wp-playground-blueprint-editor'
+												) }
 											</Heading>
 											<Text color="#666">
-												{searchTerm
-													? __(`No ${type} found matching your search.`, 'wp-playground-blueprint-editor')
-													: __(`No ${type} available.`, 'wp-playground-blueprint-editor')
-												}
+												{ searchTerm
+													? __(
+															`No ${ type } found matching your search.`,
+															'wp-playground-blueprint-editor'
+													  )
+													: __(
+															`No ${ type } available.`,
+															'wp-playground-blueprint-editor'
+													  ) }
 											</Text>
 										</VStack>
-									)}
+									) }
 								</>
-							)}
+							) }
 						</VStack>
 					</VStack>
 				</Modal>
-			)}
+			) }
 		</>
 	);
-};
+}
 
 export default Picker;

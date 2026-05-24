@@ -26,47 +26,65 @@ import { StepWrapper } from '../../components';
  *
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { username, password } = attributes;
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={login} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ login }
+			isSelected={ isSelected }
 			summary={
-				<HStack spacing={1}>
-										<Text weight={600}>{username}</Text>
-										<Icon icon={key} style={{ fill: "#949494" }} />
-									</HStack>
+				<HStack spacing={ 1 }>
+					<Text weight={ 600 }>{ username }</Text>
+					<Icon icon={ key } style={ { fill: '#949494' } } />
+				</HStack>
 			}
 		>
 			<DataForm
-								data={{
-									username,
-									password
-								}}
-								fields={[
-									{
-										id: 'username',
-										label: __('Username', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('Enter username', 'wp-playground-blueprint-editor')
-									},
-									{
-										id: 'password',
-										label: __('Password', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('Enter password', 'wp-playground-blueprint-editor')
-									},
-								]}
-								form={{
-									fields: [
-										'username',
-										'password'
-									]
-								}}
-								onChange={setAttributes}
-							/>
+				data={ {
+					username,
+					password,
+				} }
+				fields={ [
+					{
+						id: 'username',
+						label: __(
+							'Username',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'Enter username',
+							'wp-playground-blueprint-editor'
+						),
+					},
+					{
+						id: 'password',
+						label: __(
+							'Password',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'Enter password',
+							'wp-playground-blueprint-editor'
+						),
+					},
+				] }
+				form={ {
+					fields: [ 'username', 'password' ],
+				} }
+				onChange={ setAttributes }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: login,
+	edit: Edit,
+} );
