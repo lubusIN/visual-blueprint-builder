@@ -4,16 +4,11 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { brush } from '@wordpress/icons';
-import { useBlockProps } from '@wordpress/block-editor';
 import {
-	Placeholder,
 	TextControl,
 	ToggleControl,
-	Icon,
-	__experimentalVStack as VStack,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	__experimentalHStack as HStack,
 	__experimentalText as Text,
 	__experimentalInputControl as InputControl,
 } from '@wordpress/components';
