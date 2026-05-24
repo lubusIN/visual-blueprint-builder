@@ -1,5 +1,4 @@
 <?php
-defined( 'ABSPATH' ) || exit;
 
 /**
  * This class defines a custom post type for creating and managing blueprint.
@@ -8,6 +7,8 @@ defined( 'ABSPATH' ) || exit;
  */
 
 namespace WP\Admin\VisualBlueprintBuilder;
+
+defined('ABSPATH') || exit;
 
 class BlueprintPostType
 {

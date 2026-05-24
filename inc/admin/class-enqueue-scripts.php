@@ -1,5 +1,4 @@
 <?php
-defined( 'ABSPATH' ) || exit;
 
 /**
  * This class handles registering and enqueueing scripts and styles.
@@ -8,6 +7,8 @@ defined( 'ABSPATH' ) || exit;
  */
 
 namespace WP\Admin\VisualBlueprintBuilder;
+
+defined('ABSPATH') || exit;
 
 class EnqueueScripts
 {
