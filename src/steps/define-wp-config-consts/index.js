@@ -3,9 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { cog, plus, trash } from '@wordpress/icons';
-import { useBlockProps } from '@wordpress/block-editor';
-import { Placeholder, __experimentalText as Text } from '@wordpress/components';
+import { cog } from '@wordpress/icons';
+import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * Internal dependencies.
