@@ -16,7 +16,7 @@
  * @package visual-blueprint-builder
  */
 
-namespace WP\VisualBlueprintBuilde;
+namespace WP\VisualBlueprintBuilder;
 
 use WP\Admin\VisualBlueprintBuilder\{
     BlueprintPostType,

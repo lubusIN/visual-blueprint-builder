@@ -29,7 +29,7 @@ class EnqueueScripts
         $screen = get_current_screen();
 
         // Only enqueue scripts/styles for the 'blueprint' post type in the editor
-        if ('blueprint' !== $screen->post_type) {
+        if (! $screen || 'blueprint' !== $screen->post_type) {
             return;
         }
 

@@ -25,32 +25,7 @@ class BlueprintSteps
      */
     public function register_blueprint_steps()
     {
-        $blueprint_steps = [
-            'login',
-            'install-plugin',
-            'enable-multisite',
-            'cp',
-            'install-theme',
-            'define-site-url',
-            'activate-theme',
-            'activate-plugin',
-            'import-wordpress-files',
-            'rmdir',
-            'rm',
-            'reset-data',
-            'mv',
-            'define-wp-config-consts',
-            'write-file',
-            'wp-cli',
-            'run-php',
-            'mkdir',
-            'import-wxr',
-            'update-user-meta',
-            'unzip',
-            'set-site-options',
-            'set-site-language',
-            'import-theme-starter-content',
-        ];
+        $blueprint_steps = vbb_get_blueprint_steps();
 
         foreach ($blueprint_steps as $step) {
             register_block_type(VBB_PLUGIN_DIR . 'build/steps/' . $step);
