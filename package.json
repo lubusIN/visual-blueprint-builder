@@ -26,12 +26,14 @@
     "@wordpress/blob": "^4.44.0",
     "@wordpress/block-editor": "^15.17.0",
     "@wordpress/blocks": "^15.17.0",
+    "@wordpress/components": "^33.1.0",
     "@wordpress/dataviews": "^5.0.0",
     "@wordpress/editor": "^14.44.0",
     "@wordpress/i18n": "^6.17.0",
     "@wordpress/icons": "^12.2.0",
     "@wordpress/plugins": "^7.44.0",
     "ajv": "^8.17.1",
+    "glob": "^13.0.6",
     "react-loading-skeleton": "^3.5.0"
   }
 }
