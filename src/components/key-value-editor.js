@@ -13,16 +13,69 @@ import {
 } from '@wordpress/components';
 
 /**
- * Internal dependencies
+ * Utility functions for managing key-value pairs locally inside KeyValueEditor.
  */
-import {
-	addKeyValuePair,
-	updateKeyValuePair,
-	removeKeyValuePair,
-	filterEmptyKeyValuePairs,
-	isAddButtonDisabled as checkAddButtonDisabled,
-	keyValuePairsToObject,
-} from '../editor/utils';
+
+const addKeyValuePair = ( list, updateFunction ) => {
+	if ( list.some( ( [ key, value ] ) => key === '' && value === '' ) ) return;
+	updateFunction( [ ...list, [ '', '' ] ] );
+};
+
+const updateKeyValuePair = (
+	list,
+	updateFunction,
+	index,
+	field,
+	fieldValue
+) => {
+	const updatedList = list.map( ( [ key, value ], i ) => {
+		if ( i === index ) {
+			return field === 'key'
+				? [ fieldValue, value ]
+				: [ key, fieldValue ];
+		}
+		return [ key, value ];
+	} );
+	updateFunction( updatedList );
+};
+
+const removeKeyValuePair = ( list, updateFunction, index ) => {
+	updateFunction( list.filter( ( _, i ) => i !== index ) );
+};
+
+const filterEmptyKeyValuePairs = ( list, updateFunction ) => {
+	const filtered = list.filter( ( [ key, value ] ) => {
+		const keyStr = String( key || '' ).trim();
+		const valueStr = String( value || '' ).trim();
+		return keyStr !== '' && valueStr !== '';
+	} );
+	updateFunction( filtered );
+};
+
+const checkAddButtonDisabled = ( list ) => {
+	return (
+		list.length > 0 &&
+		( list[ list.length - 1 ][ 0 ] === '' ||
+			list[ list.length - 1 ][ 1 ] === '' )
+	);
+};
+
+const keyValuePairsToObject = ( list ) => {
+	if ( ! Array.isArray( list ) ) return {};
+	const filtered = list.filter( ( item ) => {
+		if ( ! Array.isArray( item ) || item.length < 2 ) return false;
+		const [ key, value ] = item;
+		if ( key == null || value == null ) return false;
+		try {
+			const keyStr = String( key ).trim();
+			const valueStr = String( value ).trim();
+			return keyStr !== '' && valueStr !== '';
+		} catch ( error ) {
+			return false;
+		}
+	} );
+	return Object.fromEntries( filtered );
+};
 
 /**
  * A reusable component for editing a list of key-value pairs.
