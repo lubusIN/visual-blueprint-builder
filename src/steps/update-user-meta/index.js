@@ -2,12 +2,9 @@
  * WordPress dependencies.
  */
 import { __ } from '@wordpress/i18n';
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { postAuthor, plus, trash } from '@wordpress/icons';
-import { useBlockProps } from '@wordpress/block-editor';
+import { postAuthor } from '@wordpress/icons';
 import {
-	Placeholder,
 	__experimentalInputControl as InputControl,
 	__experimentalVStack as VStack,
 	__experimentalText as Text,
