@@ -29,6 +29,27 @@ import { PHP_VERSIONS, WP_VERSIONS } from './constant';
 import { useBlueprintData } from './utils';
 
 /**
+ * Component for displaying blueprint sidebar setting.
+ */
+const ToggleEdit = ( { field, onChange, data, hideLabelFromVision } ) => {
+	const { id, getValue } = field;
+	return (
+		<ToggleControl
+			__nextHasNoMarginBottom
+			label={ hideLabelFromVision ? '' : field.label }
+			checked={ getValue( { item: data } ) }
+			onChange={ () =>
+				onChange( {
+					[ id ]: ! getValue( {
+						item: data,
+					} ),
+				} )
+			}
+		/>
+	);
+};
+
+/**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
@@ -93,32 +114,7 @@ function BlueprintSidebarSettings() {
 								'wp-playground-blueprint-editor'
 							),
 							type: 'integer',
-							Edit: ( {
-								field,
-								onChange,
-								data,
-								hideLabelFromVision,
-							} ) => {
-								const { id, getValue } = field;
-								return (
-									<ToggleControl
-										__nextHasNoMarginBottom
-										label={
-											hideLabelFromVision
-												? ''
-												: field.label
-										}
-										checked={ getValue( { item: data } ) }
-										onChange={ () =>
-											onChange( {
-												[ id ]: ! getValue( {
-													item: data,
-												} ),
-											} )
-										}
-									/>
-								);
-							},
+							Edit: ToggleEdit,
 						},
 						{
 							id: 'login',
@@ -127,32 +123,7 @@ function BlueprintSidebarSettings() {
 								'wp-playground-blueprint-editor'
 							),
 							type: 'integer',
-							Edit: ( {
-								field,
-								onChange,
-								data,
-								hideLabelFromVision,
-							} ) => {
-								const { id, getValue } = field;
-								return (
-									<ToggleControl
-										__nextHasNoMarginBottom
-										label={
-											hideLabelFromVision
-												? ''
-												: field.label
-										}
-										checked={ getValue( { item: data } ) }
-										onChange={ () =>
-											onChange( {
-												[ id ]: ! getValue( {
-													item: data,
-												} ),
-											} )
-										}
-									/>
-								);
-							},
+							Edit: ToggleEdit,
 						},
 						{
 							id: 'extraLibraries',
@@ -161,32 +132,7 @@ function BlueprintSidebarSettings() {
 								'wp-playground-blueprint-editor'
 							),
 							type: 'integer',
-							Edit: ( {
-								field,
-								onChange,
-								data,
-								hideLabelFromVision,
-							} ) => {
-								const { id, getValue } = field;
-								return (
-									<ToggleControl
-										__nextHasNoMarginBottom
-										label={
-											hideLabelFromVision
-												? ''
-												: field.label
-										}
-										checked={ getValue( { item: data } ) }
-										onChange={ () =>
-											onChange( {
-												[ id ]: ! getValue( {
-													item: data,
-												} ),
-											} )
-										}
-									/>
-								);
-							},
+							Edit: ToggleEdit,
 						},
 					] }
 					form={ {
