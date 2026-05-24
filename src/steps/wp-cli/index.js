@@ -26,24 +26,39 @@ import { StepWrapper } from '../../components';
  *
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { command } = attributes;
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={listItem} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ listItem }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>{(command || __('{command to run}', 'wp-playground-blueprint-editor'))}</Text>
+				<Text weight={ 600 }>
+					{ command ||
+						__(
+							'{command to run}',
+							'wp-playground-blueprint-editor'
+						) }
+				</Text>
 			}
 		>
 			<TextareaControl
-								__nextHasNoMarginBottom
-								label={__('Command', 'wp-playground-blueprint-editor')}
-								onChange={(value) => setAttributes({ command: value })}
-								placeholder=""
-								value={command}
-							/>
+				__nextHasNoMarginBottom
+				label={ __( 'Command', 'wp-playground-blueprint-editor' ) }
+				onChange={ ( value ) => setAttributes( { command: value } ) }
+				placeholder=""
+				value={ command }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: listItem,
+	edit: Edit,
+} );

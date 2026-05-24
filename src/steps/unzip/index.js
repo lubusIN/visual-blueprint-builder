@@ -26,62 +26,83 @@ import { StepWrapper } from '../../components';
  * @param {Object} props Component properties.
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { zipFile, extractToPath } = attributes;
 	const { path } = zipFile;
 
-	const handleInputChange = (value) => {
-		const key = Object.keys(value)[0];
+	const handleInputChange = ( value ) => {
+		const key = Object.keys( value )[ 0 ];
 
-		if ('path' === key) {
-			setAttributes({
+		if ( 'path' === key ) {
+			setAttributes( {
 				zipFile: {
 					...zipFile,
-					...value
-				}
-			});
+					...value,
+				},
+			} );
 		} else {
-			setAttributes(value);
+			setAttributes( value );
 		}
 	};
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={archive} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ archive }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>
-										{`from ${path || __('{zip path}', 'wp-playground-blueprint-editor')} to ${extractToPath || __('{folder path}', 'wp-playground-blueprint-editor')}`}
-									</Text>
+				<Text weight={ 600 }>
+					{ `from ${
+						path ||
+						__( '{zip path}', 'wp-playground-blueprint-editor' )
+					} to ${
+						extractToPath ||
+						__( '{folder path}', 'wp-playground-blueprint-editor' )
+					}` }
+				</Text>
 			}
 		>
 			<DataForm
-								data={{
-									path,
-									extractToPath
-								}}
-								fields={[
-									{
-										id: 'path',
-										label: __('Path', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('The path of the zip file to extract', 'wp-playground-blueprint-editor')
-									},
-									{
-										id: 'extractToPath',
-										label: __('Extract To Path', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('The path to extract the zip file to', 'wp-playground-blueprint-editor')
-									}
-								]}
-								form={{
-									fields: [
-										'path',
-										'extractToPath'
-									]
-								}}
-								onChange={handleInputChange}
-							/>
+				data={ {
+					path,
+					extractToPath,
+				} }
+				fields={ [
+					{
+						id: 'path',
+						label: __( 'Path', 'wp-playground-blueprint-editor' ),
+						type: 'text',
+						placeholder: __(
+							'The path of the zip file to extract',
+							'wp-playground-blueprint-editor'
+						),
+					},
+					{
+						id: 'extractToPath',
+						label: __(
+							'Extract To Path',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'The path to extract the zip file to',
+							'wp-playground-blueprint-editor'
+						),
+					},
+				] }
+				form={ {
+					fields: [ 'path', 'extractToPath' ],
+				} }
+				onChange={ handleInputChange }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: archive,
+	edit: Edit,
+} );

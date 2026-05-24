@@ -26,36 +26,50 @@ import { StepWrapper } from '../../components';
  *
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { path } = attributes;
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={file} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ file }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>
-										{__('at', 'wp-playground-blueprint-editor')} {` ${path || '{directory path}'}`}
-									</Text>
+				<Text weight={ 600 }>
+					{ __( 'at', 'wp-playground-blueprint-editor' ) }{ ' ' }
+					{ ` ${ path || '{directory path}' }` }
+				</Text>
 			}
 		>
 			<DataForm
-								data={attributes}
-								fields={[
-									{
-										id: 'path',
-										label: __('Directory Path', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('e.g., /wp-content/plugins/new-directory', 'wp-playground-blueprint-editor')
-									}
-								]}
-								form={{
-									fields: [
-										'path'
-									]
-								}}
-								onChange={setAttributes}
-							/>
+				data={ attributes }
+				fields={ [
+					{
+						id: 'path',
+						label: __(
+							'Directory Path',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'e.g., /wp-content/plugins/new-directory',
+							'wp-playground-blueprint-editor'
+						),
+					},
+				] }
+				form={ {
+					fields: [ 'path' ],
+				} }
+				onChange={ setAttributes }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: file,
+	edit: Edit,
+} );

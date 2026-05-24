@@ -25,16 +25,18 @@ import metadata from './block.json';
  *
  * @return {Element} Element to render.
  */
-function Edit({ isSelected }) {
-
+function Edit( { isSelected } ) {
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={blockMeta} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ blockMeta }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>
-					{__("Activate Multisite Network", 'wp-playground-blueprint-editor')}
+				<Text weight={ 600 }>
+					{ __(
+						'Activate Multisite Network',
+						'wp-playground-blueprint-editor'
+					) }
 				</Text>
 			}
 		/>
@@ -44,7 +46,7 @@ function Edit({ isSelected }) {
 /**
  * Every block starts by registering a new block type definition.
  */
-registerBlockType(metadata.name, {
+registerBlockType( metadata.name, {
 	icon: blockMeta,
 	edit: Edit,
-});
+} );
