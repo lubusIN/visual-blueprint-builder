@@ -18,6 +18,7 @@ import { DataForm } from '@wordpress/dataviews';
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -29,24 +30,18 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const { username, password } = attributes;
 
 	return (
-		<p {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={login} size={28} className='step-icon' />
-							<VStack spacing={0}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && username && password && (
-									<HStack spacing={1}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={login} 
+			isSelected={isSelected} 
+			summary={
+				<HStack spacing={1}>
 										<Text weight={600}>{username}</Text>
 										<Icon icon={key} style={{ fill: "#949494" }} />
 									</HStack>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<DataForm
+			}
+		>
+			<DataForm
 								data={{
 									username,
 									password
@@ -73,18 +68,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								}}
 								onChange={setAttributes}
 							/>
-						)}
-					</VStack>
-				}
-			/>
-		</p>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: login,
-	edit: Edit,
-});
+		</StepWrapper>
+);

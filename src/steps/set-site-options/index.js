@@ -24,6 +24,7 @@ import {
 /**
  * Internal dependencies.
  */
+import { StepWrapper } from '../../components';
 import metadata from './block.json';
 
 /**
@@ -285,93 +286,71 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	};
 
 	return (
-		<div {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify="left" align="center" spacing={3}>
-							<Icon icon={settings} size={28} className="step-icon" />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color="#949494">
-									{metadata.title}
+		<StepWrapper 
+			title={metadata.title} 
+			icon={settings} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>
+					<pre style={{ whiteSpace: 'pre-wrap' }}>
+						{JSON.stringify(options, null, 2)}
+					</pre>
+				</Text>
+			}
+		>
+			<VStack spacing={4}>
+				<TreeGrid style={{ width: '100%' }} className='vpb-object-tree'>
+					<TreeGridRow level={1} positionInSet={1} setSize={treeData.length + 1}>
+						<TreeGridCell>
+							{(props) => (
+								<Text {...props} weight={600}>
+									{__('Name', 'wp-playground-blueprint-editor')}
 								</Text>
-								{!isSelected && (
-									<Text weight={600}>
-										<pre style={{ whiteSpace: 'pre-wrap' }}>
-											{JSON.stringify(options, null, 2)}
-										</pre>
-									</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<VStack spacing={4}>
-								<TreeGrid style={{ width: '100%' }} className='vpb-object-tree'>
-									<TreeGridRow level={1} positionInSet={1} setSize={treeData.length + 1}>
-										<TreeGridCell>
-											{(props) => (
-												<Text {...props} weight={600}>
-													{__('Name', 'wp-playground-blueprint-editor')}
-												</Text>
-											)}
-										</TreeGridCell>
-										<TreeGridCell>
-											{(props) => (
-												<Text {...props} weight={600}>
-													{__('Type', 'wp-playground-blueprint-editor')}
-												</Text>
-											)}
-										</TreeGridCell>
-										<TreeGridCell>
-											{(props) => (
-												<Text {...props} weight={600}>
-													{__('Value', 'wp-playground-blueprint-editor')}
-												</Text>
-											)}
-										</TreeGridCell>
-										<TreeGridCell>
-											{(props) => <span {...props}></span>}
-										</TreeGridCell>
-									</TreeGridRow>
-									{treeData.map((item, index) => (
-										<TreeRow
-											key={item.id}
-											item={item}
-											level={1}
-											positionInSet={index + 1}
-											setSize={treeData.length}
-											onUpdate={updateTreeItem}
-											onDelete={(id) => {
-												setSelectedItemId(id);
-												setIsOpen(true);
-											}}
-											onTypeChange={changeItemType}
-											onAddChild={addChildItem}
-										/>
-									))}
-								</TreeGrid>
-								<Button
-									icon={plus}
-									variant="secondary"
-									label={__('Add Option', 'wp-playground-blueprint-editor')}
-									onClick={addNewItem}
-								/>
-							</VStack>
-						)}
-					</VStack>
-				}
-			/>
-			<ConfirmDialog
-				isOpen={isOpen}
-				onConfirm={() => {
-					deleteTreeItem(selectedItemId);
-					setIsOpen(false);
-				}}
-				onCancel={() => setIsOpen(false)}
-			>
-				{__('Delete this item?', 'wp-playground-blueprint-editor')}
-			</ConfirmDialog>
-		</div>
+							)}
+						</TreeGridCell>
+						<TreeGridCell>
+							{(props) => (
+								<Text {...props} weight={600}>
+									{__('Type', 'wp-playground-blueprint-editor')}
+								</Text>
+							)}
+						</TreeGridCell>
+						<TreeGridCell>
+							{(props) => (
+								<Text {...props} weight={600}>
+									{__('Value', 'wp-playground-blueprint-editor')}
+								</Text>
+							)}
+						</TreeGridCell>
+						<TreeGridCell>
+							{(props) => <span {...props}></span>}
+						</TreeGridCell>
+					</TreeGridRow>
+					{treeData.map((item, index) => (
+						<TreeRow
+							key={item.id}
+							item={item}
+							level={1}
+							positionInSet={index + 1}
+							setSize={treeData.length}
+							onUpdate={updateTreeItem}
+							onDelete={(id) => {
+								setSelectedItemId(id);
+								setIsOpen(true);
+							}}
+							onTypeChange={changeItemType}
+							onAddChild={addChildItem}
+						/>
+					))}
+				</TreeGrid>
+				<Button
+					icon={plus}
+					variant="secondary"
+					label={__('Add Option', 'wp-playground-blueprint-editor')}
+					onClick={addNewItem}
+				/>
+			</VStack>
+		</StepWrapper>
 	);
 }
 

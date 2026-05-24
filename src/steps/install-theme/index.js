@@ -24,6 +24,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 import { Picker } from '../../components';
 
 /**
@@ -83,21 +84,15 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	}
 
 	return (
-		<div {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={brush} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>{`${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? __('Activate', 'wp-playground-blueprint-editor') : __('Install and keep Inactive', 'wp-playground-blueprint-editor')} > ${importStarterContent ? __('with', 'wp-playground-blueprint-editor') : __('without', 'wp-playground-blueprint-editor')} ${__('starter content', 'wp-playground-blueprint-editor')}`}</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={brush} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>{`${resource} > ${getResourceInfo(resource) || 'undefined'} > ${activate ? __('Activate', 'wp-playground-blueprint-editor') : __('Install and keep Inactive', 'wp-playground-blueprint-editor')} > ${importStarterContent ? __('with', 'wp-playground-blueprint-editor') : __('without', 'wp-playground-blueprint-editor')} ${__('starter content', 'wp-playground-blueprint-editor')}`}</Text>
+			}
+		>
+			<>
 								<ToggleGroupControl
 									label={__('Resource', 'wp-playground-blueprint-editor')}
 									__nextHasNoMarginBottom
@@ -184,19 +179,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									})}
 								/>
 							</>
-						)}
-					</VStack>
-				}
-			/>
-		</div >
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- *
- */
-registerBlockType(metadata.name, {
-	icon: brush,
-	edit: Edit,
-});
+		</StepWrapper>
+);

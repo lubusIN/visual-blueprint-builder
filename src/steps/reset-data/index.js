@@ -16,6 +16,7 @@ import {
 /**
  * Internal dependencies.
  */
+import { StepWrapper } from '../../components';
 import metadata from './block.json';
 
 /**
@@ -27,21 +28,16 @@ import metadata from './block.json';
 function Edit() {
 
 	return (
-		<p {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<HStack justify='left' align={'center'} spacing={3}>
-						<Icon icon={reusableBlock} size={28} className='step-icon' />
-						<VStack spacing={1}>
-							<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-							<Text weight={600}>
-								{__('Delete WordPress posts and comments', 'wp-playground-blueprint-editor')}
-							</Text>
-						</VStack>
-					</HStack>
-				}
-			/>
-		</p>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={reusableBlock} 
+			isSelected={false} 
+			summary={
+				<Text weight={600}>
+					{__('Delete WordPress posts and comments', 'wp-playground-blueprint-editor')}
+				</Text>
+			}
+		/>
 	);
 }
 

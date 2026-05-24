@@ -18,6 +18,7 @@ import { DataForm } from '@wordpress/dataviews';
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 
 /**
  * Edit function for the plugin installation block.
@@ -45,23 +46,17 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	};
 
 	return (
-		<div {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={archive} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={archive} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>
 										{`from ${path || __('{zip path}', 'wp-playground-blueprint-editor')} to ${extractToPath || __('{folder path}', 'wp-playground-blueprint-editor')}`}
 									</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<DataForm
+			}
+		>
+			<DataForm
 								data={{
 									path,
 									extractToPath
@@ -88,18 +83,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 								}}
 								onChange={handleInputChange}
 							/>
-						)}
-					</VStack>
-				}
-			/>
-		</div>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: archive,
-	edit: Edit,
-});
+		</StepWrapper>
+);

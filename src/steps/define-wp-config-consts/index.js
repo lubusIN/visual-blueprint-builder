@@ -21,6 +21,7 @@ import {
  * Internal dependencies.
  */
 import metadata from './block.json';
+import { StepWrapper } from '../../components';
 import {
 	addKeyValuePair,
 	updateKeyValuePair,
@@ -73,23 +74,17 @@ function Edit({ attributes, setAttributes, isSelected }) {
 	const isAddButtonDisabled = checkAddButtonDisabled(configList);
 
 	return (
-		<div {...useBlockProps()}>
-			<Placeholder
-				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={cog} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>{metadata.title}</Text>
-								{!isSelected && (
-									<Text weight={600}>
+		<StepWrapper 
+			title={metadata.title} 
+			icon={cog} 
+			isSelected={isSelected} 
+			summary={
+				<Text weight={600}>
 										{(<pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(consts, null, " ")}</pre> || __('{config consts}', 'wp-playground-blueprint-editor'))}
 									</Text>
-								)}
-							</VStack>
-						</HStack>
-						{isSelected && (
-							<VStack spacing={4}>
+			}
+		>
+			<VStack spacing={4}>
 								{configList.map(([key, value], index) => {
 									return (
 										<HStack key={index} justify="space-between" alignment="center">
@@ -128,29 +123,5 @@ function Edit({ attributes, setAttributes, isSelected }) {
 									disabled={isAddButtonDisabled}
 								/>
 							</VStack>
-						)}
-					</VStack>
-				}
-			/>
-			<ConfirmDialog
-				isOpen={isOpen}
-				onConfirm={() => {
-					removeConfig();
-					setSelectedConfig(undefined);
-					setIsOpen(false);
-				}}
-				onCancel={() => setIsOpen(false)}
-			>
-				{__('Delete Config?', 'wp-playground-blueprint-editor')}
-			</ConfirmDialog>
-		</div>
-	);
-}
-
-/**
- * Every block starts by registering a new block type definition.
- */
-registerBlockType(metadata.name, {
-	icon: cog,
-	edit: Edit,
-});
+		</StepWrapper>
+);
