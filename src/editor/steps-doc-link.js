@@ -9,7 +9,7 @@ import { createInterpolateElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { STEP_DOCS_MAP } from './constant';
+import { STEP_DOCS_MAP, PLAYGROUND_DOCS_BASE } from './constant';
 
 /**
  * Renders a paragraph with a link to learn more about the description.
@@ -26,7 +26,7 @@ const DescriptionSupportLink = ( { title, url, children } ) => (
 		{ children }
 		<p style={ { marginTop: '8px' } }>
 			<ExternalLink href={ url }>
-				{ __( 'Learn more', 'your-text-domain' ) }
+				{ __( 'Learn more', 'wp-playground-blueprint-editor' ) }
 			</ExternalLink>
 		</p>
 	</>
@@ -68,14 +68,14 @@ const addStepLearnMoreLink = ( settings, name ) => {
 	}
 	processedSteps[ name ] = true;
 
-	const stepInfo = STEP_DOCS_MAP[ name ];
+	const stepHash = STEP_DOCS_MAP[ name ];
 
-	if ( ! stepInfo ) return settings;
+	if ( ! stepHash ) return settings;
 
 	settings.description = createLocalizedDescriptionWithLearnMore(
 		settings.title,
 		settings.description,
-		stepInfo.link
+		`${ PLAYGROUND_DOCS_BASE }#${ stepHash }`
 	);
 
 	return settings;

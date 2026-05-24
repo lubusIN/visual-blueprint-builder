@@ -297,9 +297,13 @@ function Picker( { type, onSelect, selectedSlug } ) {
 											{ ( searchTerm
 												? results
 												: popularItems
-											).map( ( item ) =>
-												type === 'themes' ? (
-													<ThemeComponent
+											).map( ( item ) => {
+												const ItemComponent =
+													type === 'themes'
+														? ThemeComponent
+														: PluginComponent;
+												return (
+													<ItemComponent
 														key={ item.slug }
 														item={ item }
 														onSelect={
@@ -309,19 +313,8 @@ function Picker( { type, onSelect, selectedSlug } ) {
 															selectedSlug
 														}
 													/>
-												) : (
-													<PluginComponent
-														key={ item.slug }
-														item={ item }
-														onSelect={
-															handleSelectItem
-														}
-														selectedSlug={
-															selectedSlug
-														}
-													/>
-												)
-											) }
+												);
+											} ) }
 										</Grid>
 									) : (
 										<VStack

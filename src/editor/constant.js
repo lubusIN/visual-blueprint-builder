@@ -11,6 +11,12 @@ export const PLAYGROUND_BUILDER_BASE =
 	'https://href.li/?https://playground.wordpress.net/builder/builder.html#';
 
 /**
+ * Playground blueprint docs base url
+ */
+export const PLAYGROUND_DOCS_BASE =
+	'https://wordpress.github.io/wordpress-playground/blueprints/steps/';
+
+/**
  * Playground blueprint schema url
  */
 export const PLAYGROUND_BLUEPRINT_SCHEMA_URL =
@@ -38,7 +44,7 @@ export const PHP_VERSIONS = [
  * Wordpress versions.
  */
 export const WP_VERSIONS = [
-	{ label: 'Wordpress nightly', value: 'nightly' },
+	{ label: 'WordPress nightly', value: 'nightly' },
 	{ label: 'Latest', value: 'latest' },
 	{ label: '6.7', value: '6.7' },
 	{ label: '6.6', value: '6.6' },
@@ -51,76 +57,28 @@ export const WP_VERSIONS = [
  * Step documentation links.
  */
 export const STEP_DOCS_MAP = {
-	'playground-step/login': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#LoginStep',
-	},
-	'playground-step/install-plugin': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#InstallPluginStep',
-	},
-	'playground-step/enable-multisite': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#EnableMultisiteStep',
-	},
-	'playground-step/install-theme': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#InstallThemeStep',
-	},
-	'playground-step/activate-theme': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ActivateThemeStep',
-	},
-	'playground-step/cp': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#CpStep',
-	},
-	'playground-step/define-site-url': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#DefineSiteUrlStep',
-	},
-	'playground-step/activate-plugin': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ActivatePluginStep',
-	},
-	'playground-step/import-wordpress-files': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWordPressFilesStep',
-	},
-	'playground-step/rmdir': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RmdirStep',
-	},
-	'playground-step/rm': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RmStep',
-	},
-	'playground-step/reset-data': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ResetDataStep',
-	},
-	'playground-step/mv': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#MvStep',
-	},
-	'playground-step/define-wp-config-consts': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#DefineWpConfigConstsStep',
-	},
-	'playground-step/write-file': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#WriteFileStep',
-	},
-	'playground-step/wp-cli': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#WPCLIStep',
-	},
-	'playground-step/run-php': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#RunPHPStep',
-	},
-	'playground-step/mkdir': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#MkdirStep',
-	},
-	'playground-step/import-wxr': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportWxrStep',
-	},
-	'playground-step/update-user-meta': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#UpdateUserMeta',
-	},
-	'playground-step/unzip': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#UnzipStep',
-	},
-	'playground-step/set-site-options': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#SetSiteOptionsStep',
-	},
-	'playground-step/set-site-language': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#SetSiteLanguageStep',
-	},
-	'playground-step/import-theme-starter-content': {
-		link: 'https://wordpress.github.io/wordpress-playground/blueprints/steps/#ImportThemeStarterContentStep',
-	},
+	'playground-step/login': 'LoginStep',
+	'playground-step/install-plugin': 'InstallPluginStep',
+	'playground-step/enable-multisite': 'EnableMultisiteStep',
+	'playground-step/install-theme': 'InstallThemeStep',
+	'playground-step/activate-theme': 'ActivateThemeStep',
+	'playground-step/cp': 'CpStep',
+	'playground-step/define-site-url': 'DefineSiteUrlStep',
+	'playground-step/activate-plugin': 'ActivatePluginStep',
+	'playground-step/import-wordpress-files': 'ImportWordPressFilesStep',
+	'playground-step/rmdir': 'RmdirStep',
+	'playground-step/rm': 'RmStep',
+	'playground-step/reset-data': 'ResetDataStep',
+	'playground-step/mv': 'MvStep',
+	'playground-step/define-wp-config-consts': 'DefineWpConfigConstsStep',
+	'playground-step/write-file': 'WriteFileStep',
+	'playground-step/wp-cli': 'WPCLIStep',
+	'playground-step/run-php': 'RunPHPStep',
+	'playground-step/mkdir': 'MkdirStep',
+	'playground-step/import-wxr': 'ImportWxrStep',
+	'playground-step/update-user-meta': 'UpdateUserMeta',
+	'playground-step/unzip': 'UnzipStep',
+	'playground-step/set-site-options': 'SetSiteOptionsStep',
+	'playground-step/set-site-language': 'SetSiteLanguageStep',
+	'playground-step/import-theme-starter-content': 'ImportThemeStarterContentStep',
 };
