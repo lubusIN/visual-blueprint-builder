@@ -4,14 +4,10 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { page } from '@wordpress/icons';
-import { useBlockProps } from '@wordpress/block-editor';
 import {
-	Placeholder,
 	TextControl,
 	TextareaControl,
-	Icon,
 	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
 	__experimentalText as Text,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,

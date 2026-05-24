@@ -4,14 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { reusableBlock } from '@wordpress/icons';
-import { useBlockProps } from '@wordpress/block-editor';
-import {
-	Placeholder,
-	Icon,
-	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * Internal dependencies.
