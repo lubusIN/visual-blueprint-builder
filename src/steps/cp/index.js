@@ -26,51 +26,69 @@ import { StepWrapper } from '../../components';
  *
  * @return {Element} Element to render.
  */
-function Edit({ attributes, setAttributes, isSelected }) {
+function Edit( { attributes, setAttributes, isSelected } ) {
 	const { fromPath, toPath } = attributes;
 
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={copy} 
-			isSelected={isSelected} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ copy }
+			isSelected={ isSelected }
 			summary={
-				<Text weight={600}>
-										{fromPath && toPath
-											? __(
-												`Copy all files and folders from “${fromPath}” to “${toPath}”.`,
-												'wp-playground-blueprint-editor'
-											)
-											: __(
-												'Copy all files and folders from the "From Path" location to the "To Path" location.',
-												'wp-playground-blueprint-editor'
-											)}
-									</Text>
+				<Text weight={ 600 }>
+					{ fromPath && toPath
+						? __(
+								`Copy all files and folders from “${ fromPath }” to “${ toPath }”.`,
+								'wp-playground-blueprint-editor'
+						  )
+						: __(
+								'Copy all files and folders from the "From Path" location to the "To Path" location.',
+								'wp-playground-blueprint-editor'
+						  ) }
+				</Text>
 			}
 		>
 			<DataForm
-								data={attributes}
-								fields={[
-									{
-										id: 'fromPath',
-										label: __('From Path', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('Enter source path', 'wp-playground-blueprint-editor'),
-									},
-									{
-										id: 'toPath',
-										label: __('To Path', 'wp-playground-blueprint-editor'),
-										type: 'text',
-										placeholder: __('Enter destination path', 'wp-playground-blueprint-editor'),
-									},
-								]}
-								form={{
-									fields: [
-										'fromPath',
-										'toPath'
-									]
-								}}
-								onChange={setAttributes}
-							/>
+				data={ attributes }
+				fields={ [
+					{
+						id: 'fromPath',
+						label: __(
+							'From Path',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'Enter source path',
+							'wp-playground-blueprint-editor'
+						),
+					},
+					{
+						id: 'toPath',
+						label: __(
+							'To Path',
+							'wp-playground-blueprint-editor'
+						),
+						type: 'text',
+						placeholder: __(
+							'Enter destination path',
+							'wp-playground-blueprint-editor'
+						),
+					},
+				] }
+				form={ {
+					fields: [ 'fromPath', 'toPath' ],
+				} }
+				onChange={ setAttributes }
+			/>
 		</StepWrapper>
-);
+	);
+}
+
+/**
+ * Every block starts by registering a new block type definition.
+ */
+registerBlockType( metadata.name, {
+	icon: copy,
+	edit: Edit,
+} );

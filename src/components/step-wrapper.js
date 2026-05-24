@@ -13,28 +13,43 @@ import {
 /**
  * StepWrapper component to standardize the UI of all blueprint steps.
  */
-export default function StepWrapper({ title, icon, summary, isSelected, children }) {
+export default function StepWrapper( {
+	title,
+	icon,
+	summary,
+	isSelected,
+	children,
+} ) {
 	return (
-		<div {...useBlockProps()}>
+		<div { ...useBlockProps() }>
 			<Placeholder
 				preview={
-					<VStack style={{ width: '100%' }}>
-						<HStack justify='left' align={'center'} spacing={3}>
-							<Icon icon={icon} size={28} className='step-icon' />
-							<VStack spacing={1}>
-								<Text upperCase size={12} weight={500} color='#949494'>
-									{title}
+					<VStack style={ { width: '100%' } }>
+						<HStack justify="left" align={ 'center' } spacing={ 3 }>
+							<Icon
+								icon={ icon }
+								size={ 28 }
+								className="step-icon"
+							/>
+							<VStack spacing={ 1 }>
+								<Text
+									upperCase
+									size={ 12 }
+									weight={ 500 }
+									color="#949494"
+								>
+									{ title }
 								</Text>
-								{!isSelected && summary && (
-									typeof summary === 'string' ? (
-										<Text weight={600}>{summary}</Text>
+								{ ! isSelected &&
+									summary &&
+									( typeof summary === 'string' ? (
+										<Text weight={ 600 }>{ summary }</Text>
 									) : (
 										summary
-									)
-								)}
+									) ) }
 							</VStack>
 						</HStack>
-						{isSelected && children}
+						{ isSelected && children }
 					</VStack>
 				}
 			/>

@@ -7,9 +7,9 @@ import { useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { code, gallery, plus } from '@wordpress/icons';
 import {
-    Button,
-    Modal,
-    __experimentalGrid as Grid,
+	Button,
+	Modal,
+	__experimentalGrid as Grid,
 } from '@wordpress/components';
 
 /**
@@ -23,49 +23,49 @@ import { Gallery, OpenJson } from '../components/sidebar';
  * @returns {JSX.Element} The onboarding modal.
  */
 const OnboardingModal = () => {
-    const [showModal, setShowModal] = useState(false);
+	const [ showModal, setShowModal ] = useState( false );
 
-    const { isNewPost, blocks } = useSelect((select) => {
-        const editor = select('core/editor');
-        return {
-            isNewPost: editor.isCleanNewPost(),
-            blocks: editor.getBlocks(),
-        };
-    }, []);
+	const { isNewPost, blocks } = useSelect( ( select ) => {
+		const editor = select( 'core/editor' );
+		return {
+			isNewPost: editor.isCleanNewPost(),
+			blocks: editor.getBlocks(),
+		};
+	}, [] );
 
-    useEffect(() => {
-        if (isNewPost && blocks.length === 0) {
-            setShowModal(true);
-        }
-    }, [isNewPost, blocks]);
+	useEffect( () => {
+		if ( isNewPost && blocks.length === 0 ) {
+			setShowModal( true );
+		}
+	}, [ isNewPost, blocks ] );
 
-    const handleClose = () => setShowModal(false);
+	const handleClose = () => setShowModal( false );
 
-    if (!showModal) return null;
+	if ( ! showModal ) return null;
 
-    return (
-        <Modal
-            title={__('Start Blueprint From', 'wp-playground-blueprint-editor')}
-            className='wp-playground-onboarding-modal'
-            onRequestClose={handleClose}
-            shouldCloseOnClickOutside
-            shouldCloseOnEsc
-            size="medium"
-        >
-            <Grid columns={3} spacing={4}>
-                <OpenJson icon={code} handleClose={handleClose} />
-                <Gallery icon={gallery} handleClose={handleClose} />
-                <Button
-                    onClick={handleClose}
-                    icon={plus}
-                >
-                    {__('Blank', 'wp-playground-blueprint-editor')}
-                </Button>
-            </Grid>
-        </Modal>
-    );
+	return (
+		<Modal
+			title={ __(
+				'Start Blueprint From',
+				'wp-playground-blueprint-editor'
+			) }
+			className="wp-playground-onboarding-modal"
+			onRequestClose={ handleClose }
+			shouldCloseOnClickOutside
+			shouldCloseOnEsc
+			size="medium"
+		>
+			<Grid columns={ 3 } spacing={ 4 }>
+				<OpenJson icon={ code } handleClose={ handleClose } />
+				<Gallery icon={ gallery } handleClose={ handleClose } />
+				<Button onClick={ handleClose } icon={ plus }>
+					{ __( 'Blank', 'wp-playground-blueprint-editor' ) }
+				</Button>
+			</Grid>
+		</Modal>
+	);
 };
 
-registerPlugin('wp-blueprint-onboarding', {
-    render: OnboardingModal,
-});
+registerPlugin( 'wp-blueprint-onboarding', {
+	render: OnboardingModal,
+} );

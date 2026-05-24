@@ -26,15 +26,17 @@ import metadata from './block.json';
  * @return {Element} Element to render.
  */
 function Edit() {
-
 	return (
-		<StepWrapper 
-			title={metadata.title} 
-			icon={reusableBlock} 
-			isSelected={false} 
+		<StepWrapper
+			title={ metadata.title }
+			icon={ reusableBlock }
+			isSelected={ false }
 			summary={
-				<Text weight={600}>
-					{__('Delete WordPress posts and comments', 'wp-playground-blueprint-editor')}
+				<Text weight={ 600 }>
+					{ __(
+						'Delete WordPress posts and comments',
+						'wp-playground-blueprint-editor'
+					) }
 				</Text>
 			}
 		/>
@@ -44,7 +46,7 @@ function Edit() {
 /**
  * Every block starts by registering a new block type definition.
  */
-registerBlockType(metadata.name, {
+registerBlockType( metadata.name, {
 	icon: reusableBlock,
 	edit: Edit,
-});
+} );
