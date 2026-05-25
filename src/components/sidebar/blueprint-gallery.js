@@ -84,15 +84,6 @@ function Gallery( { icon = null, handleClose } ) {
 	}, [] );
 
 	/**
-	 * Default blueprint values
-	 */
-	const defaultValues = {
-		preferredVersions: { php: 'latest', wp: 'nightly' },
-		features: { networking: true },
-		steps: [],
-	};
-
-	/**
 	 * Fetch details for a selected blueprint.
 	 */
 	const fetchBlueprintDetails = async ( blueprintName ) => {
@@ -107,22 +98,7 @@ function Gallery( { icon = null, handleClose } ) {
 				);
 			const data = await response.json();
 
-			const validatedData = {
-				preferredVersions:
-					data.preferredVersions || defaultValues.preferredVersions,
-				features: data.features || defaultValues.features,
-				steps: Array.isArray( data.steps )
-					? data.steps
-					: defaultValues.steps,
-				...data,
-			};
-
-			const mergedData = { ...defaultValues, ...validatedData };
-
-			if (
-				! Array.isArray( mergedData.steps ) ||
-				mergedData.steps.length === 0
-			) {
+			if ( ! Array.isArray( data.steps ) || data.steps.length === 0 ) {
 				createNotice(
 					'warning',
 					__(
@@ -133,7 +109,7 @@ function Gallery( { icon = null, handleClose } ) {
 			}
 
 			await handleBlueprintData(
-				mergedData,
+				data,
 				createNotice,
 				updateBlueprintConfig
 			);
