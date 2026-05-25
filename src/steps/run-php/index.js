@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { code as code } from '@wordpress/icons';
+import { code as codeIcon } from '@wordpress/icons';
 import {
 	TextareaControl,
 	Icon,
