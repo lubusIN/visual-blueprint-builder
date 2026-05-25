@@ -344,11 +344,14 @@ const handleJsonDataSubmit = ( data, updateBlueprintConfig, createNotice ) => {
 		return;
 	}
 
+	const preferredVersions = data.preferredVersions || {};
+	const features = data.features || {};
+
 	updateBlueprintConfig( {
 		landing_page: data.landingPage,
-		php_version: data.preferredVersions.php,
-		wp_version: data.preferredVersions.wp,
-		networking: data.features.networking || false,
+		php_version: preferredVersions.php || 'latest',
+		wp_version: preferredVersions.wp || 'latest',
+		networking: features.networking || false,
 		login: data.login || false,
 		siteOptions: data.siteOptions || undefined,
 		extraLibraries: data.extraLibraries || false,
