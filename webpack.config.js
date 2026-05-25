@@ -10,7 +10,7 @@ const entries = {
 
 glob.sync( './src/steps/**/index.js' ).forEach( ( filePath ) => {
 	const name = path.relative( './src', filePath ).replace( /\.js$/, '' );
-	entries[ name ] = filePath;
+	entries[ name ] = path.resolve( __dirname, filePath );
 } );
 
 module.exports = {
