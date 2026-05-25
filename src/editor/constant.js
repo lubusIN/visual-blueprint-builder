@@ -25,6 +25,14 @@ export const PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH =
 	'https://raw.githubusercontent.com/WordPress/wordpress-playground/refs/heads/trunk/packages/playground/blueprints/public/blueprint-schema.json';
 
 /**
+ * Blueprint gallery API urls
+ */
+export const BLUEPRINTS_GALLERY_API_URL =
+	'https://raw.githubusercontent.com/WordPress/blueprints/trunk/index.json';
+export const BLUEPRINTS_GALLERY_BASE_URL =
+	'https://raw.githubusercontent.com/WordPress/blueprints/trunk/';
+
+/**
  * PHP versions.
  */
 export const PHP_VERSIONS = [

@@ -23,6 +23,10 @@ import { search as searchIcon } from '@wordpress/icons';
  * Internal dependencies
  */
 import { handleBlueprintData, useBlueprintData } from '../../editor/utils';
+import {
+	BLUEPRINTS_GALLERY_API_URL,
+	BLUEPRINTS_GALLERY_BASE_URL,
+} from '../../editor/constant';
 
 /**
  * Blueprints Gallery component.
@@ -58,10 +62,8 @@ function Gallery( { icon = null, handleClose } ) {
 	useEffect( () => {
 		const fetchBlueprintList = async () => {
 			setIsFetchingList( true );
-			const apiUrl =
-				'https://raw.githubusercontent.com/WordPress/blueprints/trunk/index.json';
 			try {
-				const response = await fetch( apiUrl );
+				const response = await fetch( BLUEPRINTS_GALLERY_API_URL );
 				if ( ! response.ok )
 					throw new Error( 'Failed to fetch blueprints' );
 				const data = await response.json();
@@ -96,7 +98,7 @@ function Gallery( { icon = null, handleClose } ) {
 	const fetchBlueprintDetails = async ( blueprintName ) => {
 		setImportingBlueprint( blueprintName );
 
-		const blueprintUrl = `https://raw.githubusercontent.com/WordPress/blueprints/trunk/${ blueprintName }`;
+		const blueprintUrl = `${ BLUEPRINTS_GALLERY_BASE_URL }${ blueprintName }`;
 		try {
 			const response = await fetch( blueprintUrl );
 			if ( ! response.ok )
