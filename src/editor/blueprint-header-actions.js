@@ -35,10 +35,6 @@ function HeaderBlueprintDropdown() {
 			...new Uint8Array( new TextEncoder().encode( sanitizedForUrl ) )
 		)
 	);
-	const builderHref = encodeURI(
-		PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson
-	);
-
 	const isEditorReady = useSelect( ( select ) => {
 		const ed = select( 'core/editor' );
 		const postType = ed?.getEditedPostAttribute?.( 'type' );
@@ -69,6 +65,10 @@ function HeaderBlueprintDropdown() {
 			}
 		};
 	}, [ isEditorReady ] );
+
+	const builderHref = encodeURI(
+		PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson
+	);
 
 	const handleDownload = () => {
 		try {

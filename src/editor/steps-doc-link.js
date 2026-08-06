@@ -21,7 +21,7 @@ import { STEP_DOCS_MAP, PLAYGROUND_DOCS_BASE } from './constant';
  *
  * @return {React.ReactElement} The component.
  */
-const DescriptionSupportLink = ( { title, url, children } ) => (
+const DescriptionSupportLink = ( { url, children } ) => (
 	<>
 		{ children }
 		<p style={ { marginTop: '8px' } }>
