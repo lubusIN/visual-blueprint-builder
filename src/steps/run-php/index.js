@@ -6,7 +6,6 @@ import { registerBlockType } from '@wordpress/blocks';
 import { code as codeIcon } from '@wordpress/icons';
 import {
 	TextareaControl,
-	Icon,
 	__experimentalText as Text,
 } from '@wordpress/components';
 

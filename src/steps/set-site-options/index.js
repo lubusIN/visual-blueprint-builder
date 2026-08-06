@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { settings } from '@wordpress/icons';
 import { __experimentalText as Text } from '@wordpress/components';
