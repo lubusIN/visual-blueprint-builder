@@ -175,7 +175,12 @@ function BlueprintSidebarSettings() {
 					} }
 					onChange={ updateBlueprintConfig }
 				/>
-				<SidebarSettingRow label="Site Options">
+				<SidebarSettingRow
+					label={ __(
+						'Site Options',
+						'wp-playground-blueprint-editor'
+					) }
+				>
 					<SiteOptionsSettings
 						attributes={ {
 							siteOptions: blueprint_config.siteOptions,
@@ -183,13 +188,20 @@ function BlueprintSidebarSettings() {
 						setAttributes={ updateBlueprintConfig }
 					/>
 				</SidebarSettingRow>
-				<SidebarSettingRow label="Plugins">
+				<SidebarSettingRow
+					label={ __( 'Plugins', 'wp-playground-blueprint-editor' ) }
+				>
 					<PluginSettings
 						attributes={ { plugins: blueprint_config.plugins } }
 						setAttributes={ updateBlueprintConfig }
 					/>
 				</SidebarSettingRow>
-				<SidebarSettingRow label="WP Config Constants">
+				<SidebarSettingRow
+					label={ __(
+						'WP Config Constants',
+						'wp-playground-blueprint-editor'
+					) }
+				>
 					<ConstantsSettings
 						attributes={ { constants: blueprint_config.constants } }
 						setAttributes={ updateBlueprintConfig }

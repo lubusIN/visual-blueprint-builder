@@ -16,6 +16,8 @@ import {
 	__experimentalTreeGridCell as TreeGridCell,
 } from '@wordpress/components';
 
+let uniqueNodeId = 0;
+
 /**
  * Convert object to tree structure for TreeGrid
  */
@@ -30,7 +32,7 @@ function objectToTreeData( obj, parentPath = '' ) {
 			! Array.isArray( value );
 
 		treeData.push( {
-			id: currentPath,
+			id: `node_${ ++uniqueNodeId }`,
 			key,
 			value: isObject ? '' : value,
 			type: isObject ? 'object' : 'string',
@@ -50,7 +52,7 @@ function treeDataToObject( treeData ) {
 	const result = {};
 
 	treeData.forEach( ( item ) => {
-		if ( item.hasChildren && item.children.length > 0 ) {
+		if ( item.hasChildren ) {
 			result[ item.key ] = treeDataToObject( item.children );
 		} else {
 			result[ item.key ] = item.value;
@@ -257,11 +259,11 @@ export default function TreeEditor( { data, onChange } ) {
 								item.children.length === 0
 									? [
 											{
-												id: `${ id }.new_${ Date.now() }`,
+												id: `node_${ ++uniqueNodeId }`,
 												key: '',
 												value: '',
 												type: 'string',
-												path: `${ id }.new_${ Date.now() }`,
+												path: `${ item.path }.new_${ Date.now() }`,
 												hasChildren: false,
 												children: [],
 											},
@@ -305,11 +307,11 @@ export default function TreeEditor( { data, onChange } ) {
 			return items.map( ( item ) => {
 				if ( item.id === parentId ) {
 					const newChild = {
-						id: `${ parentId }.new_${ Date.now() }`,
+						id: `node_${ ++uniqueNodeId }`,
 						key: '',
 						value: '',
 						type: 'string',
-						path: `${ parentId }.new_${ Date.now() }`,
+						path: `${ item.path }.new_${ Date.now() }`,
 						hasChildren: false,
 						children: [],
 					};
@@ -329,7 +331,7 @@ export default function TreeEditor( { data, onChange } ) {
 
 	const addNewItem = () => {
 		const newItem = {
-			id: `new_${ Date.now() }`,
+			id: `node_${ ++uniqueNodeId }`,
 			key: '',
 			value: '',
 			type: 'string',

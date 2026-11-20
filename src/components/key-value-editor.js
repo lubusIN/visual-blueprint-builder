@@ -45,8 +45,8 @@ const removeKeyValuePair = ( list, updateFunction, index ) => {
 
 const filterEmptyKeyValuePairs = ( list, updateFunction ) => {
 	const filtered = list.filter( ( [ key, value ] ) => {
-		const keyStr = String( key || '' ).trim();
-		const valueStr = String( value || '' ).trim();
+		const keyStr = String( key ?? '' ).trim();
+		const valueStr = String( value ?? '' ).trim();
 		return keyStr !== '' && valueStr !== '';
 	} );
 	updateFunction( filtered );
@@ -68,8 +68,7 @@ const keyValuePairsToObject = ( list ) => {
 		if ( key == null || value == null ) return false;
 		try {
 			const keyStr = String( key ).trim();
-			const valueStr = String( value ).trim();
-			return keyStr !== '' && valueStr !== '';
+			return keyStr !== '';
 		} catch ( error ) {
 			return false;
 		}
@@ -129,7 +128,6 @@ export default function KeyValueEditor( {
 
 	// Cleanup on dialog close
 	const handleClose = () => {
-		filterEmptyKeyValuePairs( list, updateList );
 		setSelectedIndex( undefined );
 		setIsOpen( false );
 	};
