@@ -28,15 +28,16 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			isSelected={ isSelected }
 			summary={
 				<Text weight={ 600 }>
-					{ (
+					{ consts ? (
 						<pre style={ { whiteSpace: 'pre-wrap' } }>
 							{ JSON.stringify( consts, null, ' ' ) }
 						</pre>
-					) ||
+					) : (
 						__(
 							'{config consts}',
 							'wp-playground-blueprint-editor'
-						) }
+						)
+					) }
 				</Text>
 			}
 		>
