@@ -108,8 +108,13 @@ function Gallery( { icon = null, handleClose } ) {
 				);
 			}
 
+			const normalizedData = {
+				...data,
+				steps: Array.isArray( data?.steps ) ? data.steps : [],
+			};
+
 			await handleBlueprintData(
-				data,
+				normalizedData,
 				createNotice,
 				updateBlueprintConfig
 			);

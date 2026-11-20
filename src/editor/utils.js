@@ -256,7 +256,7 @@ export const useBlueprintData = () => {
 		features: blueprint_config.networking ? { networking: true } : {},
 		login: blueprint_config.login,
 		siteOptions: blueprint_config.siteOptions,
-		extraLibraries: blueprint_config.extra_libraries,
+		extraLibraries: blueprint_config.extraLibraries,
 		plugins: blueprint_config.plugins,
 		steps: [],
 	};
@@ -293,7 +293,7 @@ export const useBlueprintData = () => {
 				Object.keys( blueprint_config.siteOptions ).length > 0
 					? blueprint_config.siteOptions
 					: undefined,
-			extraLibraries: blueprint_config.extra_libraries && [ 'wp-cli' ],
+			extraLibraries: blueprint_config.extraLibraries && [ 'wp-cli' ],
 			plugins:
 				blueprint_config.plugins &&
 				Object.keys( blueprint_config.plugins ).length > 0
@@ -350,7 +350,7 @@ const handleJsonDataSubmit = ( data, updateBlueprintConfig, createNotice ) => {
 	updateBlueprintConfig( {
 		landing_page: data.landingPage,
 		php_version: preferredVersions.php || 'latest',
-		wp_version: preferredVersions.wp || 'latest',
+		wp_version: preferredVersions.wp ?? 'latest',
 		networking: features.networking || false,
 		login: data.login || false,
 		siteOptions: data.siteOptions || undefined,
