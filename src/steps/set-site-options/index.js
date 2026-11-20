@@ -3,6 +3,7 @@
  */
 import { registerBlockType } from '@wordpress/blocks';
 import { settings } from '@wordpress/icons';
+import { useCallback } from '@wordpress/element';
 import { __experimentalText as Text } from '@wordpress/components';
 
 /**
@@ -16,6 +17,13 @@ import metadata from './block.json';
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { options } = attributes;
+
+	const handleOptionsChange = useCallback(
+		( val ) => {
+			setAttributes( { options: val } );
+		},
+		[ setAttributes ]
+	);
 
 	return (
 		<StepWrapper
@@ -32,7 +40,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 		>
 			<TreeEditor
 				data={ options }
-				onChange={ ( val ) => setAttributes( { options: val } ) }
+				onChange={ handleOptionsChange }
 			/>
 		</StepWrapper>
 	);
