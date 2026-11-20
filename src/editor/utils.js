@@ -33,11 +33,11 @@ export const convertToKebabCase = ( str ) => {
 /**
  * Validates steps from a JSON schema and creates valid WordPress blocks.
  */
-export const validateBlueprintSteps = ( steps ) => {
+export const validateBlueprintSteps = ( steps = [] ) => {
 	const validBlocks = [];
 	const invalidSteps = [];
 
-	steps.forEach( ( step, index ) => {
+	( steps || [] ).forEach( ( step, index ) => {
 		const blockType = `playground-step/${ convertToKebabCase(
 			step.step
 		) }`;
@@ -174,7 +174,9 @@ export const handleBlueprintData = async (
 		}
 
 		const { meta, ...filteredData } = updatedData; // Exclude metadata
-		const { steps } = filteredData;
+		const steps = Array.isArray( filteredData.steps )
+			? filteredData.steps
+			: [];
 
 		const { validBlocks, invalidSteps } = validateBlueprintSteps( steps );
 
@@ -293,7 +295,11 @@ export const useBlueprintData = () => {
 				Object.keys( blueprint_config.siteOptions ).length > 0
 					? blueprint_config.siteOptions
 					: undefined,
-			extraLibraries: blueprint_config.extraLibraries && [ 'wp-cli' ],
+			extraLibraries: Array.isArray( blueprint_config.extraLibraries )
+				? blueprint_config.extraLibraries
+				: blueprint_config.extraLibraries
+				? [ 'wp-cli' ]
+				: undefined,
 			plugins:
 				blueprint_config.plugins &&
 				Object.keys( blueprint_config.plugins ).length > 0
