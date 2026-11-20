@@ -74,7 +74,10 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 					checked={ activate }
 					onChange={ () =>
 						setAttributes( {
-							options: { activate: ! activate },
+							options: {
+								...options,
+								activate: ! activate,
+							},
 						} )
 					}
 				/>

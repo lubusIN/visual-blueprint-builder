@@ -65,7 +65,7 @@ const keyValuePairsToObject = ( list ) => {
 	const filtered = list.filter( ( item ) => {
 		if ( ! Array.isArray( item ) || item.length < 2 ) return false;
 		const [ key, value ] = item;
-		if ( key == null || value == null ) return false;
+		if ( key == null ) return false;
 		try {
 			const keyStr = String( key ).trim();
 			return keyStr !== '';
