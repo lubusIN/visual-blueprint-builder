@@ -92,8 +92,11 @@ function BlueprintSidebarSettings() {
 						landing_page: blueprint_config.landing_page,
 						networking: blueprint_config.networking || false,
 						login: blueprint_config.login || false,
-						extraLibraries:
-							blueprint_config.extraLibraries || false,
+						extraLibraries: Array.isArray(
+							blueprint_config.extraLibraries
+						)
+							? blueprint_config.extraLibraries.length > 0
+							: Boolean( blueprint_config.extraLibraries ),
 					} }
 					fields={ [
 						{
