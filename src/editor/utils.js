@@ -63,41 +63,95 @@ export const validateBlueprintSteps = ( steps = [] ) => {
 };
 
 /**
- * Updates deprecated fields in blueprint steps before validation.
- * Replaces `pluginZipFile` with `pluginData` and `themeZipFile` with `themeData`.
+ * Updates deprecated fields in blueprint configuration and steps before validation.
+ *
+ * Normalizes:
+ * - `installPlugin` with `pluginZipFile` -> `pluginData`
+ * - `installTheme` with `themeZipFile` -> `themeData`
+ * - `unzip` with `zipPath` -> `zipFile: { resource: 'vfs', path: zipPath }`
+ * - `login` with empty `password` -> stripped
+ * - `defineWpConfigConsts` with `virtualize` -> stripped
+ * - `importWxr` with `importer` -> stripped
+ * - top-level `description` -> preserved/normalized to `meta.description`
+ * - top-level `phpExtensionBundles` -> stripped
  *
  * @param {Object} jsonData Raw JSON data.
  * @return {Object} Normalized JSON data.
  */
-const updateDeprecatedFields = ( jsonData ) => {
-	if ( ! jsonData || ! jsonData.steps ) {
+export const updateDeprecatedFields = ( jsonData ) => {
+	if ( ! jsonData || typeof jsonData !== 'object' ) {
 		return jsonData;
 	}
 
-	const updatedSteps = jsonData.steps.map( ( step ) => {
-		if ( step.step === 'installPlugin' && step.pluginZipFile ) {
-			const { pluginZipFile, ...rest } = step;
-			return {
-				...rest,
-				pluginData: pluginZipFile,
-			};
+	const { phpExtensionBundles, ...restData } = jsonData;
+	const normalized = { ...restData };
+
+	if ( normalized.meta && typeof normalized.meta === 'object' ) {
+		normalized.meta = {
+			title: normalized.meta.title || 'Blueprint',
+			author: normalized.meta.author || 'WordPress',
+			...normalized.meta,
+		};
+		if ( normalized.description && ! normalized.meta.description ) {
+			normalized.meta.description = normalized.description;
 		}
+	}
 
-		if ( step.step === 'installTheme' && step.themeZipFile ) {
-			const { themeZipFile, ...rest } = step;
-			return {
-				...rest,
-				themeData: themeZipFile,
-			};
-		}
+	if ( Array.isArray( normalized.steps ) ) {
+		normalized.steps = normalized.steps.map( ( step ) => {
+			if ( ! step || typeof step !== 'object' ) {
+				return step;
+			}
 
-		return step;
-	} );
+			let s = { ...step };
 
-	return {
-		...jsonData,
-		steps: updatedSteps,
-	};
+			if ( s.step === 'installPlugin' && s.pluginZipFile ) {
+				const { pluginZipFile, ...rest } = s;
+				s = {
+					...rest,
+					pluginData: pluginZipFile,
+				};
+			}
+
+			if ( s.step === 'installTheme' && s.themeZipFile ) {
+				const { themeZipFile, ...rest } = s;
+				s = {
+					...rest,
+					themeData: themeZipFile,
+				};
+			}
+
+			if ( s.step === 'unzip' && s.zipPath && ! s.zipFile ) {
+				const { zipPath, ...rest } = s;
+				s = {
+					...rest,
+					zipFile: {
+						resource: 'vfs',
+						path: zipPath,
+					},
+				};
+			}
+
+			if ( s.step === 'login' && s.password === '' ) {
+				const { password, ...rest } = s;
+				s = rest;
+			}
+
+			if ( s.step === 'defineWpConfigConsts' && 'virtualize' in s ) {
+				const { virtualize, ...rest } = s;
+				s = rest;
+			}
+
+			if ( s.step === 'importWxr' && 'importer' in s ) {
+				const { importer, ...rest } = s;
+				s = rest;
+			}
+
+			return s;
+		} );
+	}
+
+	return normalized;
 };
 
 let schemaCachePromise = null;
@@ -366,15 +420,23 @@ const handleJsonDataSubmit = ( data, updateBlueprintConfig, createNotice ) => {
 	const preferredVersions = data.preferredVersions || {};
 	const features = data.features || {};
 
+	let meta = data.meta;
+	if ( ! meta && data.description ) {
+		meta = { description: data.description };
+	}
+
 	updateBlueprintConfig( {
 		landing_page: data.landingPage,
 		php_version: preferredVersions.php || 'latest',
 		wp_version: preferredVersions.wp ?? 'latest',
-		networking: features.networking || false,
+		networking: Boolean( features.networking ),
+		intl: Boolean( features.intl ),
 		login: data.login || false,
 		siteOptions: data.siteOptions || undefined,
 		extraLibraries: data.extraLibraries || false,
 		plugins: data.plugins || undefined,
+		constants: data.constants || undefined,
+		meta: meta || undefined,
 	} );
 };
 
@@ -409,9 +471,8 @@ export const handleBlueprintData = async (
 			return;
 		}
 
-		const { meta, ...filteredData } = updatedData;
-		const steps = Array.isArray( filteredData.steps )
-			? filteredData.steps
+		const steps = Array.isArray( updatedData.steps )
+			? updatedData.steps
 			: [];
 
 		const { validBlocks, invalidSteps } = validateBlueprintSteps( steps );
@@ -453,7 +514,7 @@ export const handleBlueprintData = async (
 		}
 
 		handleJsonDataSubmit(
-			filteredData,
+			updatedData,
 			updateBlueprintConfig,
 			createNotice
 		);
@@ -473,6 +534,18 @@ export const useBlueprintData = () => {
 		( select ) => select( 'core/block-editor' ).getBlocks(),
 		[]
 	);
+	const postTitle = useSelect( ( select ) => {
+		return select( 'core/editor' ).getEditedPostAttribute( 'title' );
+	}, [] );
+	const postAuthor = useSelect( ( select ) => {
+		const authorId =
+			select( 'core/editor' ).getEditedPostAttribute( 'author' );
+		if ( authorId ) {
+			const authorUser = select( 'core' )?.getUser?.( authorId );
+			return authorUser?.slug || authorUser?.name || '';
+		}
+		return '';
+	}, [] );
 	const blueprintConfig = useSelect( ( select ) => {
 		return (
 			select( 'core/editor' ).getEditedPostAttribute( 'meta' )
@@ -483,7 +556,23 @@ export const useBlueprintData = () => {
 	const prepareSchema = useCallback( () => {
 		const blockAttributes = ( blocks || [] ).map( ( block ) => {
 			const { metadata, ...rest } = block.attributes;
-			return rest;
+			const cleanStep = { ...rest };
+
+			// Clean deprecated/empty fields per step
+			if ( cleanStep.step === 'login' && ! cleanStep.password ) {
+				delete cleanStep.password;
+			}
+			if ( cleanStep.step === 'defineWpConfigConsts' ) {
+				delete cleanStep.virtualize;
+			}
+			if ( cleanStep.step === 'importWxr' ) {
+				delete cleanStep.importer;
+			}
+			if ( cleanStep.step === 'unzip' ) {
+				delete cleanStep.zipPath;
+			}
+
+			return cleanStep;
 		} );
 
 		const steps = [ ...blockAttributes ];
@@ -495,15 +584,48 @@ export const useBlueprintData = () => {
 			extraLibraries = [ 'wp-cli' ];
 		}
 
+		const features = {};
+		if ( blueprintConfig.networking ) {
+			features.networking = true;
+		}
+		if ( blueprintConfig.intl ) {
+			features.intl = true;
+		}
+
+		let meta;
+		if (
+			blueprintConfig.meta &&
+			typeof blueprintConfig.meta === 'object' &&
+			Object.keys( blueprintConfig.meta ).length > 0
+		) {
+			const candidateTitle =
+				blueprintConfig.meta.title || postTitle || 'Blueprint';
+			const candidateAuthor =
+				blueprintConfig.meta.author || postAuthor || 'WordPress';
+			meta = {
+				title: candidateTitle,
+				author: candidateAuthor,
+			};
+			if ( blueprintConfig.meta.description ) {
+				meta.description = blueprintConfig.meta.description;
+			}
+			if (
+				Array.isArray( blueprintConfig.meta.categories ) &&
+				blueprintConfig.meta.categories.length > 0
+			) {
+				meta.categories = blueprintConfig.meta.categories;
+			}
+		}
+
 		const fullSchema = {
 			$schema: PLAYGROUND_BLUEPRINT_SCHEMA_URL,
 			landingPage: blueprintConfig.landing_page,
 			preferredVersions: {
-				php: blueprintConfig.php_version,
-				wp: blueprintConfig.wp_version,
+				php: blueprintConfig.php_version || 'latest',
+				wp: blueprintConfig.wp_version ?? 'latest',
 			},
-			features: blueprintConfig.networking ? { networking: true } : {},
-			login: blueprintConfig.login,
+			features: Object.keys( features ).length > 0 ? features : undefined,
+			login: blueprintConfig.login || undefined,
 			constants:
 				blueprintConfig.constants &&
 				Object.keys( blueprintConfig.constants ).length > 0
@@ -520,11 +642,19 @@ export const useBlueprintData = () => {
 				Object.keys( blueprintConfig.plugins ).length > 0
 					? blueprintConfig.plugins
 					: undefined,
+			meta,
 			steps,
 		};
 
+		// Remove undefined keys from fullSchema
+		Object.keys( fullSchema ).forEach( ( key ) => {
+			if ( fullSchema[ key ] === undefined ) {
+				delete fullSchema[ key ];
+			}
+		} );
+
 		return JSON.stringify( fullSchema, null, 2 );
-	}, [ blocks, blueprintConfig ] );
+	}, [ blocks, blueprintConfig, postTitle, postAuthor ] );
 
 	const updateBlueprintConfig = useCallback(
 		( updatedValues ) => {

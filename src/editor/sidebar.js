@@ -20,6 +20,7 @@ import {
 	SiteOptionsSettings,
 	PluginSettings,
 	ConstantsSettings,
+	MetaSettings,
 } from '../components/sidebar';
 import { useBlueprintData, usePlaygroundVersions } from './utils';
 
@@ -90,6 +91,7 @@ function BlueprintSidebarSettings() {
 						wp_version: blueprintConfig.wp_version,
 						landing_page: blueprintConfig.landing_page,
 						networking: blueprintConfig.networking || false,
+						intl: blueprintConfig.intl || false,
 						login: blueprintConfig.login || false,
 						extraLibraries: Array.isArray(
 							blueprintConfig.extraLibraries
@@ -134,6 +136,15 @@ function BlueprintSidebarSettings() {
 							Edit: ToggleEdit,
 						},
 						{
+							id: 'intl',
+							label: __(
+								'Intl Extension',
+								'visual-blueprint-builder'
+							),
+							type: 'integer',
+							Edit: ToggleEdit,
+						},
+						{
 							id: 'login',
 							label: __( 'Login', 'visual-blueprint-builder' ),
 							type: 'integer',
@@ -160,6 +171,11 @@ function BlueprintSidebarSettings() {
 								labelPosition: 'side',
 							},
 							{
+								id: 'intl',
+								layout: 'regular',
+								labelPosition: 'side',
+							},
+							{
 								id: 'login',
 								layout: 'regular',
 								labelPosition: 'side',
@@ -174,6 +190,17 @@ function BlueprintSidebarSettings() {
 					} }
 					onChange={ updateBlueprintConfig }
 				/>
+				<SidebarSettingRow
+					label={ __(
+						'Blueprint Metadata',
+						'visual-blueprint-builder'
+					) }
+				>
+					<MetaSettings
+						attributes={ { meta: blueprintConfig.meta } }
+						setAttributes={ updateBlueprintConfig }
+					/>
+				</SidebarSettingRow>
 				<SidebarSettingRow
 					label={ __( 'Site Options', 'visual-blueprint-builder' ) }
 				>
