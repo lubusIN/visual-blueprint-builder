@@ -24,7 +24,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			isSelected={ isSelected }
 			summary={
 				consts && Object.keys( consts ).length > 0 ? (
-					<pre style={ { whiteSpace: 'pre-wrap', margin: 0 } }>
+					<pre className="vbb-code-summary">
 						{ JSON.stringify( consts, null, ' ' ) }
 					</pre>
 				) : (

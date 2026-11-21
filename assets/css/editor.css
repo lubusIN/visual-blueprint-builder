@@ -1,5 +1,9 @@
 /** @format */
 
+/* ==========================================================================
+   1. Editor Canvas & Connector Flow
+   ========================================================================== */
+
 body.editor-styles-wrapper {
 	background: #fff;
 	background-image: radial-gradient(#e6e6e6 1px, transparent 0);
@@ -7,46 +11,42 @@ body.editor-styles-wrapper {
 }
 
 .step-icon {
-	fill: #757575;
+	fill: var(--wpds-color-fg-content-neutral-weak, #757575);
 	background: #f5f8f7;
 	padding: 6px;
 	border-radius: 4px;
 	margin-bottom: auto;
 }
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block:not(:first-child) {
-	margin-top: 65px;
-}
+/* Blueprint Block Node & Connecting Line */
+.editor-styles-wrapper .is-root-container .block-editor-block-list__block.wp-block {
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block:not(:first-child)::before {
-	content: "";
-	position: absolute;
-	width: 1.5px;
-	height: 55px;
-	background: #cdcdcd;
-	z-index: 100;
-	left: 50%;
-	transform: translate(-50%, -60px);
-	top: 0;
-}
+	&:not(:first-child) {
+		margin-top: 65px;
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-.components-placeholder {
-	padding: 20px;
-	box-shadow: inset 0 0 0 1.5px #e2e2e2;
-	border-radius: 4px;
-	gap: 0;
-}
+		&::before {
+			content: "";
+			position: absolute;
+			width: 1.5px;
+			height: 55px;
+			background: #cdcdcd;
+			z-index: 100;
+			left: 50%;
+			transform: translate(-50%, -60px);
+			top: 0;
+		}
+	}
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block {
+	.components-placeholder {
+		padding: 20px;
+		box-shadow: inset 0 0 0 1.5px #e2e2e2;
+		border-radius: 4px;
+		gap: 0;
+	}
+
+	.components-placeholder__preview {
+		width: 100%;
+	}
 
 	&.is-selected,
 	&.is-hovered {
@@ -65,61 +65,55 @@ body.editor-styles-wrapper {
 			outline: none !important;
 		}
 	}
+
+	input,
+	textarea,
+	.components-input-control__backdrop {
+		border-color: #b2dbfd;
+	}
+
+	textarea {
+		resize: vertical;
+	}
 }
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-.components-placeholder__preview {
-	width: 100%;
-}
+/* ==========================================================================
+   2. Typography & Step Summaries
+   ========================================================================== */
 
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-input,
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-textarea,
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-.components-input-control__backdrop {
-	border-color: #b2dbfd;
-}
-
-.editor-styles-wrapper
-.is-root-container
-.block-editor-block-list__block.wp-block
-textarea {
-	resize: vertical;
+.vbb-code-summary {
+	white-space: pre-wrap;
+	margin: 0;
 }
 
 .vbb-step-title {
 	text-transform: uppercase;
 	font-size: 12px;
 	font-weight: 500;
-	color: #949494;
+	color: var(--wpds-color-fg-content-neutral-weak, #757575);
 }
 
 .vbb-step-summary {
 	font-weight: 600;
 	font-size: 13px;
-	color: #1e1e1e;
+	color: var(--wpds-color-fg-content-neutral, #1e1e1e);
 	word-break: break-word;
 }
+
+.vbb-sidebar-label {
+	font-weight: 500;
+	font-size: 13px;
+}
+
+/* ==========================================================================
+   3. Grids & Layout Utilities
+   ========================================================================== */
 
 .vbb-sidebar-top-actions {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 8px;
 	width: 100%;
-}
-
-.vbb-sidebar-label {
-	font-weight: 500;
-	font-size: 13px;
 }
 
 .vbb-onboarding-grid {
@@ -135,20 +129,21 @@ textarea {
 }
 
 .vbb-resource-slug-row {
-	display: flex;
-	align-items: flex-end;
-	gap: 8px;
 	width: 100%;
-}
 
-.vbb-resource-slug-row .components-base-control {
-	flex: 1;
-	margin-bottom: 0 !important;
+	.components-base-control {
+		flex: 1;
+		margin-bottom: 0 !important;
+	}
 }
 
 .custom-skeleton {
 	width: 100%;
 }
+
+/* ==========================================================================
+   4. Action Tiles, DropZone & Sidebar Panels
+   ========================================================================== */
 
 .upload_blueprint_json,
 .blueprint_gallery_json {
@@ -158,39 +153,14 @@ textarea {
 	position: relative;
 }
 
-.upload_blueprint_json
-.components-drop-zone
-.components-drop-zone__content-inner {
+.upload_blueprint_json .components-drop-zone .components-drop-zone__content-inner {
 	align-items: center;
 	display: flex;
 	gap: 8px;
-}
 
-.upload_blueprint_json
-.components-drop-zone
-.components-drop-zone__content-inner
-.components-drop-zone__content-icon {
-	margin: 0;
-}
-
-.dataforms-layouts-panel__field-dropdown .components-popover__content {
-	padding: 16px;
-	min-width: 248px;
-}
-
-.dataforms-layouts-panel__field-dropdown
-.dataforms-layouts-panel__dropdown-header {
-	margin-bottom: 16px;
-}
-
-.dataforms-layouts-regular__field {
-	min-height: 32px !important;
-}
-
-.playground-blueprint-sidebar {
-	flex-direction: column;
-	align-items: stretch;
-	gap: 20px;
+	.components-drop-zone__content-icon {
+		margin: 0;
+	}
 }
 
 .wp-playground-onboarding-modal .vbb-onboarding-grid button,
@@ -206,6 +176,32 @@ textarea {
 	box-shadow: inset 0 0 0 1px #ccc;
 }
 
+.playground-blueprint-sidebar {
+	flex-direction: column;
+	align-items: stretch;
+	gap: 20px;
+}
+
+.dataforms-layouts-panel__field-dropdown {
+
+	.components-popover__content {
+		padding: 16px;
+		min-width: 248px;
+	}
+
+	.dataforms-layouts-panel__dropdown-header {
+		margin-bottom: 16px;
+	}
+}
+
+.dataforms-layouts-regular__field {
+	min-height: 32px !important;
+}
+
+/* ==========================================================================
+   5. Tree Grid & Editor Overrides
+   ========================================================================== */
+
 .vpb-tree-children-key .components-base-control {
 	width: 100%;
 }
@@ -214,11 +210,11 @@ textarea {
 
 	td {
 		padding-bottom: 10px;
-	}
 
-	td:nth-child(2) {
-		padding-inline-start: 10px;
-		padding-inline-end: 10px;
+		&:nth-child(2) {
+			padding-inline-start: 10px;
+			padding-inline-end: 10px;
+		}
 	}
 }
 

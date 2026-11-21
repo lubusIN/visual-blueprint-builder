@@ -5,7 +5,7 @@ import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { postAuthor } from '@wordpress/icons';
 import { TextControl } from '@wordpress/components';
-import { Stack } from '@wordpress/ui';
+import { Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -25,15 +25,10 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ postAuthor }
 			isSelected={ isSelected }
 			summary={
-				<div>
+				<Stack direction="column" gap="xs">
 					<div>
 						{ meta && Object.keys( meta ).length > 0 ? (
-							<pre
-								style={ {
-									whiteSpace: 'pre-wrap',
-									margin: 0,
-								} }
-							>
+							<pre className="vbb-code-summary">
 								{ JSON.stringify( meta, null, ' ' ) }
 							</pre>
 						) : (
@@ -43,7 +38,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 							)
 						) }
 					</div>
-					<div>
+					<Text variant="body-sm">
 						{ userId
 							? sprintf(
 									/* translators: %d: user id */
@@ -54,8 +49,8 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 									userId
 							  )
 							: __( '{user Id}', 'visual-blueprint-builder' ) }
-					</div>
-				</div>
+					</Text>
+				</Stack>
 			}
 		>
 			<Stack direction="column" gap="lg">

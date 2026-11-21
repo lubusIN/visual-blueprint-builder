@@ -2,8 +2,8 @@
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import { Placeholder, Icon } from '@wordpress/components';
-import { Stack, Text } from '@wordpress/ui';
+import { Placeholder } from '@wordpress/components';
+import { Icon, Stack, Text } from '@wordpress/ui';
 
 /**
  * StepWrapper component to standardize the UI of all blueprint steps.

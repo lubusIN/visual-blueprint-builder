@@ -7,6 +7,7 @@ import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -173,12 +174,18 @@ export default function ResourceSelector( { type, data, onChange } ) {
 				/>
 			) }
 			{ resource === orgType && (
-				<div className="vbb-resource-slug-row">
+				<Stack
+					direction="row"
+					align="flex-end"
+					gap="sm"
+					className="vbb-resource-slug-row"
+				>
 					<TextControl
 						label={ __( 'Slug', 'visual-blueprint-builder' ) }
 						__next40pxDefaultSize
 						value={ slug }
 						placeholder={ slugPlaceholder }
+						style={ { flex: 1 } }
 						onChange={ ( value ) =>
 							handleInputChange( 'slug', value )
 						}
@@ -190,7 +197,7 @@ export default function ResourceSelector( { type, data, onChange } ) {
 							handleInputChange( 'slug', selectedSlug )
 						}
 					/>
-				</div>
+				</Stack>
 			) }
 			{ resource === 'git:directory' && (
 				<>

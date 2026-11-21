@@ -3,8 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { addFilter } from '@wordpress/hooks';
-import { ExternalLink } from '@wordpress/components';
 import { createInterpolateElement } from '@wordpress/element';
+import { Link, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies
@@ -23,11 +23,11 @@ import { getStepDocAnchor } from './utils';
 const DescriptionSupportLink = ( { url, children } ) => (
 	<>
 		{ children }
-		<p style={ { marginTop: '8px' } }>
-			<ExternalLink href={ url }>
+		<Text variant="body-sm" render={ <p style={ { marginTop: '8px' } } /> }>
+			<Link href={ url } openInNewTab>
 				{ __( 'Learn more', 'visual-blueprint-builder' ) }
-			</ExternalLink>
-		</p>
+			</Link>
+		</Text>
 	</>
 );
 

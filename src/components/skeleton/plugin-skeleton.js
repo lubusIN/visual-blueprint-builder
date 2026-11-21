@@ -1,8 +1,7 @@
 /**
  * WordPress dependencies.
  */
-import { Card, CardBody } from '@wordpress/components';
-import { Stack } from '@wordpress/ui';
+import { Card, Stack } from '@wordpress/ui';
 
 /**
  * Skeleton dependencies.
@@ -15,8 +14,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
  */
 function PluginSkeleton() {
 	return (
-		<Card size="small">
-			<CardBody>
+		<Card.Root>
+			<Card.Content style={ { height: '100%' } }>
 				<Stack
 					direction="column"
 					justify="space-between"
@@ -54,8 +53,8 @@ function PluginSkeleton() {
 						/>
 					</Stack>
 				</Stack>
-			</CardBody>
-		</Card>
+			</Card.Content>
+		</Card.Root>
 	);
 }
 

@@ -12,7 +12,7 @@ import {
 	__experimentalTreeGridRow as TreeGridRow,
 	__experimentalTreeGridCell as TreeGridCell,
 } from '@wordpress/components';
-import { Stack } from '@wordpress/ui';
+import { Stack, Text } from '@wordpress/ui';
 
 let uniqueNodeId = 0;
 
@@ -147,19 +147,19 @@ function TreeRow( {
 								__nextHasNoMarginBottom
 							/>
 						) : (
-							<div
-								style={ {
-									display: 'flex',
-									alignItems: 'center',
-									gap: '8px',
-								} }
-							>
-								<span { ...props } style={ { color: '#666' } }>
+							<Stack direction="row" align="center" gap="sm">
+								<Text
+									variant="body-sm"
+									style={ {
+										color: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
+									} }
+									{ ...props }
+								>
 									{ item.children.length }{ ' ' }
 									{ item.children.length === 1
 										? 'item'
 										: 'items' }
-								</span>
+								</Text>
 								<Button
 									variant="tertiary"
 									size="small"
@@ -170,7 +170,7 @@ function TreeRow( {
 										'visual-blueprint-builder'
 									) }
 								/>
-							</div>
+							</Stack>
 						)
 					}
 				</TreeGridCell>
