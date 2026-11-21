@@ -21,6 +21,6 @@
 			"default": "<?php require_once 'wordpress/wp-load.php'; \n // Add You Code ?>"
 		}
 	},
-	"textdomain": "wp-playground-blueprint-editor",
+	"textdomain": "visual-blueprint-builder",
 	"editorScript": "file:./index.js"
 }
