@@ -4,7 +4,7 @@
   "description": "Design playground blueprints with a specialized block editor interface in WordPress.",
   "main": "build/index.js",
   "scripts": {
-    "build": "wp-scripts build",
+    "build": "wp-scripts build --blocks-manifest",
     "format": "wp-scripts format",
     "format:src": "wp-scripts format ./src",
     "lint:css": "wp-scripts lint-style",
@@ -13,7 +13,7 @@
     "lint:js:fix": "wp-scripts lint-js --fix",
     "packages-update": "wp-scripts packages-update",
     "plugin-zip": "wp-scripts plugin-zip",
-    "start": "wp-scripts start",
+    "start": "wp-scripts start --blocks-manifest",
     "serve": "npx @wp-playground/cli@latest server --auto-mount --blueprint=./_playground/blueprint-local.json --blueprint-may-read-adjacent-files",
     "setup": "npm install && npm run build && composer install"
   },

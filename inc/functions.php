@@ -2,41 +2,6 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Retrieves the canonical list of blueprint step slugs.
- *
- * @return array Array of step slugs.
- */
-function vbb_get_blueprint_steps()
-{
-    return [
-        'login',
-        'install-plugin',
-        'enable-multisite',
-        'cp',
-        'install-theme',
-        'define-site-url',
-        'activate-theme',
-        'activate-plugin',
-        'import-wordpress-files',
-        'rmdir',
-        'rm',
-        'reset-data',
-        'mv',
-        'define-wp-config-consts',
-        'write-file',
-        'wp-cli',
-        'run-php',
-        'mkdir',
-        'import-wxr',
-        'update-user-meta',
-        'unzip',
-        'set-site-options',
-        'set-site-language',
-        'import-theme-starter-content',
-    ];
-}
-
-/**
  * Filters the list of allowed block types in the block editor.
  *
  * This function restricts blueprint steps to only be available for the 'blueprint' post type.
@@ -52,12 +17,12 @@ function vbb_filter_allowed_block_types($allowed_block_types, $block_editor_cont
     // Get all registered block types
     $all_blocks = WP_Block_Type_Registry::get_instance()->get_all_registered();
 
-    // Dynamically prefix the step slugs
-    $blueprint_steps = array_map(function($step) {
-        return 'playground-step/' . $step;
-    }, vbb_get_blueprint_steps());
+    // Dynamically match any block registered in the playground-step namespace
+    $blueprint_steps = array_values(array_filter(array_keys($all_blocks), function($name) {
+        return str_starts_with($name, 'playground-step/');
+    }));
 
-    if (isset($block_editor_context->post->post_type) && $block_editor_context->post->post_type === 'blueprint') {
+    if (isset($block_editor_context->post->post_type) && 'blueprint' === $block_editor_context->post->post_type) {
         // Allow only blueprint steps for 'blueprint' post type
         return $blueprint_steps;
     }
@@ -88,12 +53,6 @@ function vbb_get_wordpress_versions()
         ['label' => esc_html__('WordPress nightly', 'visual-blueprint-builder'), 'value' => 'nightly'],
         ['label' => esc_html__('Latest', 'visual-blueprint-builder'), 'value' => 'latest'],
         ['label' => esc_html__('Beta', 'visual-blueprint-builder'), 'value' => 'beta'],
-        ['label' => '6.8', 'value' => '6.8'],
-        ['label' => '6.7', 'value' => '6.7'],
-        ['label' => '6.6', 'value' => '6.6'],
-        ['label' => '6.5', 'value' => '6.5'],
-        ['label' => '6.4', 'value' => '6.4'],
-        ['label' => '6.3', 'value' => '6.3'],
     ];
 
     $response = wp_remote_get('https://api.wordpress.org/core/stable-check/1.0/', [

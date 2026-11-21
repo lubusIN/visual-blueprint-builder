@@ -21,14 +21,13 @@ class BlueprintSteps
     }
 
     /**
-     * Registers the 'blueprint steps' with necessary arguments and labels.
+     * Registers the 'blueprint steps' using metadata collection.
      */
     public function register_blueprint_steps()
     {
-        $blueprint_steps = vbb_get_blueprint_steps();
-
-        foreach ($blueprint_steps as $step) {
-            register_block_type(VBB_PLUGIN_DIR . 'build/steps/' . $step);
-        }
+        wp_register_block_types_from_metadata_collection(
+            VBB_PLUGIN_DIR . 'build/steps',
+            VBB_PLUGIN_DIR . 'build/blocks-manifest.php'
+        );
     }
 }

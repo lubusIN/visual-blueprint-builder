@@ -9,7 +9,8 @@ import { createInterpolateElement } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { STEP_DOCS_MAP, PLAYGROUND_DOCS_BASE } from './constant';
+import { PLAYGROUND_DOCS_BASE } from './constant';
+import { getStepDocAnchor } from './utils';
 
 /**
  * Renders a paragraph with a link to learn more about the description.
@@ -63,7 +64,7 @@ const addStepLearnMoreLink = ( settings, name ) => {
 	}
 	processedSteps[ name ] = true;
 
-	const stepHash = STEP_DOCS_MAP[ name ];
+	const stepHash = getStepDocAnchor( name );
 	if ( ! stepHash ) {
 		return settings;
 	}
