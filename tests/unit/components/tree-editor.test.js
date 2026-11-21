@@ -1,7 +1,10 @@
 /**
  * Internal dependencies
  */
-import { objectToTreeData, treeDataToObject } from '../tree-editor';
+import {
+	objectToTreeData,
+	treeDataToObject,
+} from '../../../src/components/tree-editor';
 
 describe( 'TreeEditor Component Utilities', () => {
 	describe( 'objectToTreeData', () => {

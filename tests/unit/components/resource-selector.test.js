@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { getResourceSummary } from '../resource-selector';
+import { getResourceSummary } from '../../../src/components/resource-selector';
 
 describe( 'ResourceSelector Component Utilities', () => {
 	describe( 'getResourceSummary', () => {
