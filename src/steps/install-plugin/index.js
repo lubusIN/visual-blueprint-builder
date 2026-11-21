@@ -6,8 +6,9 @@ import { registerBlockType } from '@wordpress/blocks';
 import { plugins } from '@wordpress/icons';
 import {
 	ToggleControl,
-	SelectControl,
 	TextControl,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import { Stack } from '@wordpress/ui';
 
@@ -63,73 +64,45 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 						} )
 					}
 				/>
-				<SelectControl
+				<ToggleGroupControl
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
+					isBlock
 					label={ __(
 						'If Already Installed',
 						'visual-blueprint-builder'
 					) }
 					value={ ifAlreadyInstalled || '' }
-					options={ [
-						{
-							label: __(
-								'Default (Playground default)',
-								'visual-blueprint-builder'
-							),
-							value: '',
-						},
-						{
-							label: __(
-								'Overwrite',
-								'visual-blueprint-builder'
-							),
-							value: 'overwrite',
-						},
-						{
-							label: __( 'Skip', 'visual-blueprint-builder' ),
-							value: 'skip',
-						},
-						{
-							label: __(
-								'Error (Abort)',
-								'visual-blueprint-builder'
-							),
-							value: 'error',
-						},
-					] }
 					onChange={ ( val ) =>
 						setAttributes( {
 							ifAlreadyInstalled: val || undefined,
 						} )
 					}
+				>
+					<ToggleGroupControlOption
+						value=""
+						label={ __( 'Default', 'visual-blueprint-builder' ) }
+					/>
+					<ToggleGroupControlOption
+						value="overwrite"
+						label={ __( 'Overwrite', 'visual-blueprint-builder' ) }
+					/>
+					<ToggleGroupControlOption
+						value="skip"
+						label={ __( 'Skip', 'visual-blueprint-builder' ) }
+					/>
+					<ToggleGroupControlOption
+						value="error"
+						label={ __( 'Error', 'visual-blueprint-builder' ) }
+					/>
+				</ToggleGroupControl>
+
+				<ToggleGroupControl
 					__next40pxDefaultSize
 					__nextHasNoMarginBottom
-				/>
-				<SelectControl
+					isBlock
 					label={ __( 'On Error', 'visual-blueprint-builder' ) }
 					value={ onError || '' }
-					options={ [
-						{
-							label: __(
-								'Default (Throw / Abort)',
-								'visual-blueprint-builder'
-							),
-							value: '',
-						},
-						{
-							label: __(
-								'Skip plugin on error',
-								'visual-blueprint-builder'
-							),
-							value: 'skip-plugin',
-						},
-						{
-							label: __(
-								'Abort Blueprint (throw)',
-								'visual-blueprint-builder'
-							),
-							value: 'throw',
-						},
-					] }
 					onChange={ ( val ) =>
 						setAttributes( {
 							options: {
@@ -138,9 +111,23 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 							},
 						} )
 					}
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-				/>
+				>
+					<ToggleGroupControlOption
+						value=""
+						label={ __( 'Default', 'visual-blueprint-builder' ) }
+					/>
+					<ToggleGroupControlOption
+						value="skip-plugin"
+						label={ __(
+							'Skip Plugin',
+							'visual-blueprint-builder'
+						) }
+					/>
+					<ToggleGroupControlOption
+						value="throw"
+						label={ __( 'Throw', 'visual-blueprint-builder' ) }
+					/>
+				</ToggleGroupControl>
 				<TextControl
 					label={ __(
 						'Target Folder Name (Optional)',

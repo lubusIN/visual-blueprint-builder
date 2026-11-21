@@ -268,8 +268,9 @@ export default function Picker( { type, onSelect, selectedSlug } ) {
 	return (
 		<>
 			<Button
+				__next40pxDefaultSize
 				variant="secondary"
-				size="compact"
+				size="default"
 				onClick={ () => setModalOpen( true ) }
 			>
 				{ __( 'Browse', 'visual-blueprint-builder' ) }
