@@ -43,11 +43,13 @@ class RegisterCustomMeta {
 					'wp_version'     => 'nightly',
 					'landing_page'   => '/wp-admin/',
 					'networking'     => true,
+					'intl'           => false,
 					'login'          => false,
 					'extraLibraries' => false,
 					'siteOptions'    => [],
 					'plugins'        => [],
 					'constants'      => [],
+					'meta'           => [],
 				],
 				'show_in_rest'  => [
 					'schema' => [
@@ -57,6 +59,7 @@ class RegisterCustomMeta {
 							'wp_version'     => [ 'type' => 'string' ],
 							'landing_page'   => [ 'type' => 'string' ],
 							'networking'     => [ 'type' => 'boolean' ],
+							'intl'           => [ 'type' => 'boolean' ],
 							'login'          => [ 'type' => 'boolean' ],
 							'extraLibraries' => [ 'type' => 'boolean' ],
 							'siteOptions'    => [
@@ -65,6 +68,10 @@ class RegisterCustomMeta {
 							],
 							'plugins'        => [ 'type' => 'array' ],
 							'constants'      => [
+								'type'                 => 'object',
+								'additionalProperties' => true,
+							],
+							'meta'           => [
 								'type'                 => 'object',
 								'additionalProperties' => true,
 							],

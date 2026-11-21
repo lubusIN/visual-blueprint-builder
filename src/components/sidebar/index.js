@@ -6,3 +6,4 @@ export { default as Gallery } from './blueprint-gallery';
 export { default as PluginSettings } from './plugins-settings';
 export { default as SiteOptionsSettings } from './site-options-settings';
 export { default as ConstantsSettings } from './constants-settings';
+export { default as MetaSettings } from './meta-settings';
