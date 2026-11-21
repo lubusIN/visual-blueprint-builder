@@ -7,9 +7,9 @@ import path from 'path';
 /**
  * Internal dependencies
  */
-import { convertToKebabCase } from '../../editor/utils';
+import { convertToKebabCase } from '../../../src/editor/utils';
 
-const STEPS_DIR = path.resolve( __dirname, '../' );
+const STEPS_DIR = path.resolve( __dirname, '../../../src/steps' );
 
 describe( 'Step Blocks Schema & Registration Integrity', () => {
 	const stepDirs = fs

@@ -7,7 +7,7 @@ import {
 	removeKeyValuePair,
 	checkAddButtonDisabled,
 	keyValuePairsToObject,
-} from '../key-value-editor';
+} from '../../../src/components/key-value-editor';
 
 describe( 'KeyValueEditor Component Utilities', () => {
 	describe( 'addKeyValuePair', () => {

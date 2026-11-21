@@ -13,7 +13,7 @@ import {
 	updateDeprecatedFields,
 	sanitizePreparedSchemaString,
 	validateBlueprintSteps,
-} from '../utils';
+} from '../../../src/editor/utils';
 
 describe( 'Blueprint Editor Utilities', () => {
 	describe( 'convertToKebabCase', () => {

@@ -15,7 +15,7 @@ import {
 	serialize,
 } from '@wordpress/blocks';
 
-const STEPS_DIR = path.resolve( __dirname, '../' );
+const STEPS_DIR = path.resolve( __dirname, '../../../src/steps' );
 
 describe( 'Step Blocks Fixtures & Serialization Roundtrip', () => {
 	const stepDirs = fs
