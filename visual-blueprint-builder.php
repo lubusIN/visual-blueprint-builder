@@ -4,6 +4,7 @@
  * Plugin Name: Visual Blueprint Builder
  * Description: Design playground blueprints with a specialized block editor interface in WordPress.
  * Version: 1.0.0
+ * Requires at least: 6.8
  * Requires PHP: 7.4
  * Author: Lubus
  * Author URI: https://lubus.in/

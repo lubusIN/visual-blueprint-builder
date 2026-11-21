@@ -12,8 +12,6 @@ import { dispatch, useSelect, useDispatch } from '@wordpress/data';
 import {
 	PLAYGROUND_BLUEPRINT_SCHEMA_URL,
 	PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH,
-	PHP_VERSIONS,
-	WP_VERSIONS,
 } from './constant';
 
 /**
@@ -126,6 +124,13 @@ export const fetchBlueprintSchema = async () => {
 	return schemaCachePromise;
 };
 
+const DEFAULT_PHP_OPTIONS = [ { label: 'Latest', value: 'latest' } ];
+const DEFAULT_WP_OPTIONS = [
+	{ label: 'WordPress nightly', value: 'nightly' },
+	{ label: 'Latest', value: 'latest' },
+	{ label: 'Beta', value: 'beta' },
+];
+
 /**
  * Extracts supported PHP versions from the Playground blueprint schema definitions.
  *
@@ -138,7 +143,7 @@ export const extractPhpVersionsFromSchema = ( schema ) => {
 	const hasNext = schema?.definitions?.PHPNextVersion?.const;
 
 	if ( ! supportedEnum.length ) {
-		return PHP_VERSIONS;
+		return [ ...DEFAULT_PHP_OPTIONS ];
 	}
 
 	const versions = [ { label: 'Latest', value: 'latest' } ];
@@ -162,19 +167,47 @@ export const extractPhpVersionsFromSchema = ( schema ) => {
  * Hook to dynamically resolve supported Playground PHP and WordPress versions.
  *
  * Uses the upstream blueprint schema definitions as source of truth for PHP versions,
- * and server-provided release catalog or localized data for WordPress versions,
- * falling back gracefully to curated constants.
+ * and server-provided release catalog or localized data for WordPress versions.
  *
  * @param {Object} currentConfig Current blueprint configuration.
  * @return {{phpVersions: Array, wpVersions: Array}} Supported version options.
  */
 export const usePlaygroundVersions = ( currentConfig = {} ) => {
-	const [ phpVersions, setPhpVersions ] = useState( PHP_VERSIONS );
+	const [ phpVersions, setPhpVersions ] = useState( () => {
+		if (
+			currentConfig.php_version &&
+			currentConfig.php_version !== 'latest'
+		) {
+			return [
+				...DEFAULT_PHP_OPTIONS,
+				{
+					label: currentConfig.php_version,
+					value: currentConfig.php_version,
+				},
+			];
+		}
+		return [ ...DEFAULT_PHP_OPTIONS ];
+	} );
+
 	const [ wpVersions, setWpVersions ] = useState( () => {
 		if ( window?.vbbSettings?.wpVersions?.length ) {
 			return window.vbbSettings.wpVersions;
 		}
-		return WP_VERSIONS;
+		if (
+			currentConfig.wp_version &&
+			! DEFAULT_WP_OPTIONS.some(
+				( opt ) => opt.value === currentConfig.wp_version
+			)
+		) {
+			return [
+				...DEFAULT_WP_OPTIONS,
+				{
+					label: currentConfig.wp_version,
+					value: currentConfig.wp_version,
+				},
+			];
+		}
+		return DEFAULT_WP_OPTIONS;
 	} );
 
 	useEffect( () => {
@@ -203,7 +236,31 @@ export const usePlaygroundVersions = ( currentConfig = {} ) => {
 				}
 			} )
 			.catch( () => {
-				// Keep fallback PHP_VERSIONS on error or offline
+				if ( ! isMounted ) {
+					return;
+				}
+				if (
+					currentConfig.php_version &&
+					currentConfig.php_version !== 'latest'
+				) {
+					setPhpVersions( ( prev ) => {
+						if (
+							prev.some(
+								( opt ) =>
+									opt.value === currentConfig.php_version
+							)
+						) {
+							return prev;
+						}
+						return [
+							...prev,
+							{
+								label: currentConfig.php_version,
+								value: currentConfig.php_version,
+							},
+						];
+					} );
+				}
 			} );
 
 		return () => {
@@ -509,4 +566,26 @@ export const sanitizePreparedSchemaString = ( schemaStr ) => {
 	} catch {
 		return schemaStr;
 	}
+};
+
+/**
+ * Returns the documentation anchor hash for a playground step.
+ *
+ * Playground doc anchors on developer.wordpress.org use the lowercase step name
+ * (e.g. 'installPlugin' -> '#installplugin', 'wp-cli' -> '#wp-cli').
+ *
+ * @param {string} blockName Block name (e.g. 'playground-step/install-plugin').
+ * @return {string|null} Documentation anchor hash or null if not a playground step.
+ */
+export const getStepDocAnchor = ( blockName ) => {
+	if (
+		typeof blockName !== 'string' ||
+		! blockName.startsWith( 'playground-step/' )
+	) {
+		return null;
+	}
+
+	const slug = blockName.replace( 'playground-step/', '' );
+
+	return slug === 'wp-cli' ? 'wp-cli' : slug.replaceAll( '-', '' );
 };
