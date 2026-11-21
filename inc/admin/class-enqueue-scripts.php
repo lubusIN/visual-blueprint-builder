@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This class handles registering and enqueueing scripts and styles.
  *
@@ -8,90 +7,88 @@
 
 namespace WP\Admin\VisualBlueprintBuilder;
 
-defined('ABSPATH') || exit;
+defined( 'ABSPATH' ) || exit;
 
-class EnqueueScripts
-{
-    /**
-     * Constructor to initialize WordPress hooks.
-     */
-    public function __construct()
-    {
-        add_action('enqueue_block_editor_assets', [$this, 'enqueue_editor_scripts']);
-        add_action('init', [$this, 'set_script_translations']);
-    }
+/**
+ * EnqueueScripts class.
+ */
+class EnqueueScripts {
 
-    /**
-     * Enqueues scripts and styles for the block editor based on a specific post type.
-     */
-    public function enqueue_editor_scripts()
-    {
-        $screen = get_current_screen();
+	/**
+	 * Constructor to initialize WordPress hooks.
+	 */
+	public function __construct() {
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_scripts' ] );
+		add_action( 'init', [ $this, 'set_script_translations' ] );
+	}
 
-        // Only enqueue scripts/styles for the 'blueprint' post type in the editor
-        if (! $screen || 'blueprint' !== $screen->post_type) {
-            return;
-        }
+	/**
+	 * Enqueues scripts and styles for the block editor based on a specific post type.
+	 */
+	public function enqueue_editor_scripts() {
+		$screen = get_current_screen();
 
-        $this->enqueue_editor_assets();
-    }
+		// Only enqueue scripts/styles for the 'blueprint' post type in the editor.
+		if ( ! $screen || 'blueprint' !== $screen->post_type ) {
+			return;
+		}
 
-    /**
-     * Enqueues the editor-specific assets.
-     */
-    private function enqueue_editor_assets()
-    {
-        $assetFile = $this->get_asset_file();
+		$this->enqueue_editor_assets();
+	}
 
-        wp_enqueue_script(
-            'blueprint-editor',
-            VBB_PLUGIN_URL . 'build/editor.js',
-            $assetFile['dependencies'],
-            $assetFile['version'],
-            true
-        );
+	/**
+	 * Enqueues the editor-specific assets.
+	 */
+	private function enqueue_editor_assets() {
+		$asset_file = $this->get_asset_file();
 
-        wp_localize_script(
-            'blueprint-editor',
-            'vbbSettings',
-            [
-                'wpVersions' => vbb_get_wordpress_versions(),
-            ]
-        );
+		wp_enqueue_script(
+			'blueprint-editor',
+			VBB_PLUGIN_URL . 'build/editor.js',
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			true
+		);
 
-        wp_enqueue_style(
-            'blueprint-editor',
-            VBB_PLUGIN_URL . 'assets/css/editor.css',
-            [],
-            '1.0.0'
-        );
-    }
+		wp_localize_script(
+			'blueprint-editor',
+			'vbbSettings',
+			[
+				'wpVersions' => vbb_get_wordpress_versions(),
+			]
+		);
 
-    /**
-     * Retrieves the asset file containing dependencies and version information.
-     *
-     * @return array|false The asset file array or false on failure.
-     */
-    private function get_asset_file()
-    {
-        $assetFilePath = VBB_PLUGIN_DIR . 'build/editor.asset.php';
+		wp_enqueue_style(
+			'blueprint-editor',
+			VBB_PLUGIN_URL . 'assets/css/editor.css',
+			[],
+			'1.0.0'
+		);
+	}
 
-        if (file_exists($assetFilePath)) {
-            return require $assetFilePath;
-        }
+	/**
+	 * Retrieves the asset file containing dependencies and version information.
+	 *
+	 * @return array|false The asset file array or false on failure.
+	 */
+	private function get_asset_file() {
+		$asset_file_path = VBB_PLUGIN_DIR . 'build/editor.asset.php';
 
-        return false;
-    }
+		if ( file_exists( $asset_file_path ) ) {
+			return require $asset_file_path;
+		}
 
-    /**
-     * set script translations function
-     */
-    public function set_script_translations()
-    {
-        wp_set_script_translations(
-            'blueprint-editor', // script handle
-            'visual-blueprint-builder', // Text domain for translations*
-            VBB_PLUGIN_DIR . 'languages' // Path to the language files
-        );
-    }
+		return false;
+	}
+
+	/**
+	 * Set script translations.
+	 */
+	public function set_script_translations() {
+		wp_set_script_translations(
+			'blueprint-editor', // Script handle.
+			'visual-blueprint-builder', // Text domain for translations.
+			VBB_PLUGIN_DIR . 'languages' // Path to the language files.
+		);
+	}
 }
