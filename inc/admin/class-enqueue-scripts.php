@@ -19,11 +19,12 @@ class EnqueueScripts {
 	 */
 	public function __construct() {
 		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_scripts' ] );
+		add_action( 'enqueue_block_assets', [ $this, 'enqueue_block_styles' ] );
 		add_action( 'init', [ $this, 'set_script_translations' ] );
 	}
 
 	/**
-	 * Enqueues scripts and styles for the block editor based on a specific post type.
+	 * Enqueues scripts for the block editor based on a specific post type.
 	 */
 	public function enqueue_editor_scripts() {
 		$screen = get_current_screen();
@@ -59,6 +60,25 @@ class EnqueueScripts {
 				'wpVersions' => vbb_get_wordpress_versions(),
 			]
 		);
+	}
+
+	/**
+	 * Enqueues styles for both the editor and the block canvas iframe.
+	 */
+	public function enqueue_block_styles() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		// Only enqueue styles for the 'blueprint' post type in the editor.
+		if ( ! $screen || 'blueprint' !== $screen->post_type ) {
+			return;
+		}
+
+		$asset_file = $this->get_asset_file();
+		$version    = ! empty( $asset_file['version'] ) ? $asset_file['version'] : VBB_VERSION;
 
 		wp_enqueue_style(
 			'blueprint-editor',

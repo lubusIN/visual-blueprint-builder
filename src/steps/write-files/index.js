@@ -6,18 +6,16 @@ import { registerBlockType } from '@wordpress/blocks';
 import { folder } from '@wordpress/icons';
 import {
 	TextControl,
-	TextareaControl,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
  */
 import metadata from './block.json';
-import { StepWrapper } from '../../components';
+import { StepWrapper, TreeEditor } from '../../components';
 
 /**
  * Edit function for write-files block.
@@ -27,13 +25,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 		attributes;
 
 	const isGit = filesTree.resource === 'git:directory';
-	const [ rawFilesJson, setRawFilesJson ] = useState( () => {
-		try {
-			return JSON.stringify( filesTree.files || {}, null, 2 );
-		} catch {
-			return '{}';
-		}
-	} );
 
 	const handleSourceChange = ( newSource ) => {
 		if ( newSource === 'git:directory' ) {
@@ -46,36 +37,23 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				},
 			} );
 		} else {
-			let parsedFiles = {};
-			try {
-				parsedFiles = JSON.parse( rawFilesJson );
-			} catch {
-				parsedFiles = {};
-			}
-
 			setAttributes( {
 				filesTree: {
 					name: filesTree.name || 'directory',
-					files: parsedFiles,
+					files: filesTree.files || {},
 				},
 			} );
 		}
 	};
 
-	const handleFilesJsonChange = ( value ) => {
-		setRawFilesJson( value );
-		try {
-			const parsed = JSON.parse( value );
-			setAttributes( {
-				filesTree: {
-					...filesTree,
-					name: filesTree.name || 'directory',
-					files: parsed,
-				},
-			} );
-		} catch {
-			// Leave invalid JSON in rawFilesJson without corrupting filesTree
-		}
+	const handleFilesChange = ( newFiles ) => {
+		setAttributes( {
+			filesTree: {
+				...filesTree,
+				name: filesTree.name || 'directory',
+				files: newFiles,
+			},
+		} );
 	};
 
 	const summary = writeToPath
@@ -155,22 +133,59 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
 						/>
-						<TextareaControl
-							label={ __(
-								'Files Mapping (JSON format)',
+						<TreeEditor
+							data={ filesTree.files || {} }
+							onChange={ handleFilesChange }
+							headerLabels={ {
+								key: __(
+									'File / Directory',
+									'visual-blueprint-builder'
+								),
+								type: __( 'Type', 'visual-blueprint-builder' ),
+								value: __(
+									'Content',
+									'visual-blueprint-builder'
+								),
+							} }
+							typeOptions={ [
+								{
+									label: __(
+										'File',
+										'visual-blueprint-builder'
+									),
+									value: 'string',
+								},
+								{
+									label: __(
+										'Directory',
+										'visual-blueprint-builder'
+									),
+									value: 'object',
+								},
+							] }
+							placeholders={ {
+								key: __(
+									'file.php or folder',
+									'visual-blueprint-builder'
+								),
+								value: __(
+									'File content',
+									'visual-blueprint-builder'
+								),
+							} }
+							addButtonLabel={ __(
+								'Add File / Directory',
 								'visual-blueprint-builder'
 							) }
-							value={ rawFilesJson }
-							placeholder={
-								'{\n  "index.php": "<?php echo \\"Hello World!\\"; ?>",\n  "public": {\n    "style.css": "body { color: red; }"\n  }\n}'
-							}
-							help={ __(
-								'Maps file names to string content or nested subdirectory objects.',
+							addChildButtonLabel={ __(
+								'Add File',
 								'visual-blueprint-builder'
 							) }
-							onChange={ handleFilesJsonChange }
-							rows={ 8 }
-							__nextHasNoMarginBottom
+							deleteButtonLabel={ __(
+								'Delete',
+								'visual-blueprint-builder'
+							) }
+							valueModal
 						/>
 					</>
 				) }

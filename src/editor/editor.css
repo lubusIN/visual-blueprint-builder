@@ -44,6 +44,15 @@ body.editor-styles-wrapper {
 		width: 100%;
 	}
 
+	/**
+	 * Bridge for @wordpress/ui Stack in canvas iframe.
+	 * @wordpress/ui injects CSS modules into the top window,
+	 * which does not penetrate the isolated canvas iframe.
+	 */
+	[class*="__stack"] {
+		display: flex;
+	}
+
 	&.is-selected,
 	&.is-hovered {
 
@@ -192,21 +201,80 @@ body.editor-styles-wrapper {
 }
 
 /**
- * Object tree & editor overrides
+ * Content modal for TreeEditor
  */
-.vpb-tree-children-key .components-base-control {
+.vbb-content-modal {
+	max-width: 800px;
 	width: 100%;
 }
 
+.vbb-content-modal-textarea .components-textarea-control__input {
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	font-size: 13px;
+	line-height: 1.5;
+	tab-size: 4;
+	min-height: 380px;
+	white-space: pre;
+	overflow-wrap: normal;
+	overflow-x: auto;
+	resize: vertical;
+}
+
+/**
+ * Object tree & editor overrides
+ */
 .vpb-object-tree {
+	width: 100%;
+	table-layout: fixed;
 
-	td {
+	td,
+	th {
 		padding-bottom: 10px;
+		vertical-align: middle;
+	}
 
-		&:nth-child(2) {
-			padding-inline-start: 10px;
-			padding-inline-end: 10px;
-		}
+	/* Col 1: Key / Name */
+	td:nth-child(1),
+	th:nth-child(1) {
+		width: 32%;
+	}
+
+	/* Col 2: Type */
+	td:nth-child(2),
+	th:nth-child(2) {
+		width: 125px;
+		padding-inline-start: 8px;
+		padding-inline-end: 8px;
+	}
+
+	/* Col 3: Value / Content */
+	td:nth-child(3),
+	th:nth-child(3) {
+		width: auto;
+	}
+
+	/* Col 4: Delete Action */
+	td:nth-child(4),
+	th:nth-child(4) {
+		width: 44px;
+		text-align: end;
+	}
+
+	.components-base-control {
+		width: 100%;
+		margin-bottom: 0;
+	}
+
+	.components-input-control__container {
+		min-width: 0;
+		width: 100%;
+	}
+
+	select.components-select-control__input {
+		min-width: 0;
+		width: 100%;
+		padding-inline-start: 8px !important;
+		padding-inline-end: 24px !important;
 	}
 }
 
