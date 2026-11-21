@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Write Files",
 	"category": "file-system",
-	"description": "Writes multiple files and nested directories to the specified path.",
+	"description": "Writes multiple files or directory structures to a specified directory in the Playground filesystem.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -23,7 +23,7 @@
 		"filesTree": {
 			"type": "object",
 			"default": {
-				"name": "files",
+				"name": "directory",
 				"files": {}
 			}
 		}
