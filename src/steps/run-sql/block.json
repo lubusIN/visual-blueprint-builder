@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "playground-step/run-sql",
+	"version": "0.1.0",
+	"title": "Run SQL",
+	"category": "scripts",
+	"description": "Runs SQL queries directly against the WordPress database.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "runSql"
+		},
+		"sql": {
+			"type": "object",
+			"default": {
+				"resource": "literal",
+				"name": "query.sql",
+				"contents": ""
+			}
+		}
+	},
+	"textdomain": "visual-blueprint-builder",
+	"editorScript": "file:./index.js"
+}

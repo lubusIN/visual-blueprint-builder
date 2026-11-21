@@ -4,7 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { tool } from '@wordpress/icons';
-import { TextareaControl } from '@wordpress/components';
+import { TextareaControl, TextControl } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -16,7 +17,7 @@ import { StepWrapper } from '../../components';
  * Edit function for wp-cli block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { command } = attributes;
+	const { command, wpCliPath = '' } = attributes;
 
 	return (
 		<StepWrapper
@@ -27,13 +28,33 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				command || __( '{command to run}', 'visual-blueprint-builder' )
 			}
 		>
-			<TextareaControl
-				__nextHasNoMarginBottom
-				label={ __( 'Command', 'visual-blueprint-builder' ) }
-				onChange={ ( value ) => setAttributes( { command: value } ) }
-				placeholder=""
-				value={ command }
-			/>
+			<Stack direction="column" gap="md">
+				<TextareaControl
+					__nextHasNoMarginBottom
+					label={ __( 'Command', 'visual-blueprint-builder' ) }
+					onChange={ ( value ) =>
+						setAttributes( { command: value } )
+					}
+					placeholder="wp post create --post_title='Hello World'"
+					value={ command }
+				/>
+				<TextControl
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
+					label={ __(
+						'Custom WP-CLI Path (Optional)',
+						'visual-blueprint-builder'
+					) }
+					value={ wpCliPath }
+					placeholder={ __(
+						'Path to custom wp-cli.phar',
+						'visual-blueprint-builder'
+					) }
+					onChange={ ( value ) =>
+						setAttributes( { wpCliPath: value || undefined } )
+					}
+				/>
+			</Stack>
 		</StepWrapper>
 	);
 }

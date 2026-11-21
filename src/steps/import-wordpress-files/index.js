@@ -16,16 +16,21 @@ import { StepWrapper } from '../../components';
  * Edit function for import-wordpress-files block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { wordPressFilesZip } = attributes;
+	const { wordPressFilesZip, pathInZip = '' } = attributes;
 	const { url } = wordPressFilesZip || {};
 
 	const handleInputChange = ( value ) => {
-		setAttributes( {
-			wordPressFilesZip: {
-				...wordPressFilesZip,
-				...value,
-			},
-		} );
+		if ( 'url' in value ) {
+			setAttributes( {
+				wordPressFilesZip: {
+					...wordPressFilesZip,
+					resource: 'url',
+					url: value.url,
+				},
+			} );
+		} else {
+			setAttributes( value );
+		}
 	};
 
 	return (
@@ -36,7 +41,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			summary={ url || __( '{ZIP URL}', 'visual-blueprint-builder' ) }
 		>
 			<DataForm
-				data={ { url } }
+				data={ { url, pathInZip } }
 				fields={ [
 					{
 						id: 'url',
@@ -47,9 +52,21 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 							'visual-blueprint-builder'
 						),
 					},
+					{
+						id: 'pathInZip',
+						label: __(
+							'Path in ZIP (Optional)',
+							'visual-blueprint-builder'
+						),
+						type: 'text',
+						placeholder: __(
+							'Path inside the zip file (e.g. wordpress)',
+							'visual-blueprint-builder'
+						),
+					},
 				] }
 				form={ {
-					fields: [ 'url' ],
+					fields: [ 'url', 'pathInZip' ],
 				} }
 				onChange={ handleInputChange }
 			/>

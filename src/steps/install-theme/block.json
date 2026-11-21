@@ -33,6 +33,10 @@
 				}
 			}
 		},
+		"ifAlreadyInstalled": {
+			"type": "string",
+			"enum": [ "overwrite", "skip", "error" ]
+		},
 		"options": {
 			"type": "object",
 			"default": {
@@ -45,6 +49,13 @@
 				},
 				"importStarterContent": {
 					"type": "boolean"
+				},
+				"onError": {
+					"type": "string",
+					"enum": [ "skip-theme", "throw" ]
+				},
+				"targetFolderName": {
+					"type": "string"
 				}
 			}
 		}

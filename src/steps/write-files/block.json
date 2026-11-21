@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "playground-step/write-files",
+	"version": "0.1.0",
+	"title": "Write Files",
+	"category": "file-system",
+	"description": "Writes multiple files and nested directories to the specified path.",
+	"example": {},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"attributes": {
+		"step": {
+			"type": "string",
+			"default": "writeFiles"
+		},
+		"writeToPath": {
+			"type": "string",
+			"default": ""
+		},
+		"filesTree": {
+			"type": "object",
+			"default": {
+				"name": "files",
+				"files": {}
+			}
+		}
+	},
+	"textdomain": "visual-blueprint-builder",
+	"editorScript": "file:./index.js"
+}

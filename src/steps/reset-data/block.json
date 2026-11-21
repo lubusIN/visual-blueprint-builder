@@ -16,6 +16,12 @@
 		"step": {
 			"type": "string",
 			"default": "resetData"
+		},
+		"contentTypes": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
 		}
 	},
 	"textdomain": "visual-blueprint-builder",

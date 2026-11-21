@@ -16,6 +16,9 @@
 		"step": {
 			"type": "string",
 			"default": "enableMultisite"
+		},
+		"wpCliPath": {
+			"type": "string"
 		}
 	},
 	"textdomain": "visual-blueprint-builder",

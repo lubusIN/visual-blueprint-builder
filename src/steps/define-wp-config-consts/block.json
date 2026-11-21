@@ -19,6 +19,11 @@
 		"consts": {
 			"type": "object",
 			"default": {}
+		},
+		"method": {
+			"type": "string",
+			"default": "rewrite-wp-config",
+			"enum": [ "rewrite-wp-config", "define-before-run" ]
 		}
 	},
 	"textdomain": "visual-blueprint-builder",

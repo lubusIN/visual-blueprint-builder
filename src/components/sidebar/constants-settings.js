@@ -4,7 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { code } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
-import { Modal, Button } from '@wordpress/components';
+import { Modal, Button, Notice } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies
@@ -14,8 +15,10 @@ import KeyValueEditor from '../key-value-editor';
 /**
  * Constants Settings Component
  *
- * @param {Object} props The props for the component.
- * @param {Object} props.attributes The block attributes, containing `constants`.
+ * Configures top-level blueprint constants shorthand.
+ *
+ * @param {Object} props Component props.
+ * @param {Object} props.attributes The attributes object containing `constants`.
  * @param {Function} props.setAttributes Function to update the attributes.
  * @return {JSX.Element} The ConstantsSettings component.
  */
@@ -54,18 +57,26 @@ function ConstantsSettings( { attributes = {}, setAttributes } ) {
 					onRequestClose={ saveOptions }
 					size="medium"
 				>
-					<KeyValueEditor
-						data={ localConstants }
-						onChange={ setLocalConstants }
-						addButtonLabel={ __(
-							'Add Constant',
-							'visual-blueprint-builder'
-						) }
-						deleteButtonLabel={ __(
-							'Delete Constant',
-							'visual-blueprint-builder'
-						) }
-					/>
+					<Stack direction="column" gap="md">
+						<Notice status="info" isDismissible={ false }>
+							{ __(
+								'Top-level constants are a shorthand that defines constants before runtime (define-before-run). If you need to specify the method (such as rewriting wp-config.php) or control execution order, add an explicit "Define WP Config Consts" step in your blueprint instead.',
+								'visual-blueprint-builder'
+							) }
+						</Notice>
+						<KeyValueEditor
+							data={ localConstants }
+							onChange={ setLocalConstants }
+							addButtonLabel={ __(
+								'Add Constant',
+								'visual-blueprint-builder'
+							) }
+							deleteButtonLabel={ __(
+								'Delete Constant',
+								'visual-blueprint-builder'
+							) }
+						/>
+					</Stack>
 				</Modal>
 			) }
 		</>
