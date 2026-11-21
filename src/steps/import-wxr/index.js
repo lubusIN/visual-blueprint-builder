@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { details } from '@wordpress/icons';
+import { download } from '@wordpress/icons';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -31,7 +31,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ details }
+			icon={ download }
 			isSelected={ isSelected }
 			summary={ url || __( '{WXR URL}', 'visual-blueprint-builder' ) }
 		>
@@ -58,6 +58,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: details,
+	icon: download,
 	edit: Edit,
 } );

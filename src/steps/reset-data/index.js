@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { reusableBlock } from '@wordpress/icons';
+import { database } from '@wordpress/icons';
 
 /**
  * Internal dependencies.
@@ -18,7 +18,7 @@ function Edit() {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ reusableBlock }
+			icon={ database }
 			isSelected={ false }
 			summary={ __(
 				'Delete WordPress posts and comments',
@@ -29,6 +29,6 @@ function Edit() {
 }
 
 registerBlockType( metadata.name, {
-	icon: reusableBlock,
+	icon: database,
 	edit: Edit,
 } );

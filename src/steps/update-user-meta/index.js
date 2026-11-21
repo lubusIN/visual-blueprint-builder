@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { postAuthor } from '@wordpress/icons';
+import { people } from '@wordpress/icons';
 import { TextControl } from '@wordpress/components';
 import { Stack, Text } from '@wordpress/ui';
 
@@ -22,7 +22,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ postAuthor }
+			icon={ people }
 			isSelected={ isSelected }
 			summary={
 				<Stack direction="column" gap="xs">
@@ -85,6 +85,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: postAuthor,
+	icon: people,
 	edit: Edit,
 } );

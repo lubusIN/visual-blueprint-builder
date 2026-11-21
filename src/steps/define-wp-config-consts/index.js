@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { cog } from '@wordpress/icons';
+import { settings } from '@wordpress/icons';
 
 /**
  * Internal dependencies.
@@ -20,7 +20,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ cog }
+			icon={ settings }
 			isSelected={ isSelected }
 			summary={
 				consts && Object.keys( consts ).length > 0 ? (
@@ -49,6 +49,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: cog,
+	icon: settings,
 	edit: Edit,
 } );

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cog } from '@wordpress/icons';
+import { settings } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 import { Modal, Button } from '@wordpress/components';
 
@@ -34,8 +34,8 @@ function SiteOptionsSettings( { attributes = {}, setAttributes } ) {
 	return (
 		<>
 			<Button
-				icon={ cog }
-				iconSize={ 30 }
+				size="compact"
+				icon={ settings }
 				onClick={ handleOpen }
 				label={ __(
 					'Configure Site Options',

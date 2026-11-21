@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { plus, trash, cog } from '@wordpress/icons';
+import { plus, trash, plugins as pluginsIcon } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
 import { Modal, Button, TextControl } from '@wordpress/components';
 import { Stack } from '@wordpress/ui';
@@ -58,8 +58,8 @@ function PluginSettings( { attributes = {}, setAttributes } ) {
 	return (
 		<>
 			<Button
-				icon={ cog }
-				iconSize={ 30 }
+				size="compact"
+				icon={ pluginsIcon }
 				onClick={ () => setModalOpen( true ) }
 				label={ __( 'Configure Plugins', 'visual-blueprint-builder' ) }
 			/>
