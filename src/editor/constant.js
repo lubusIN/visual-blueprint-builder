@@ -14,7 +14,7 @@ export const PLAYGROUND_BUILDER_BASE =
  * Playground blueprint docs base url
  */
 export const PLAYGROUND_DOCS_BASE =
-	'https://wordpress.github.io/wordpress-playground/blueprints/steps/';
+	'https://developer.wordpress.org/playground/blueprints/steps/';
 
 /**
  * Playground blueprint schema url
