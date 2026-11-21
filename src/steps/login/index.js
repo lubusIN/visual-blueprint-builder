@@ -4,8 +4,8 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { key, login } from '@wordpress/icons';
-import { Icon } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
+import { Icon, Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -25,19 +25,19 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ login }
 			isSelected={ isSelected }
 			summary={
-				<span
-					style={ {
-						display: 'inline-flex',
-						alignItems: 'center',
-						gap: '4px',
-					} }
-				>
-					<span>
+				<Stack direction="row" align="center" gap="xs">
+					<Text variant="body-md">
 						{ username ||
 							__( 'Username', 'visual-blueprint-builder' ) }
-					</span>
-					<Icon icon={ key } style={ { fill: '#949494' } } />
-				</span>
+					</Text>
+					<Icon
+						icon={ key }
+						size={ 16 }
+						style={ {
+							fill: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
+						} }
+					/>
+				</Stack>
 			}
 		>
 			<DataForm

@@ -4,16 +4,8 @@
 import { __, sprintf } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
 import { useState, useEffect, useRef, useCallback } from '@wordpress/element';
-import {
-	Button,
-	Modal,
-	Card,
-	CardBody,
-	CardMedia,
-	ExternalLink,
-	SearchControl,
-} from '@wordpress/components';
-import { EmptyState, Stack } from '@wordpress/ui';
+import { Button, Modal, SearchControl } from '@wordpress/components';
+import { Badge, Card, EmptyState, Link, Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -42,7 +34,6 @@ const formatNumber = ( num ) => {
 const SelectButton = ( { isSelected, onSelect, slug } ) => (
 	<Button
 		variant={ isSelected ? 'primary' : 'secondary' }
-		style={ { borderRadius: '4px' } }
 		onClick={ () => onSelect( slug ) }
 		disabled={ isSelected }
 	>
@@ -59,27 +50,37 @@ const ThemeComponent = ( { item, onSelect, selectedSlug } ) => {
 	const isSelected = selectedSlug === item.slug;
 
 	return (
-		<Card key={ item.slug } size="small">
-			<CardBody style={ { padding: '0' } }>
-				<CardMedia>
-					<img src={ item.screenshot_url } alt={ item.name } />
-				</CardMedia>
-				<CardBody>
-					<Stack
-						direction="row"
-						align="center"
-						justify="space-between"
+		<Card.Root key={ item.slug }>
+			<Card.Content style={ { padding: '0' } }>
+				<img
+					src={ item.screenshot_url }
+					alt={ item.name }
+					style={ {
+						display: 'block',
+						width: '100%',
+						height: 'auto',
+					} }
+				/>
+				<Stack
+					direction="row"
+					align="center"
+					justify="space-between"
+					style={ { padding: '12px' } }
+				>
+					<Text
+						variant="heading-sm"
+						render={ <h5 style={ { margin: 0 } } /> }
 					>
-						<h5 style={ { margin: 0 } }>{ item.name }</h5>
-						<SelectButton
-							isSelected={ isSelected }
-							onSelect={ onSelect }
-							slug={ item.slug }
-						/>
-					</Stack>
-				</CardBody>
-			</CardBody>
-		</Card>
+						{ item.name }
+					</Text>
+					<SelectButton
+						isSelected={ isSelected }
+						onSelect={ onSelect }
+						slug={ item.slug }
+					/>
+				</Stack>
+			</Card.Content>
+		</Card.Root>
 	);
 };
 
@@ -90,8 +91,8 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 	const isSelected = selectedSlug === item.slug;
 
 	return (
-		<Card key={ item.slug } size="small">
-			<CardBody style={ { height: '100%' } }>
+		<Card.Root key={ item.slug }>
+			<Card.Content style={ { height: '100%' } }>
 				<Stack
 					direction="column"
 					justify="space-between"
@@ -117,25 +118,36 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 									borderRadius: '4px',
 								} }
 							/>
-							<ExternalLink
-								href={ item.homepage }
-								style={ {
-									fontWeight: 'bold',
-									color: '#0073aa',
-								} }
+							<Text
+								variant="heading-sm"
+								render={
+									<span style={ { fontWeight: 600 } } />
+								}
 							>
-								{ decodeEntities( item.name ) }
-							</ExternalLink>
+								<Link href={ item.homepage } openInNewTab>
+									{ decodeEntities( item.name ) }
+								</Link>
+							</Text>
 						</Stack>
-						<p style={ { margin: 0, lineHeight: '1.5em' } }>
+						<Text
+							variant="body-sm"
+							render={
+								<p
+									style={ {
+										margin: 0,
+										lineHeight: '1.5em',
+									} }
+								/>
+							}
+						>
 							{ item.short_description ||
 								__(
 									'No description available',
 									'visual-blueprint-builder'
 								) }
-						</p>
-						<Stack direction="row" gap="lg">
-							<span style={ { color: '#666', fontSize: '12px' } }>
+						</Text>
+						<Stack direction="row" gap="sm">
+							<Badge intent="none">
 								{ item.active_installs
 									? `${ formatNumber(
 											item.active_installs
@@ -144,18 +156,22 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 											'No data available',
 											'visual-blueprint-builder'
 									  ) }
-							</span>
-							<span style={ { color: '#666', fontSize: '12px' } }>
-								{ __(
-									'Tested with',
-									'visual-blueprint-builder'
-								) }{ ' ' }
-								{ item.tested ||
-									__(
-										'Unknown',
-										'visual-blueprint-builder'
-									) }
-							</span>
+							</Badge>
+							<Badge intent="informational">
+								{ item.tested
+									? sprintf(
+											/* translators: %s: WordPress version */
+											__(
+												'Tested with %s',
+												'visual-blueprint-builder'
+											),
+											item.tested
+									  )
+									: __(
+											'Tested with Unknown',
+											'visual-blueprint-builder'
+									  ) }
+							</Badge>
 						</Stack>
 					</Stack>
 					<Stack direction="row" justify="flex-end">
@@ -166,8 +182,8 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 						/>
 					</Stack>
 				</Stack>
-			</CardBody>
-		</Card>
+			</Card.Content>
+		</Card.Root>
 	);
 };
 
@@ -255,7 +271,6 @@ export default function Picker( { type, onSelect, selectedSlug } ) {
 				variant="secondary"
 				size="compact"
 				onClick={ () => setModalOpen( true ) }
-				style={ { boxShadow: 'none' } }
 			>
 				{ __( 'Browse', 'visual-blueprint-builder' ) }
 			</Button>
@@ -265,7 +280,6 @@ export default function Picker( { type, onSelect, selectedSlug } ) {
 					onRequestClose={ () => setModalOpen( false ) }
 					shouldCloseOnClickOutside={ false }
 					size="large"
-					style={ { height: '70%' } }
 				>
 					<Stack direction="column" gap="xl" justify="space-between">
 						<SearchControl
@@ -313,12 +327,7 @@ export default function Picker( { type, onSelect, selectedSlug } ) {
 											} ) }
 										</div>
 									) : (
-										<EmptyState.Root
-											style={ {
-												padding: '40px 0',
-												margin: '0 auto',
-											} }
-										>
+										<EmptyState.Root>
 											<EmptyState.Title>
 												{ __(
 													'No results found',

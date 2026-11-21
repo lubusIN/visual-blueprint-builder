@@ -162,8 +162,7 @@ export default function KeyValueEditor( {
 					<Stack
 						key={ index }
 						direction="row"
-						justify="space-between"
-						align="center"
+						align="flex-end"
 						gap="sm"
 					>
 						<TextControl
@@ -171,7 +170,7 @@ export default function KeyValueEditor( {
 							value={ key }
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
-							style={ { minWidth: '150px' } }
+							style={ { flex: 1 } }
 							onChange={ ( val ) =>
 								handleUpdate( index, 'key', val )
 							}
@@ -181,7 +180,7 @@ export default function KeyValueEditor( {
 							value={ value }
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
-							style={ { minWidth: '150px' } }
+							style={ { flex: 1 } }
 							onChange={ ( val ) =>
 								handleUpdate( index, 'value', val )
 							}
@@ -194,7 +193,7 @@ export default function KeyValueEditor( {
 								setSelectedIndex( index );
 								setIsOpen( true );
 							} }
-							style={ { width: '40px', marginTop: '24px' } }
+							style={ { width: '40px' } }
 						/>
 					</Stack>
 				) ) }

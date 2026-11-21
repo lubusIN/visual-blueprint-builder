@@ -5,15 +5,8 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from '@wordpress/element';
 import { useDispatch } from '@wordpress/data';
 import { store as noticesStore } from '@wordpress/notices';
-import {
-	Button,
-	Modal,
-	Card,
-	CardBody,
-	Spinner,
-	SearchControl,
-} from '@wordpress/components';
-import { EmptyState, Stack } from '@wordpress/ui';
+import { Button, Modal, Spinner, SearchControl } from '@wordpress/components';
+import { Card, EmptyState, Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies
@@ -188,15 +181,18 @@ export default function Gallery( { icon = null, handleClose } ) {
 								direction="column"
 								align="center"
 								gap="md"
-								style={ { marginTop: 16 } }
+								style={ {
+									marginTop:
+										'var(--wpds-dimension-gap-xl, 16px)',
+								} }
 							>
 								<Spinner />
-								<p>
+								<Text variant="body-md">
 									{ __(
 										'Loading blueprints…',
 										'visual-blueprint-builder'
 									) }
-								</p>
+								</Text>
 							</Stack>
 						) }
 
@@ -206,10 +202,10 @@ export default function Gallery( { icon = null, handleClose } ) {
 								<div className="vbb-cards-grid">
 									{ filteredBlueprints.map(
 										( blueprintDetails, index ) => (
-											<Card
+											<Card.Root
 												key={ `${ blueprintDetails.fileName }-${ index }` }
 											>
-												<CardBody
+												<Card.Content
 													style={ {
 														height: '100%',
 														justifyContent:
@@ -221,22 +217,26 @@ export default function Gallery( { icon = null, handleClose } ) {
 													<Stack
 														direction="column"
 														align="flex-start"
-														gap="md"
+														gap="xs"
 													>
-														<h4
-															style={ {
-																margin: 0,
-															} }
+														<Text
+															variant="heading-sm"
+															render={
+																<h4
+																	style={ {
+																		margin: 0,
+																	} }
+																/>
+															}
 														>
 															{
 																blueprintDetails.title
 															}
-														</h4>
-														<span
+														</Text>
+														<Text
+															variant="body-sm"
 															style={ {
-																fontSize:
-																	'13px',
-																color: '#555',
+																color: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
 															} }
 														>
 															{ __(
@@ -246,32 +246,32 @@ export default function Gallery( { icon = null, handleClose } ) {
 															{
 																blueprintDetails.author
 															}
-														</span>
-														<p
-															style={ {
-																lineHeight:
-																	'1.5em',
-																fontSize:
-																	'14px',
-																color: '#777',
-																wordBreak:
-																	'break-word',
-																margin: 0,
-															} }
+														</Text>
+														<Text
+															variant="body-sm"
+															render={
+																<p
+																	style={ {
+																		lineHeight:
+																			'1.5em',
+																		wordBreak:
+																			'break-word',
+																		margin: 0,
+																	} }
+																/>
+															}
 														>
 															{
 																blueprintDetails.description
 															}
-														</p>
+														</Text>
 													</Stack>
 
 													<Button
 														variant="secondary"
 														style={ {
-															borderRadius: '4px',
 															alignSelf:
 																'flex-end',
-															marginTop: '16px',
 														} }
 														onClick={ () =>
 															fetchBlueprintDetails(
@@ -299,8 +299,8 @@ export default function Gallery( { icon = null, handleClose } ) {
 															)
 														) }
 													</Button>
-												</CardBody>
-											</Card>
+												</Card.Content>
+											</Card.Root>
 										)
 									) }
 								</div>
@@ -309,12 +309,7 @@ export default function Gallery( { icon = null, handleClose } ) {
 						{ ! isFetchingList &&
 							blueprintList &&
 							filteredBlueprints.length === 0 && (
-								<EmptyState.Root
-									style={ {
-										padding: '24px 0',
-										margin: '0 auto',
-									} }
-								>
+								<EmptyState.Root>
 									<EmptyState.Title>
 										{ __(
 											'No blueprints found',
@@ -331,12 +326,7 @@ export default function Gallery( { icon = null, handleClose } ) {
 							) }
 
 						{ ! isFetchingList && ! blueprintList && (
-							<EmptyState.Root
-								style={ {
-									padding: '24px 0',
-									margin: '0 auto',
-								} }
-							>
+							<EmptyState.Root>
 								<EmptyState.Title>
 									{ __(
 										'Unable to load blueprints',

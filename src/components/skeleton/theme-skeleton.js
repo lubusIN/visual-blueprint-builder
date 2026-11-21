@@ -1,8 +1,7 @@
 /**
  * WordPress dependencies.
  */
-import { Card, CardBody } from '@wordpress/components';
-import { Stack } from '@wordpress/ui';
+import { Card, Stack } from '@wordpress/ui';
 
 /**
  * Skeleton dependencies.
@@ -15,8 +14,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
  */
 function ThemeSkeleton() {
 	return (
-		<Card style={ { borderRadius: '4px' } }>
-			<CardBody style={ { padding: 0, lineHeight: '0px' } }>
+		<Card.Root>
+			<Card.Content style={ { padding: 0, lineHeight: '0px' } }>
 				<Skeleton
 					width={ '100%' }
 					height={ 200 }
@@ -32,8 +31,8 @@ function ThemeSkeleton() {
 					<Skeleton height={ 16 } width={ 180 } />
 					<Skeleton width={ 80 } height={ 32 } />
 				</Stack>
-			</CardBody>
-		</Card>
+			</Card.Content>
+		</Card.Root>
 	);
 }
 
