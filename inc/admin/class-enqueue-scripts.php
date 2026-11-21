@@ -51,6 +51,14 @@ class EnqueueScripts
             true
         );
 
+        wp_localize_script(
+            'blueprint-editor',
+            'vbbSettings',
+            [
+                'wpVersions' => vbb_get_wordpress_versions(),
+            ]
+        );
+
         wp_enqueue_style(
             'blueprint-editor',
             VBB_PLUGIN_URL . 'assets/css/editor.css',

@@ -68,6 +68,83 @@ function vbb_filter_allowed_block_types($allowed_block_types, $block_editor_cont
 add_filter('allowed_block_types_all', 'vbb_filter_allowed_block_types', 10000, 2);
 
 /**
+ * Retrieves the list of available WordPress versions.
+ *
+ * Checks a transient cache before querying api.wordpress.org.
+ * Falls back to curated list if unreachable.
+ *
+ * @return array Array of WordPress version options with 'label' and 'value'.
+ */
+function vbb_get_wordpress_versions()
+{
+    $transient_key = 'vbb_wp_versions';
+    $cached = get_transient($transient_key);
+
+    if (false !== $cached && is_array($cached)) {
+        return $cached;
+    }
+
+    $default_versions = [
+        ['label' => esc_html__('WordPress nightly', 'visual-blueprint-builder'), 'value' => 'nightly'],
+        ['label' => esc_html__('Latest', 'visual-blueprint-builder'), 'value' => 'latest'],
+        ['label' => esc_html__('Beta', 'visual-blueprint-builder'), 'value' => 'beta'],
+        ['label' => '6.8', 'value' => '6.8'],
+        ['label' => '6.7', 'value' => '6.7'],
+        ['label' => '6.6', 'value' => '6.6'],
+        ['label' => '6.5', 'value' => '6.5'],
+        ['label' => '6.4', 'value' => '6.4'],
+        ['label' => '6.3', 'value' => '6.3'],
+    ];
+
+    $response = wp_remote_get('https://api.wordpress.org/core/stable-check/1.0/', [
+        'timeout'    => 3,
+        'user-agent' => 'WordPress/' . get_bloginfo('version') . '; ' . home_url(),
+    ]);
+
+    if (is_wp_error($response) || 200 !== (int) wp_remote_retrieve_response_code($response)) {
+        set_transient($transient_key, $default_versions, DAY_IN_SECONDS);
+        return $default_versions;
+    }
+
+    $releases = json_decode(wp_remote_retrieve_body($response), true);
+    if (!is_array($releases)) {
+        set_transient($transient_key, $default_versions, DAY_IN_SECONDS);
+        return $default_versions;
+    }
+
+    $major_versions = [];
+    foreach (array_keys($releases) as $version) {
+        $parts = explode('.', $version);
+        if (count($parts) >= 2) {
+            $major = $parts[0] . '.' . $parts[1];
+            if ((float) $major >= 6.0) {
+                $major_versions[$major] = true;
+            }
+        }
+    }
+
+    uksort($major_versions, 'version_compare');
+    $sorted_majors = array_reverse(array_keys($major_versions));
+
+    $versions = [
+        ['label' => esc_html__('WordPress nightly', 'visual-blueprint-builder'), 'value' => 'nightly'],
+        ['label' => esc_html__('Latest', 'visual-blueprint-builder'), 'value' => 'latest'],
+        ['label' => esc_html__('Beta', 'visual-blueprint-builder'), 'value' => 'beta'],
+    ];
+
+    foreach ($sorted_majors as $major) {
+        $versions[] = [
+            'label' => $major,
+            'value' => $major,
+        ];
+    }
+
+    set_transient($transient_key, $versions, WEEK_IN_SECONDS);
+
+    return $versions;
+}
+
+/**
  * Adds a custom block category 'Steps' to the block editor.
  *
  * @param array $block_categories Array of block categories.

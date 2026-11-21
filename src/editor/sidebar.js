@@ -21,8 +21,7 @@ import {
 	PluginSettings,
 	ConstantsSettings,
 } from '../components/sidebar';
-import { PHP_VERSIONS, WP_VERSIONS } from './constant';
-import { useBlueprintData } from './utils';
+import { useBlueprintData, usePlaygroundVersions } from './utils';
 
 /**
  * Component for displaying blueprint sidebar setting.
@@ -67,6 +66,8 @@ const SidebarSettingRow = ( { label, children } ) => (
  */
 function BlueprintSidebarSettings() {
 	const { updateBlueprintConfig, blueprintConfig } = useBlueprintData();
+	const { phpVersions, wpVersions } =
+		usePlaygroundVersions( blueprintConfig );
 
 	return (
 		<>
@@ -98,7 +99,7 @@ function BlueprintSidebarSettings() {
 					} }
 					fields={ [
 						{
-							elements: PHP_VERSIONS,
+							elements: phpVersions,
 							id: 'php_version',
 							label: __(
 								'PHP Version',
@@ -107,7 +108,7 @@ function BlueprintSidebarSettings() {
 							type: 'text',
 						},
 						{
-							elements: WP_VERSIONS,
+							elements: wpVersions,
 							id: 'wp_version',
 							label: __(
 								'WP Version',
