@@ -19,13 +19,17 @@
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --blocks-manifest",
 		"serve": "npx @wp-playground/cli@latest server --auto-mount --blueprint=./_playground/blueprint-local.json --blueprint-may-read-adjacent-files",
-		"setup": "npm install && npm run build && composer install"
+		"setup": "npm install && npm run build && composer install",
+		"prepare": "husky"
 	},
 	"author": "lubus",
 	"license": "ISC",
 	"devDependencies": {
 		"@wordpress/scripts": "^32.0.0",
-		"glob": "^13.0.6"
+		"eslint": "^10.15.0",
+		"glob": "^13.0.6",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.6.1"
 	},
 	"dependencies": {
 		"@wordpress/blob": "^4.44.0",
@@ -47,5 +51,20 @@
 		"@wordpress/ui": "^0.11.0",
 		"ajv": "^8.17.1",
 		"react-loading-skeleton": "^3.5.0"
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"wp-scripts lint-js",
+			"wp-scripts format"
+		],
+		"*.{css,scss}": [
+			"wp-scripts lint-style --fix"
+		],
+		"*.php": [
+			"vendor/bin/phpcs"
+		],
+		"*.{json,yml,yaml,md}": [
+			"wp-scripts format"
+		]
 	}
 }
