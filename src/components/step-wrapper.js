@@ -27,7 +27,11 @@ export default function StepWrapper( {
 		<div { ...useBlockProps() }>
 			<Placeholder
 				preview={
-					<Stack direction="column" style={ { width: '100%' } }>
+					<Stack
+						direction="column"
+						gap="lg"
+						style={ { width: '100%' } }
+					>
 						<Stack direction="row" align="center" gap="md">
 							<Icon
 								icon={ icon }

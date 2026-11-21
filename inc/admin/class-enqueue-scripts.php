@@ -41,12 +41,14 @@ class EnqueueScripts {
 	 */
 	private function enqueue_editor_assets() {
 		$asset_file = $this->get_asset_file();
+		$version    = ! empty( $asset_file['version'] ) ? $asset_file['version'] : VBB_VERSION;
+		$deps       = ! empty( $asset_file['dependencies'] ) ? $asset_file['dependencies'] : [];
 
 		wp_enqueue_script(
 			'blueprint-editor',
 			VBB_PLUGIN_URL . 'build/editor.js',
-			$asset_file['dependencies'],
-			$asset_file['version'],
+			$deps,
+			$version,
 			true
 		);
 
@@ -60,10 +62,12 @@ class EnqueueScripts {
 
 		wp_enqueue_style(
 			'blueprint-editor',
-			VBB_PLUGIN_URL . 'assets/css/editor.css',
+			VBB_PLUGIN_URL . 'build/editor.css',
 			[],
-			'1.0.0'
+			$version
 		);
+
+		wp_style_add_data( 'blueprint-editor', 'rtl', 'replace' );
 	}
 
 	/**
