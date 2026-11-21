@@ -21,7 +21,7 @@ let uniqueNodeId = 0;
 /**
  * Convert object to tree structure for TreeGrid
  */
-function objectToTreeData( obj, parentPath = '' ) {
+export function objectToTreeData( obj, parentPath = '' ) {
 	const treeData = [];
 
 	Object.entries( obj || {} ).forEach( ( [ key, value ] ) => {
@@ -48,7 +48,7 @@ function objectToTreeData( obj, parentPath = '' ) {
 /**
  * Convert tree data back to object structure
  */
-function treeDataToObject( treeData ) {
+export function treeDataToObject( treeData ) {
 	const result = {};
 
 	treeData.forEach( ( item ) => {

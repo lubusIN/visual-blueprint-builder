@@ -10,7 +10,8 @@ import { Badge, Card, EmptyState, Link, Stack, Text } from '@wordpress/ui';
 /**
  * Internal dependencies.
  */
-import { ThemeSkeleton, PluginSkeleton } from '../../components';
+import ThemeSkeleton from '../skeleton/theme-skeleton';
+import PluginSkeleton from '../skeleton/plugin-skeleton';
 
 /**
  * Utility function to format numbers

@@ -10,14 +10,14 @@ import { Stack } from '@wordpress/ui';
 /**
  * Utility functions for managing key-value pairs locally inside KeyValueEditor.
  */
-const addKeyValuePair = ( list, updateFunction ) => {
+export const addKeyValuePair = ( list, updateFunction ) => {
 	if ( list.some( ( [ key, value ] ) => key === '' && value === '' ) ) {
 		return;
 	}
 	updateFunction( [ ...list, [ '', '' ] ] );
 };
 
-const updateKeyValuePair = (
+export const updateKeyValuePair = (
 	list,
 	updateFunction,
 	index,
@@ -35,11 +35,11 @@ const updateKeyValuePair = (
 	updateFunction( updatedList );
 };
 
-const removeKeyValuePair = ( list, updateFunction, index ) => {
+export const removeKeyValuePair = ( list, updateFunction, index ) => {
 	updateFunction( list.filter( ( _, i ) => i !== index ) );
 };
 
-const checkAddButtonDisabled = ( list ) => {
+export const checkAddButtonDisabled = ( list ) => {
 	return (
 		list.length > 0 &&
 		( list[ list.length - 1 ][ 0 ] === '' ||
@@ -47,7 +47,7 @@ const checkAddButtonDisabled = ( list ) => {
 	);
 };
 
-const keyValuePairsToObject = ( list ) => {
+export const keyValuePairsToObject = ( list ) => {
 	if ( ! Array.isArray( list ) ) {
 		return {};
 	}
