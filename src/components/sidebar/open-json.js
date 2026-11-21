@@ -15,45 +15,38 @@ import { handleBlueprintData, useBlueprintData } from '../../editor/utils';
 /**
  * Renders an OpenJson component.
  *
- * The component renders a form file upload component that accepts JSON files.
- * When a valid JSON file is uploaded, the component processes the file content
- * and updates the blueprint config in the WordPress editor.
- *
- * The component also renders a spinner when the JSON file is being processed.
- *
- * @param {Object} props - Component props.
- * @param {ReactElement} [props.icon=null] - The icon of the component.
- * @param {Function} [props.handleClose] - A function to be called when the component is closed.
+ * @param {Object} props Component props.
+ * @param {React.ReactElement} [props.icon] The icon of the component.
+ * @param {Function} [props.handleClose] Callback when the modal/popover closes.
+ * @return {JSX.Element} OpenJson component.
  */
 const OpenJson = ( { icon = null, handleClose } ) => {
 	const { createNotice } = useDispatch( noticesStore );
 	const { updateBlueprintConfig } = useBlueprintData();
 	const [ isUploadingJson, setIsUploadingJson ] = useState( false );
 
-	// Process JSON file content
-	const processJsonFile = async ( file ) => {
+	const processJsonFile = ( file ) => {
 		if ( file.type === 'application/json' ) {
 			const reader = new FileReader();
 			reader.onload = async () => {
 				try {
 					const jsonData = JSON.parse( reader.result );
-					setIsUploadingJson( true ); // Show spinner
+					setIsUploadingJson( true );
 					await handleBlueprintData(
 						jsonData,
 						createNotice,
 						updateBlueprintConfig
 					);
-					if ( handleClose ) handleClose();
-				} catch ( err ) {
+					if ( handleClose ) {
+						handleClose();
+					}
+				} catch {
 					createNotice(
 						'error',
-						__(
-							'Invalid JSON file.',
-							'wp-playground-blueprint-editor'
-						)
+						__( 'Invalid JSON file.', 'visual-blueprint-builder' )
 					);
 				} finally {
-					setIsUploadingJson( false ); // Hide spinner
+					setIsUploadingJson( false );
 				}
 			};
 			reader.readAsText( file );
@@ -62,23 +55,21 @@ const OpenJson = ( { icon = null, handleClose } ) => {
 				'error',
 				__(
 					'Please upload a valid JSON file.',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				)
 			);
 		}
 	};
 
-	// Handle file selection from input
 	const handleFileSelection = ( event ) => {
-		const file = event.target.files[ 0 ];
+		const file = event.target.files?.[ 0 ];
 		if ( file ) {
 			processJsonFile( file );
 		}
 	};
 
-	// Handle file drop
 	const handleFileDrop = ( files ) => {
-		const file = files[ 0 ];
+		const file = files?.[ 0 ];
 		if ( file ) {
 			processJsonFile( file );
 		}
@@ -104,7 +95,7 @@ const OpenJson = ( { icon = null, handleClose } ) => {
 							{ icon }
 						</span>
 					) }
-					{ __( 'Import JSON', 'wp-playground-blueprint-editor' ) }
+					{ __( 'Import JSON', 'visual-blueprint-builder' ) }
 				</>
 			) }
 			{ isUploadingJson && <Spinner style={ { margin: 0 } } /> }

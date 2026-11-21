@@ -1,13 +1,17 @@
-const { ButtonBlockAppender } = wp.blockEditor;
-const { useSelect } = wp.data;
+/**
+ * WordPress dependencies
+ */
+import { ButtonBlockAppender } from '@wordpress/block-editor';
+import { useSelect } from '@wordpress/data';
+import { addFilter } from '@wordpress/hooks';
 
-wp.hooks.addFilter(
+addFilter(
 	'editor.BlockEdit',
-	'block-editor-for-playground-blueprint/default-block-appender',
+	'visual-blueprint-builder/default-block-appender',
 	( BlockEdit ) => ( props ) => {
 		const lastBlockClientId = useSelect( ( select ) => {
 			const blockOrder = select( 'core/block-editor' ).getBlockOrder();
-			return blockOrder[ blockOrder.length - 1 ]; // Get the last block's clientId
+			return blockOrder[ blockOrder.length - 1 ];
 		}, [] );
 
 		const rootClientId = useSelect(
@@ -17,6 +21,7 @@ wp.hooks.addFilter(
 				),
 			[ props.clientId ]
 		);
+
 		// Only show if it's the last root-level block (not inside reusable or inner blocks)
 		const shouldShowAppender =
 			props.clientId === lastBlockClientId && rootClientId === null;
@@ -25,10 +30,8 @@ wp.hooks.addFilter(
 			<>
 				<BlockEdit { ...props } />
 				{ shouldShowAppender && (
-					<div className={ 'block-list-appender wp-block' }>
-						<ButtonBlockAppender
-							rootClientId={ null } // Since we don't have nested blocks
-						/>
+					<div className="block-list-appender wp-block">
+						<ButtonBlockAppender rootClientId={ null } />
 					</div>
 				) }
 			</>

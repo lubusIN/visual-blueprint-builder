@@ -2,16 +2,19 @@
  * WordPress dependencies
  */
 import { useBlockProps } from '@wordpress/block-editor';
-import {
-	Placeholder,
-	Icon,
-	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Placeholder, Icon } from '@wordpress/components';
+import { Stack, Text } from '@wordpress/ui';
 
 /**
  * StepWrapper component to standardize the UI of all blueprint steps.
+ *
+ * @param {Object} props Component properties.
+ * @param {string} props.title The title of the step.
+ * @param {Object|Function} props.icon The icon representing the step.
+ * @param {string|React.ReactNode} [props.summary] Summary text or element to display when not selected.
+ * @param {boolean} props.isSelected Whether the block is currently selected.
+ * @param {React.ReactNode} [props.children] Content displayed when the block is selected.
+ * @return {JSX.Element} The rendered StepWrapper component.
  */
 export default function StepWrapper( {
 	title,
@@ -24,33 +27,36 @@ export default function StepWrapper( {
 		<div { ...useBlockProps() }>
 			<Placeholder
 				preview={
-					<VStack style={ { width: '100%' } }>
-						<HStack justify="left" align={ 'center' } spacing={ 3 }>
+					<Stack direction="column" style={ { width: '100%' } }>
+						<Stack direction="row" align="center" gap="md">
 							<Icon
 								icon={ icon }
 								size={ 28 }
 								className="step-icon"
 							/>
-							<VStack spacing={ 1 }>
+							<Stack direction="column" gap="xs">
 								<Text
-									upperCase
-									size={ 12 }
-									weight={ 500 }
-									color="#949494"
+									variant="heading-sm"
+									className="vbb-step-title"
 								>
 									{ title }
 								</Text>
 								{ ! isSelected &&
 									summary &&
 									( typeof summary === 'string' ? (
-										<Text weight={ 600 }>{ summary }</Text>
+										<Text
+											variant="body-md"
+											className="vbb-step-summary"
+										>
+											{ summary }
+										</Text>
 									) : (
 										summary
 									) ) }
-							</VStack>
-						</HStack>
+							</Stack>
+						</Stack>
 						{ isSelected && children }
-					</VStack>
+					</Stack>
 				}
 			/>
 		</div>

@@ -1,9 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { decodeEntities } from '@wordpress/html-entities';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef, useCallback } from '@wordpress/element';
 import {
 	Button,
 	Modal,
@@ -11,14 +11,9 @@ import {
 	CardBody,
 	CardMedia,
 	ExternalLink,
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
-	__experimentalGrid as Grid,
-	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
-	__experimentalInputControl as InputControl,
+	SearchControl,
 } from '@wordpress/components';
-import { search } from '@wordpress/icons';
+import { EmptyState, Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -27,11 +22,18 @@ import { ThemeSkeleton, PluginSkeleton } from '../../components';
 
 /**
  * Utility function to format numbers
+ *
+ * @param {number} num Number to format.
+ * @return {string} Formatted number.
  */
 const formatNumber = ( num ) => {
-	if ( num >= 1000000 ) return `${ num / 1000000 }M`;
-	if ( num >= 1000 ) return `${ num / 1000 }K`;
-	return new Intl.NumberFormat( 'en-IN' ).format( num );
+	if ( num >= 1000000 ) {
+		return `${ ( num / 1000000 ).toFixed( 1 ) }M`;
+	}
+	if ( num >= 1000 ) {
+		return `${ ( num / 1000 ).toFixed( 0 ) }K`;
+	}
+	return new Intl.NumberFormat( 'en-US' ).format( num );
 };
 
 /**
@@ -45,8 +47,8 @@ const SelectButton = ( { isSelected, onSelect, slug } ) => (
 		disabled={ isSelected }
 	>
 		{ isSelected
-			? __( 'Selected', 'wp-playground-blueprint-editor' )
-			: __( 'Select', 'wp-playground-blueprint-editor' ) }
+			? __( 'Selected', 'visual-blueprint-builder' )
+			: __( 'Select', 'visual-blueprint-builder' ) }
 	</Button>
 );
 
@@ -60,17 +62,21 @@ const ThemeComponent = ( { item, onSelect, selectedSlug } ) => {
 		<Card key={ item.slug } size="small">
 			<CardBody style={ { padding: '0' } }>
 				<CardMedia>
-					<img src={ item.screenshot_url } />
+					<img src={ item.screenshot_url } alt={ item.name } />
 				</CardMedia>
 				<CardBody>
-					<HStack align="center">
-						<Heading level={ 5 }>{ item.name }</Heading>
+					<Stack
+						direction="row"
+						align="center"
+						justify="space-between"
+					>
+						<h5 style={ { margin: 0 } }>{ item.name }</h5>
 						<SelectButton
 							isSelected={ isSelected }
 							onSelect={ onSelect }
 							slug={ item.slug }
 						/>
-					</HStack>
+					</Stack>
 				</CardBody>
 			</CardBody>
 		</Card>
@@ -86,15 +92,23 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 	return (
 		<Card key={ item.slug } size="small">
 			<CardBody style={ { height: '100%' } }>
-				<VStack
-					justify={ 'space-between' }
-					spacing={ 4 }
+				<Stack
+					direction="column"
+					justify="space-between"
+					gap="md"
 					style={ { height: '100%' } }
 				>
-					<VStack spacing={ 4 }>
-						<HStack justify="start" spacing={ 4 }>
+					<Stack direction="column" gap="md">
+						<Stack
+							direction="row"
+							justify="flex-start"
+							align="center"
+							gap="md"
+						>
 							<img
-								src={ item.icons[ '1x' ] || item.icons.default }
+								src={
+									item.icons?.[ '1x' ] || item.icons?.default
+								}
 								alt={ `${ item.name } Icon` }
 								style={ {
 									minWidth: '70px',
@@ -112,123 +126,128 @@ const PluginComponent = ( { item, onSelect, selectedSlug } ) => {
 							>
 								{ decodeEntities( item.name ) }
 							</ExternalLink>
-						</HStack>
-						<Text lineHeight={ '1.5em' }>
+						</Stack>
+						<p style={ { margin: 0, lineHeight: '1.5em' } }>
 							{ item.short_description ||
 								__(
 									'No description available',
-									'wp-playground-blueprint-editor'
+									'visual-blueprint-builder'
 								) }
-						</Text>
-						<HStack spacing={ 10 }>
-							<Text color="#666">
+						</p>
+						<Stack direction="row" gap="lg">
+							<span style={ { color: '#666', fontSize: '12px' } }>
 								{ item.active_installs
 									? `${ formatNumber(
 											item.active_installs
 									  ) }+ active installations`
 									: __(
 											'No data available',
-											'wp-playground-blueprint-editor'
+											'visual-blueprint-builder'
 									  ) }
-							</Text>
-							<Text color="#666">
+							</span>
+							<span style={ { color: '#666', fontSize: '12px' } }>
 								{ __(
 									'Tested with',
-									'wp-playground-blueprint-editor'
+									'visual-blueprint-builder'
 								) }{ ' ' }
 								{ item.tested ||
 									__(
 										'Unknown',
-										'wp-playground-blueprint-editor'
+										'visual-blueprint-builder'
 									) }
-							</Text>
-						</HStack>
-					</VStack>
-					<HStack justify="right">
+							</span>
+						</Stack>
+					</Stack>
+					<Stack direction="row" justify="flex-end">
 						<SelectButton
 							isSelected={ isSelected }
 							onSelect={ onSelect }
 							slug={ item.slug }
 						/>
-					</HStack>
-				</VStack>
+					</Stack>
+				</Stack>
 			</CardBody>
 		</Card>
 	);
 };
 
 /**
- * Theme & Plugin Picker
+ * Theme & Plugin Picker Modal
+ *
+ * @param {Object} props Component properties.
+ * @param {string} props.type 'plugins' or 'themes'.
+ * @param {Function} props.onSelect Selection callback.
+ * @param {string} [props.selectedSlug] Currently selected slug.
+ * @return {JSX.Element} Picker component.
  */
-function Picker( { type, onSelect, selectedSlug } ) {
+export default function Picker( { type, onSelect, selectedSlug } ) {
 	const [ isModalOpen, setModalOpen ] = useState( false );
 	const [ searchTerm, setSearchTerm ] = useState( '' );
 	const [ results, setResults ] = useState( [] );
 	const [ popularItems, setPopularItems ] = useState( [] );
 	const [ isLoading, setLoading ] = useState( false );
-	const debounceTimerRef = useRef( null );
-	const DEBOUNCE_DELAY = 500;
+	const activeRequestRef = useRef( 0 );
 
-	// API endpoint based on type
-	const fetchItems = async ( query = '' ) => {
-		setLoading( true );
-		const isSearch = !! query.trim();
-		const url = `https://api.wordpress.org/${ type }/info/1.2/?action=query_${ type }${
-			isSearch ? `&request[search]=${ query }` : `&request[popular]=1`
-		}`;
-		try {
-			const response = await fetch( url );
-			const data = await response.json();
-			if ( isSearch ) {
-				setResults( data[ type ] || [] );
-			} else {
-				setPopularItems( data[ type ] || [] );
+	const fetchItems = useCallback(
+		async ( query = '' ) => {
+			const requestId = ++activeRequestRef.current;
+			setLoading( true );
+			const isSearch = Boolean( query.trim() );
+			const url = `https://api.wordpress.org/${ type }/info/1.2/?action=query_${ type }${
+				isSearch
+					? `&request[search]=${ encodeURIComponent( query ) }`
+					: '&request[popular]=1'
+			}`;
+
+			try {
+				const response = await fetch( url );
+				const data = await response.json();
+				if ( requestId === activeRequestRef.current ) {
+					if ( isSearch ) {
+						setResults( data[ type ] || [] );
+					} else {
+						setPopularItems( data[ type ] || [] );
+					}
+				}
+			} catch ( error ) {
+				// eslint-disable-next-line no-console
+				console.error( `Error fetching ${ type }:`, error );
+			} finally {
+				if ( requestId === activeRequestRef.current ) {
+					setLoading( false );
+				}
 			}
-		} catch ( error ) {
-			console.error( `Error fetching ${ type }:`, error );
-		} finally {
-			setLoading( false );
-		}
-	};
+		},
+		[ type ]
+	);
 
 	useEffect( () => {
 		if ( isModalOpen && ! searchTerm ) {
 			fetchItems();
 		}
-	}, [ isModalOpen ] );
+	}, [ isModalOpen, searchTerm, fetchItems ] );
 
-	// Debounced search handler
-	const handleSearchChange = ( value ) => {
-		setSearchTerm( value );
-
-		// Clear existing timer
-		if ( debounceTimerRef.current ) {
-			clearTimeout( debounceTimerRef.current );
-		}
-
-		// Set new timer for debounced search
-		debounceTimerRef.current = setTimeout( () => {
-			if ( value.trim() ) {
-				fetchItems( value );
-			} else {
-				fetchItems();
-			}
-		}, DEBOUNCE_DELAY );
-	};
-
-	// Cleanup timer on component unmount
 	useEffect( () => {
-		return () => {
-			if ( debounceTimerRef.current ) {
-				clearTimeout( debounceTimerRef.current );
-			}
-		};
-	}, [] );
+		if ( ! isModalOpen || ! searchTerm ) {
+			return;
+		}
+		const timer = setTimeout( () => {
+			fetchItems( searchTerm );
+		}, 300 );
+		return () => clearTimeout( timer );
+	}, [ searchTerm, isModalOpen, fetchItems ] );
 
 	const handleSelectItem = ( slug ) => {
 		onSelect( slug );
 		setModalOpen( false );
 	};
+
+	const itemsToDisplay = searchTerm ? results : popularItems;
+
+	const modalTitle =
+		type === 'themes'
+			? __( 'Browse Themes', 'visual-blueprint-builder' )
+			: __( 'Browse Plugins', 'visual-blueprint-builder' );
 
 	return (
 		<>
@@ -236,50 +255,31 @@ function Picker( { type, onSelect, selectedSlug } ) {
 				variant="secondary"
 				size="compact"
 				onClick={ () => setModalOpen( true ) }
-				style={ {
-					boxShadow: 'none',
-				} }
+				style={ { boxShadow: 'none' } }
 			>
-				{ __( 'Browse', 'wp-playground-blueprint-editor' ) }
+				{ __( 'Browse', 'visual-blueprint-builder' ) }
 			</Button>
 			{ isModalOpen && (
 				<Modal
-					title={ __(
-						`Browse ${ type[ 0 ].toUpperCase() }${ type.slice(
-							1
-						) }`,
-						'wp-playground-blueprint-editor'
-					) }
+					title={ modalTitle }
 					onRequestClose={ () => setModalOpen( false ) }
 					shouldCloseOnClickOutside={ false }
 					size="large"
 					style={ { height: '70%' } }
 				>
-					<VStack spacing={ 6 } justify="space-between">
-						<InputControl
-							__next40pxDefaultSize
+					<Stack direction="column" gap="xl" justify="space-between">
+						<SearchControl
+							__nextHasNoMarginBottom
 							placeholder={ __(
 								'Search by name or author',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 							value={ searchTerm }
-							onChange={ handleSearchChange }
-							suffix={
-								<Button
-									variant="link"
-									onClick={ () => fetchItems( searchTerm ) }
-									disabled={ isLoading }
-									style={ {
-										textDecoration: 'none', // Removes underline
-										color: '#0073aa', // Matches theme
-									} }
-									icon={ search }
-								/>
-							}
+							onChange={ setSearchTerm }
 						/>
-						<VStack>
+						<Stack direction="column" gap="md">
 							{ isLoading ? (
-								<Grid columns={ 2 } gap={ 5 }>
+								<div className="vbb-cards-grid">
 									{ Array.from( { length: 4 } ).map(
 										( _, index ) =>
 											type === 'themes' ? (
@@ -288,16 +288,12 @@ function Picker( { type, onSelect, selectedSlug } ) {
 												<PluginSkeleton key={ index } />
 											)
 									) }
-								</Grid>
+								</div>
 							) : (
 								<>
-									{ ( searchTerm ? results : popularItems )
-										.length > 0 ? (
-										<Grid columns={ 2 } gap={ 5 }>
-											{ ( searchTerm
-												? results
-												: popularItems
-											).map( ( item ) => {
+									{ itemsToDisplay.length > 0 ? (
+										<div className="vbb-cards-grid">
+											{ itemsToDisplay.map( ( item ) => {
 												const ItemComponent =
 													type === 'themes'
 														? ThemeComponent
@@ -315,40 +311,47 @@ function Picker( { type, onSelect, selectedSlug } ) {
 													/>
 												);
 											} ) }
-										</Grid>
+										</div>
 									) : (
-										<VStack
-											justify="center"
-											align="center"
-											style={ { padding: '40px 0' } }
+										<EmptyState.Root
+											style={ {
+												padding: '40px 0',
+												margin: '0 auto',
+											} }
 										>
-											<Heading level={ 4 }>
+											<EmptyState.Title>
 												{ __(
 													'No results found',
-													'wp-playground-blueprint-editor'
+													'visual-blueprint-builder'
 												) }
-											</Heading>
-											<Text color="#666">
+											</EmptyState.Title>
+											<EmptyState.Description>
 												{ searchTerm
-													? __(
-															`No ${ type } found matching your search.`,
-															'wp-playground-blueprint-editor'
+													? sprintf(
+															/* translators: %s: resource type */
+															__(
+																'No %s found matching your search.',
+																'visual-blueprint-builder'
+															),
+															type
 													  )
-													: __(
-															`No ${ type } available.`,
-															'wp-playground-blueprint-editor'
+													: sprintf(
+															/* translators: %s: resource type */
+															__(
+																'No %s available.',
+																'visual-blueprint-builder'
+															),
+															type
 													  ) }
-											</Text>
-										</VStack>
+											</EmptyState.Description>
+										</EmptyState.Root>
 									) }
 								</>
 							) }
-						</VStack>
-					</VStack>
+						</Stack>
+					</Stack>
 				</Modal>
 			) }
 		</>
 	);
 }
-
-export default Picker;

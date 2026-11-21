@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { brush } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,10 +13,7 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for activate-theme block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { themeFolderName } = attributes;
@@ -28,13 +24,8 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ brush }
 			isSelected={ isSelected }
 			summary={
-				<Text weight={ 600 }>
-					{ themeFolderName ||
-						__(
-							'Theme Folder Name',
-							'wp-playground-blueprint-editor'
-						) }
-				</Text>
+				themeFolderName ||
+				__( 'Theme Folder Name', 'visual-blueprint-builder' )
 			}
 		>
 			<DataForm
@@ -44,12 +35,12 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 						id: 'themeFolderName',
 						label: __(
 							'Theme Folder Name',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 						type: 'text',
 						placeholder: __(
 							'The name of the theme folder located in wp-content/themes/',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -62,9 +53,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: brush,
 	edit: Edit,

@@ -4,46 +4,33 @@
 import { __ } from '@wordpress/i18n';
 import { plus, trash, cog } from '@wordpress/icons';
 import { useState, useEffect } from '@wordpress/element';
-import {
-	Modal,
-	Button,
-	__experimentalInputControl as InputControl,
-	__experimentalHStack as HStack,
-	__experimentalVStack as VStack,
-} from '@wordpress/components';
+import { Modal, Button, TextControl } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Plugin Settings Component
  *
- * @param {Object} props - The props for the component.
- * @param {Object} props.attributes - The block's attributes, containing `plugins`.
- * @param {Function} props.setAttributes - Function to update the block's attributes.
- *
- * @returns {JSX.Element} The PluginSettings component.
+ * @param {Object} props Component properties.
+ * @param {Object} props.attributes The block's attributes, containing `plugins`.
+ * @param {Function} props.setAttributes Function to update the block's attributes.
+ * @return {JSX.Element} The PluginSettings component.
  */
 function PluginSettings( { attributes = {}, setAttributes } ) {
 	const { plugins } = attributes;
 	const [ isModalOpen, setModalOpen ] = useState( false );
 	const [ pluginList, setPluginList ] = useState( plugins || [] );
 
-	// Sync local state with attributes when plugins update
 	useEffect( () => {
 		setPluginList( plugins || [] );
 	}, [ plugins ] );
 
-	/**
-	 * Add new plugin
-	 */
 	const addPlugin = () => {
 		if ( pluginList.some( ( plugin ) => plugin === '' ) ) {
 			return;
 		}
-		setPluginList( [ ...pluginList, '' ] ); // Add a new empty plugin entry
+		setPluginList( [ ...pluginList, '' ] );
 	};
 
-	/**
-	 * Update a plugin entry
-	 */
 	const updatePlugin = ( index, value ) => {
 		const updatedList = pluginList.map( ( plugin, i ) =>
 			i === index ? value : plugin
@@ -51,16 +38,10 @@ function PluginSettings( { attributes = {}, setAttributes } ) {
 		setPluginList( updatedList );
 	};
 
-	/**
-	 * Delete a plugin entry
-	 */
 	const deletePlugin = ( index ) => {
 		setPluginList( pluginList.filter( ( _, i ) => i !== index ) );
 	};
 
-	/**
-	 * Save plugins to attributes
-	 */
 	const savePlugins = () => {
 		const filteredList = pluginList.filter(
 			( plugin ) => plugin.trim() !== ''
@@ -70,45 +51,47 @@ function PluginSettings( { attributes = {}, setAttributes } ) {
 		setModalOpen( false );
 	};
 
-	// Disable the "Add Plugin" button if the last plugin is empty
 	const isAddButtonDisabled = pluginList.some(
 		( plugin ) => plugin.trim() === ''
 	);
 
 	return (
 		<>
-			{ /* Trigger Button */ }
 			<Button
 				icon={ cog }
 				iconSize={ 30 }
 				onClick={ () => setModalOpen( true ) }
+				label={ __( 'Configure Plugins', 'visual-blueprint-builder' ) }
 			/>
 			{ isModalOpen && (
 				<Modal
-					title={ __( 'Plugins', 'wp-playground-blueprint-editor' ) }
-					onRequestClose={ () => savePlugins() }
+					title={ __( 'Plugins', 'visual-blueprint-builder' ) }
+					onRequestClose={ savePlugins }
 					size="medium"
 				>
-					<VStack spacing={ 4 }>
+					<Stack direction="column" gap="lg">
 						{ pluginList.map( ( plugin, index ) => (
-							<HStack
+							<Stack
 								key={ index }
+								direction="row"
 								justify="space-between"
-								alignment="center"
+								align="center"
+								gap="sm"
 							>
-								<InputControl
+								<TextControl
 									label={ __(
 										'Plugin',
-										'wp-playground-blueprint-editor'
+										'visual-blueprint-builder'
 									) }
 									hideLabelFromVision
 									value={ plugin }
 									placeholder={ __(
 										'Enter plugin slug or URL',
-										'wp-playground-blueprint-editor'
+										'visual-blueprint-builder'
 									) }
 									__next40pxDefaultSize
-									__unstableInputWidth={ '400px' }
+									__nextHasNoMarginBottom
+									style={ { flex: 1 } }
 									onChange={ ( value ) =>
 										updatePlugin( index, value )
 									}
@@ -118,12 +101,12 @@ function PluginSettings( { attributes = {}, setAttributes } ) {
 									icon={ trash }
 									label={ __(
 										'Delete Plugin',
-										'wp-playground-blueprint-editor'
+										'visual-blueprint-builder'
 									) }
 									onClick={ () => deletePlugin( index ) }
 									style={ { width: '40px' } }
 								/>
-							</HStack>
+							</Stack>
 						) ) }
 
 						<Button
@@ -131,12 +114,12 @@ function PluginSettings( { attributes = {}, setAttributes } ) {
 							variant="secondary"
 							label={ __(
 								'Add Plugin',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 							onClick={ addPlugin }
 							disabled={ isAddButtonDisabled }
 						/>
-					</VStack>
+					</Stack>
 				</Modal>
 			) }
 		</>

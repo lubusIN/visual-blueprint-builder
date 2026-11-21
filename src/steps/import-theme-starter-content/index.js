@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { receipt } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,41 +13,35 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for import-theme-starter-content block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { themeSlug } = attributes;
+	const summary = themeSlug
+		? sprintf(
+				/* translators: %s: theme slug */
+				__( 'for %s', 'visual-blueprint-builder' ),
+				themeSlug
+		  )
+		: __( 'for {THEME SLUG}', 'visual-blueprint-builder' );
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ receipt }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __(
-						`for ${ themeSlug || '{THEME SLUG}' }`,
-						'wp-playground-blueprint-editor'
-					) }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'themeSlug',
-						label: __(
-							'Theme Slug',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Theme Slug', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'e.g., twentytwentyfour',
-							'wp-playground-blueprint-editor'
+							'The slug of the theme to import starter content for',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -61,9 +54,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: receipt,
 	edit: Edit,

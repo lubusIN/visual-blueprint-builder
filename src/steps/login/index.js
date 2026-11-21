@@ -4,11 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { key, login } from '@wordpress/icons';
-import {
-	Icon,
-	__experimentalHStack as HStack,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { Icon } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -18,10 +14,7 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for login block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { username, password } = attributes;
@@ -32,10 +25,19 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ login }
 			isSelected={ isSelected }
 			summary={
-				<HStack spacing={ 1 }>
-					<Text weight={ 600 }>{ username }</Text>
+				<span
+					style={ {
+						display: 'inline-flex',
+						alignItems: 'center',
+						gap: '4px',
+					} }
+				>
+					<span>
+						{ username ||
+							__( 'Username', 'visual-blueprint-builder' ) }
+					</span>
 					<Icon icon={ key } style={ { fill: '#949494' } } />
-				</HStack>
+				</span>
 			}
 		>
 			<DataForm
@@ -46,26 +48,20 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				fields={ [
 					{
 						id: 'username',
-						label: __(
-							'Username',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Username', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
 							'Enter username',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 					{
 						id: 'password',
-						label: __(
-							'Password',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Password', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
 							'Enter password',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -78,9 +74,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: login,
 	edit: Edit,

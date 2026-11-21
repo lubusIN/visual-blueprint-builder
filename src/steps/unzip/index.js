@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { archive } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,13 +13,10 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * Edit function for the plugin installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for unzip block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { zipFile, extractToPath } = attributes;
+	const { zipFile = {}, extractToPath } = attributes;
 	const { path } = zipFile;
 
 	const handleInputChange = ( value ) => {
@@ -38,22 +34,19 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 		}
 	};
 
+	const summary = sprintf(
+		/* translators: 1: zip file path, 2: extract folder path */
+		__( 'from %1$s to %2$s', 'visual-blueprint-builder' ),
+		path || __( '{zip path}', 'visual-blueprint-builder' ),
+		extractToPath || __( '{folder path}', 'visual-blueprint-builder' )
+	);
+
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ archive }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ `from ${
-						path ||
-						__( '{zip path}', 'wp-playground-blueprint-editor' )
-					} to ${
-						extractToPath ||
-						__( '{folder path}', 'wp-playground-blueprint-editor' )
-					}` }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ {
@@ -63,23 +56,23 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				fields={ [
 					{
 						id: 'path',
-						label: __( 'Path', 'wp-playground-blueprint-editor' ),
+						label: __( 'Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
 							'The path of the zip file to extract',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 					{
 						id: 'extractToPath',
 						label: __(
 							'Extract To Path',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 						type: 'text',
 						placeholder: __(
 							'The path to extract the zip file to',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -92,9 +85,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: archive,
 	edit: Edit,

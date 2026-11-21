@@ -1,11 +1,8 @@
 /**
  * WordPress dependencies.
  */
-import {
-	Card,
-	CardBody,
-	__experimentalHStack as HStack,
-} from '@wordpress/components';
+import { Card, CardBody } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Skeleton dependencies.
@@ -25,15 +22,16 @@ function ThemeSkeleton() {
 					height={ 200 }
 					style={ { borderRadius: '0px' } }
 				/>
-				<HStack
-					spacing={ 2 }
+				<Stack
+					direction="row"
+					gap="xs"
 					align="center"
 					justify="space-between"
 					style={ { padding: '12px' } }
 				>
 					<Skeleton height={ 16 } width={ 180 } />
 					<Skeleton width={ 80 } height={ 32 } />
-				</HStack>
+				</Stack>
 			</CardBody>
 		</Card>
 	);

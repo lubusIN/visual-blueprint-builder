@@ -15,18 +15,16 @@ import { STEP_DOCS_MAP, PLAYGROUND_DOCS_BASE } from './constant';
  * Renders a paragraph with a link to learn more about the description.
  *
  * @param {Object} props The component props.
- * @param {string} props.title The title of the link.
  * @param {string} props.url The URL of the link.
  * @param {React.ReactNode} props.children The children of the component.
- *
- * @return {React.ReactElement} The component.
+ * @return {JSX.Element} The component.
  */
 const DescriptionSupportLink = ( { url, children } ) => (
 	<>
 		{ children }
 		<p style={ { marginTop: '8px' } }>
 			<ExternalLink href={ url }>
-				{ __( 'Learn more', 'wp-playground-blueprint-editor' ) }
+				{ __( 'Learn more', 'visual-blueprint-builder' ) }
 			</ExternalLink>
 		</p>
 	</>
@@ -38,13 +36,12 @@ const DescriptionSupportLink = ( { url, children } ) => (
  * @param {string} title The title of the description.
  * @param {string} description The description text.
  * @param {string} url The URL of the link.
- *
  * @return {JSX.Element} The interpolated element.
  */
 const createLocalizedDescriptionWithLearnMore = ( title, description, url ) => {
 	return createInterpolateElement( '<InlineSupportLink />', {
 		InlineSupportLink: (
-			<DescriptionSupportLink title={ title } url={ url }>
+			<DescriptionSupportLink url={ url }>
 				{ description }
 			</DescriptionSupportLink>
 		),
@@ -56,21 +53,20 @@ const processedSteps = {};
 /**
  * Adds a "Learn more" link to the description of each step in the Visual Blueprint Builder.
  *
- * @param {Object} settings - The block settings.
- * @param {string} name - The name of the step.
- *
+ * @param {Object} settings The block settings.
+ * @param {string} name The name of the step.
  * @return {Object} The modified block settings.
  */
 const addStepLearnMoreLink = ( settings, name ) => {
-	// Avoid duplicate injection
 	if ( processedSteps[ name ] ) {
 		return settings;
 	}
 	processedSteps[ name ] = true;
 
 	const stepHash = STEP_DOCS_MAP[ name ];
-
-	if ( ! stepHash ) return settings;
+	if ( ! stepHash ) {
+		return settings;
+	}
 
 	settings.description = createLocalizedDescriptionWithLearnMore(
 		settings.title,

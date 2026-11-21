@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { downloadBlob } from '@wordpress/blob';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useCopyToClipboard } from '@wordpress/compose';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useMemo, createPortal } from '@wordpress/element';
 import { DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { external } from '@wordpress/icons';
 import { registerPlugin } from '@wordpress/plugins';
@@ -21,20 +21,14 @@ import playgroundLogo from '../components/playground-logo';
 /**
  * Component to add a dropdown in the editor header with Blueprint actions.
  *
- * @returns {JSX.Element|null} The header dropdown component or null if not mounted.
+ * @return {JSX.Element|null} The header dropdown component or null if not mounted.
  */
 function HeaderBlueprintDropdown() {
 	const [ mount, setMount ] = useState( null );
 	const { createSuccessNotice, createErrorNotice } =
 		useDispatch( noticesStore );
-	const { schema, prepareSchema } = useBlueprintData();
+	const { prepareSchema } = useBlueprintData();
 
-	const sanitizedForUrl = sanitizePreparedSchemaString( prepareSchema() );
-	const minifiedBlueprintJson = btoa(
-		String.fromCharCode(
-			...new Uint8Array( new TextEncoder().encode( sanitizedForUrl ) )
-		)
-	);
 	const isEditorReady = useSelect( ( select ) => {
 		const ed = select( 'core/editor' );
 		const postType = ed?.getEditedPostAttribute?.( 'type' );
@@ -44,7 +38,6 @@ function HeaderBlueprintDropdown() {
 		return !! postType && !! header;
 	}, [] );
 
-	// Find the header settings container and insert our mount node
 	useEffect( () => {
 		const header = document.querySelector(
 			'.editor-header__settings .interface-pinned-items'
@@ -66,9 +59,23 @@ function HeaderBlueprintDropdown() {
 		};
 	}, [ isEditorReady ] );
 
-	const builderHref = encodeURI(
-		PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson
-	);
+	const minifiedBlueprintJson = useMemo( () => {
+		try {
+			const prepared = prepareSchema();
+			const sanitized = sanitizePreparedSchemaString( prepared );
+			return btoa(
+				String.fromCharCode(
+					...new Uint8Array( new TextEncoder().encode( sanitized ) )
+				)
+			);
+		} catch {
+			return '';
+		}
+	}, [ prepareSchema ] );
+
+	const builderHref = useMemo( () => {
+		return encodeURI( PLAYGROUND_BUILDER_BASE + minifiedBlueprintJson );
+	}, [ minifiedBlueprintJson ] );
 
 	const handleDownload = () => {
 		try {
@@ -82,53 +89,41 @@ function HeaderBlueprintDropdown() {
 			createSuccessNotice(
 				__(
 					'Preparing Blueprint for download!',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				),
 				{ type: 'snackbar' }
 			);
-		} catch ( e ) {
+		} catch {
 			createErrorNotice(
 				__(
 					'Failed to download Blueprint JSON.',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				)
 			);
 		}
 	};
 
 	const handleCopy = useCopyToClipboard( () => {
-		if ( ! schema.steps.length ) {
-			createErrorNotice(
-				__(
-					'No Blueprint steps to copy!',
-					'wp-playground-blueprint-editor'
-				)
-			);
-			return '';
-		}
+		const prepared = prepareSchema();
 		createSuccessNotice(
-			__(
-				'Blueprint copied to clipboard!',
-				'wp-playground-blueprint-editor'
-			),
+			__( 'Blueprint copied to clipboard!', 'visual-blueprint-builder' ),
 			{ type: 'snackbar' }
 		);
-		return prepareSchema();
+		return prepared;
 	} );
 
-	if ( ! mount ) return null;
+	if ( ! mount ) {
+		return null;
+	}
 
-	return wp.element.createPortal(
+	return createPortal(
 		<DropdownMenu
 			icon={ playgroundLogo }
-			label={ __(
-				'Blueprint actions',
-				'wp-playground-blueprint-editor'
-			) }
+			label={ __( 'Blueprint actions', 'visual-blueprint-builder' ) }
 			toggleProps={ {
 				'aria-label': __(
 					'Blueprint actions',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				),
 			} }
 			popoverProps={ { placement: 'bottom-start' } }
@@ -144,14 +139,11 @@ function HeaderBlueprintDropdown() {
 						>
 							{ __(
 								'Download JSON',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 						</MenuItem>
 						<MenuItem ref={ handleCopy }>
-							{ __(
-								'Copy JSON',
-								'wp-playground-blueprint-editor'
-							) }
+							{ __( 'Copy JSON', 'visual-blueprint-builder' ) }
 						</MenuItem>
 						<MenuItem
 							href={ builderHref }
@@ -160,7 +152,7 @@ function HeaderBlueprintDropdown() {
 						>
 							{ __(
 								'Open in Builder',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 						</MenuItem>
 					</MenuGroup>
@@ -171,10 +163,7 @@ function HeaderBlueprintDropdown() {
 							target="_blank"
 							onClick={ onClose }
 						>
-							{ __(
-								'Playground',
-								'wp-playground-blueprint-editor'
-							) }
+							{ __( 'Playground', 'visual-blueprint-builder' ) }
 						</MenuItem>
 					</MenuGroup>
 				</>
@@ -188,5 +177,5 @@ function HeaderBlueprintDropdown() {
  * Register the plugin to add the dropdown to the header.
  */
 registerPlugin( 'blueprint-header-dropdown', {
-	render: () => <HeaderBlueprintDropdown />,
+	render: HeaderBlueprintDropdown,
 } );

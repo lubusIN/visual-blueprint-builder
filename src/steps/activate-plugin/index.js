@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { plugins } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,65 +13,40 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for activate-plugin block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { pluginName, pluginPath } = attributes;
+	const summary = `${
+		pluginName || __( 'Plugin Name', 'visual-blueprint-builder' )
+	} > ${ pluginPath || __( 'Plugin Path', 'visual-blueprint-builder' ) }`;
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ plugins }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __(
-						`${
-							pluginName ||
-							__(
-								'Plugin Name',
-								'wp-playground-blueprint-editor'
-							)
-						} > ${
-							pluginPath ||
-							__(
-								'Plugin Path',
-								'wp-playground-blueprint-editor'
-							)
-						}`,
-						'wp-playground-blueprint-editor'
-					) }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'pluginName',
-						label: __(
-							'Plugin Name',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Plugin Name', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
 							'Enter plugin name',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 					{
 						id: 'pluginPath',
-						label: __(
-							'Plugin Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Plugin Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
 							'Enter the full path to the plugin',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -85,9 +59,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: plugins,
 	edit: Edit,

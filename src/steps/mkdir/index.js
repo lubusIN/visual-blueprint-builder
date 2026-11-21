@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { file } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,39 +13,35 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for mkdir block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { path } = attributes;
+	const summary = path
+		? sprintf(
+				/* translators: %s: directory path */
+				__( 'at %s', 'visual-blueprint-builder' ),
+				path
+		  )
+		: __( 'at {directory path}', 'visual-blueprint-builder' );
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ file }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __( 'at', 'wp-playground-blueprint-editor' ) }{ ' ' }
-					{ ` ${ path || '{directory path}' }` }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'path',
-						label: __(
-							'Directory Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'e.g., /wp-content/plugins/new-directory',
-							'wp-playground-blueprint-editor'
+							'Enter the directory path to create',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -59,9 +54,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: file,
 	edit: Edit,

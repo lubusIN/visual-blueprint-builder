@@ -2,19 +2,17 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { plus, trash } from '@wordpress/icons';
 import {
 	Button,
 	SelectControl,
-	__experimentalInputControl as InputControl,
-	__experimentalHStack as HStack,
-	__experimentalVStack as VStack,
-	__experimentalText as Text,
+	TextControl,
 	__experimentalTreeGrid as TreeGrid,
 	__experimentalTreeGridRow as TreeGridRow,
 	__experimentalTreeGridCell as TreeGridCell,
 } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 let uniqueNodeId = 0;
 
@@ -24,7 +22,7 @@ let uniqueNodeId = 0;
 function objectToTreeData( obj, parentPath = '' ) {
 	const treeData = [];
 
-	Object.entries( obj ).forEach( ( [ key, value ] ) => {
+	Object.entries( obj || {} ).forEach( ( [ key, value ] ) => {
 		const currentPath = parentPath ? `${ parentPath }.${ key }` : key;
 		const isObject =
 			typeof value === 'object' &&
@@ -85,7 +83,12 @@ function TreeRow( {
 			>
 				<TreeGridCell>
 					{ ( props ) => (
-						<HStack className="vpb-tree-children-key">
+						<Stack
+							direction="row"
+							align="center"
+							gap="xs"
+							className="vpb-tree-children-key"
+						>
 							{ level > 1 && (
 								<span
 									aria-hidden="true"
@@ -94,19 +97,20 @@ function TreeRow( {
 									&nbsp;&nbsp;&nbsp;&nbsp;├{ ' ' }
 								</span>
 							) }
-							<InputControl
+							<TextControl
 								{ ...props }
 								value={ item.key }
 								placeholder={ __(
 									'Name',
-									'wp-playground-blueprint-editor'
+									'visual-blueprint-builder'
 								) }
 								onChange={ ( value ) =>
 									onUpdate( item.id, 'key', value )
 								}
 								__next40pxDefaultSize
+								__nextHasNoMarginBottom
 							/>
-						</HStack>
+						</Stack>
 					) }
 				</TreeGridCell>
 				<TreeGridCell>
@@ -129,17 +133,18 @@ function TreeRow( {
 				<TreeGridCell>
 					{ ( props ) =>
 						item.type === 'string' ? (
-							<InputControl
+							<TextControl
 								{ ...props }
 								value={ item.value }
 								placeholder={ __(
 									'Value',
-									'wp-playground-blueprint-editor'
+									'visual-blueprint-builder'
 								) }
 								onChange={ ( value ) =>
 									onUpdate( item.id, 'value', value )
 								}
 								__next40pxDefaultSize
+								__nextHasNoMarginBottom
 							/>
 						) : (
 							<div
@@ -162,7 +167,7 @@ function TreeRow( {
 									onClick={ () => onAddChild( item.id ) }
 									label={ __(
 										'Add Child',
-										'wp-playground-blueprint-editor'
+										'visual-blueprint-builder'
 									) }
 								/>
 							</div>
@@ -177,7 +182,7 @@ function TreeRow( {
 							variant="tertiary"
 							label={ __(
 								'Delete Option',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 							icon={ trash }
 							onClick={ () => onDelete( item.id ) }
@@ -207,28 +212,63 @@ function TreeRow( {
  * A reusable component for editing deeply nested JSON object structures
  * via a TreeGrid UI.
  *
- * @param {Object} props
- * @param {Object} props.data - The object to edit.
- * @param {Function} props.onChange - Callback fired when the object changes.
+ * @param {Object} props Component properties.
+ * @param {Object} props.data The object to edit.
+ * @param {Function} props.onChange Callback fired when the object changes.
+ * @return {JSX.Element} TreeEditor component.
  */
 export default function TreeEditor( { data, onChange } ) {
 	const [ treeData, setTreeData ] = useState( () =>
 		objectToTreeData( data || {} )
 	);
+	const isInternalUpdate = useRef( false );
+	const prevDataRef = useRef( data );
+	const lastEmittedRef = useRef( null );
 
-	// When treeData changes internally, compute the new object and trigger onChange
 	useEffect( () => {
-		const newOptions = treeDataToObject( treeData );
-		onChange( newOptions );
-	}, [ treeData, onChange ] );
+		const dataString = JSON.stringify( data || {} );
+		const prevDataString = JSON.stringify( prevDataRef.current || {} );
+		const lastEmittedString =
+			lastEmittedRef.current !== null
+				? JSON.stringify( lastEmittedRef.current || {} )
+				: null;
 
-	// Listen for external resets/changes (optional, depending on parent behavior)
-	useEffect( () => {
+		const isExternalChange =
+			dataString !== prevDataString && dataString !== lastEmittedString;
+
+		if ( isExternalChange ) {
+			prevDataRef.current = data;
+			const newOptions = treeDataToObject( treeData );
+			if ( dataString !== JSON.stringify( newOptions || {} ) ) {
+				setTreeData( objectToTreeData( data || {} ) );
+			}
+			return;
+		}
+
+		if ( dataString !== prevDataString ) {
+			prevDataRef.current = data;
+		}
+
 		const newOptions = treeDataToObject( treeData );
-		if ( JSON.stringify( data ) !== JSON.stringify( newOptions ) ) {
+		if ( dataString !== JSON.stringify( newOptions || {} ) ) {
+			lastEmittedRef.current = newOptions;
+			isInternalUpdate.current = true;
+			onChange( newOptions );
+		}
+	}, [ treeData, data, onChange ] );
+
+	useEffect( () => {
+		if ( isInternalUpdate.current ) {
+			isInternalUpdate.current = false;
+			return;
+		}
+		const newOptions = treeDataToObject( treeData );
+		if (
+			JSON.stringify( data || {} ) !== JSON.stringify( newOptions || {} )
+		) {
 			setTreeData( objectToTreeData( data || {} ) );
 		}
-	}, [ data ] );
+	}, [ data, treeData ] );
 
 	const updateTreeItem = ( id, field, value ) => {
 		const updateItem = ( items ) => {
@@ -263,22 +303,23 @@ export default function TreeEditor( { data, onChange } ) {
 												key: '',
 												value: '',
 												type: 'string',
-												path: `${ item.path }.new_${ Date.now() }`,
+												path: `${
+													item.path
+												}.new_${ Date.now() }`,
 												hasChildren: false,
 												children: [],
 											},
 									  ]
 									: item.children,
 						};
-					} else {
-						return {
-							...item,
-							type: 'string',
-							hasChildren: false,
-							children: [],
-							value: item.value || '',
-						};
 					}
+					return {
+						...item,
+						type: 'string',
+						hasChildren: false,
+						children: [],
+						value: item.value || '',
+					};
 				}
 				if ( item.children.length > 0 ) {
 					return { ...item, children: updateItem( item.children ) };
@@ -292,7 +333,9 @@ export default function TreeEditor( { data, onChange } ) {
 	const deleteTreeItem = ( id ) => {
 		const removeItem = ( items ) => {
 			return items.filter( ( item ) => {
-				if ( item.id === id ) return false;
+				if ( item.id === id ) {
+					return false;
+				}
 				if ( item.children.length > 0 ) {
 					item.children = removeItem( item.children );
 				}
@@ -343,7 +386,7 @@ export default function TreeEditor( { data, onChange } ) {
 	};
 
 	return (
-		<VStack spacing={ 4 }>
+		<Stack direction="column" gap="md">
 			<TreeGrid style={ { width: '100%' } } className="vpb-object-tree">
 				<TreeGridRow
 					level={ 1 }
@@ -352,32 +395,23 @@ export default function TreeEditor( { data, onChange } ) {
 				>
 					<TreeGridCell>
 						{ ( props ) => (
-							<Text { ...props } weight={ 600 }>
-								{ __(
-									'Name',
-									'wp-playground-blueprint-editor'
-								) }
-							</Text>
+							<span { ...props } style={ { fontWeight: 600 } }>
+								{ __( 'Name', 'visual-blueprint-builder' ) }
+							</span>
 						) }
 					</TreeGridCell>
 					<TreeGridCell>
 						{ ( props ) => (
-							<Text { ...props } weight={ 600 }>
-								{ __(
-									'Type',
-									'wp-playground-blueprint-editor'
-								) }
-							</Text>
+							<span { ...props } style={ { fontWeight: 600 } }>
+								{ __( 'Type', 'visual-blueprint-builder' ) }
+							</span>
 						) }
 					</TreeGridCell>
 					<TreeGridCell>
 						{ ( props ) => (
-							<Text { ...props } weight={ 600 }>
-								{ __(
-									'Value',
-									'wp-playground-blueprint-editor'
-								) }
-							</Text>
+							<span { ...props } style={ { fontWeight: 600 } }>
+								{ __( 'Value', 'visual-blueprint-builder' ) }
+							</span>
 						) }
 					</TreeGridCell>
 					<TreeGridCell>
@@ -401,9 +435,9 @@ export default function TreeEditor( { data, onChange } ) {
 			<Button
 				icon={ plus }
 				variant="secondary"
-				label={ __( 'Add Option', 'wp-playground-blueprint-editor' ) }
+				label={ __( 'Add Option', 'visual-blueprint-builder' ) }
 				onClick={ addNewItem }
 			/>
-		</VStack>
+		</Stack>
 	);
 }

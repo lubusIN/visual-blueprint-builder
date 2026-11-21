@@ -2,22 +2,18 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { plus, trash } from '@wordpress/icons';
-import {
-	Button,
-	__experimentalInputControl as InputControl,
-	__experimentalHStack as HStack,
-	__experimentalVStack as VStack,
-	__experimentalConfirmDialog as ConfirmDialog,
-} from '@wordpress/components';
+import { Button, Modal, TextControl } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Utility functions for managing key-value pairs locally inside KeyValueEditor.
  */
-
 const addKeyValuePair = ( list, updateFunction ) => {
-	if ( list.some( ( [ key, value ] ) => key === '' && value === '' ) ) return;
+	if ( list.some( ( [ key, value ] ) => key === '' && value === '' ) ) {
+		return;
+	}
 	updateFunction( [ ...list, [ '', '' ] ] );
 };
 
@@ -43,15 +39,6 @@ const removeKeyValuePair = ( list, updateFunction, index ) => {
 	updateFunction( list.filter( ( _, i ) => i !== index ) );
 };
 
-const filterEmptyKeyValuePairs = ( list, updateFunction ) => {
-	const filtered = list.filter( ( [ key, value ] ) => {
-		const keyStr = String( key ?? '' ).trim();
-		const valueStr = String( value ?? '' ).trim();
-		return keyStr !== '' && valueStr !== '';
-	} );
-	updateFunction( filtered );
-};
-
 const checkAddButtonDisabled = ( list ) => {
 	return (
 		list.length > 0 &&
@@ -61,17 +48,18 @@ const checkAddButtonDisabled = ( list ) => {
 };
 
 const keyValuePairsToObject = ( list ) => {
-	if ( ! Array.isArray( list ) ) return {};
+	if ( ! Array.isArray( list ) ) {
+		return {};
+	}
 	const filtered = list.filter( ( item ) => {
-		if ( ! Array.isArray( item ) || item.length < 2 ) return false;
-		const [ key, value ] = item;
-		if ( key == null ) return false;
-		try {
-			const keyStr = String( key ).trim();
-			return keyStr !== '';
-		} catch ( error ) {
+		if ( ! Array.isArray( item ) || item.length < 2 ) {
 			return false;
 		}
+		const [ key ] = item;
+		if ( key === null || key === undefined ) {
+			return false;
+		}
+		return String( key ).trim() !== '';
 	} );
 	return Object.fromEntries( filtered );
 };
@@ -79,38 +67,70 @@ const keyValuePairsToObject = ( list ) => {
 /**
  * A reusable component for editing a list of key-value pairs.
  *
- * @param {Object} props
- * @param {Object} props.data - The key-value object to edit.
- * @param {Function} props.onChange - Callback fired when the object changes.
- * @param {string} props.addButtonLabel - Label for the "Add" button.
- * @param {string} props.deleteButtonLabel - Label for the "Delete" button.
- * @param {boolean} props.useGrid - Whether to use a Grid layout or HStack (for update-user-meta).
+ * @param {Object} props Component properties.
+ * @param {Object} props.data The key-value object to edit.
+ * @param {Function} props.onChange Callback fired when the object changes.
+ * @param {string} [props.addButtonLabel] Label for the "Add" button.
+ * @param {string} [props.deleteButtonLabel] Label for the "Delete" button.
+ * @return {JSX.Element} KeyValueEditor component.
  */
 export default function KeyValueEditor( {
 	data,
 	onChange,
-	addButtonLabel = __( 'Add Item', 'wp-playground-blueprint-editor' ),
-	deleteButtonLabel = __( 'Delete Item', 'wp-playground-blueprint-editor' ),
+	addButtonLabel = __( 'Add Item', 'visual-blueprint-builder' ),
+	deleteButtonLabel = __( 'Delete Item', 'visual-blueprint-builder' ),
 } ) {
 	const [ isOpen, setIsOpen ] = useState( false );
-	const [ list, updateList ] = useState( Object.entries( data || {} ) );
+	const [ list, updateList ] = useState( () => Object.entries( data || {} ) );
 	const [ selectedIndex, setSelectedIndex ] = useState( undefined );
+	const isInternalUpdate = useRef( false );
+	const prevDataRef = useRef( data );
+	const lastEmittedRef = useRef( null );
 
-	// Sync local list to parent object
+	// Sync local list to parent object when list changes internally
 	useEffect( () => {
+		const dataString = JSON.stringify( data || {} );
+		const prevDataString = JSON.stringify( prevDataRef.current || {} );
+		const lastEmittedString =
+			lastEmittedRef.current !== null
+				? JSON.stringify( lastEmittedRef.current || {} )
+				: null;
+
+		const isExternalChange =
+			dataString !== prevDataString && dataString !== lastEmittedString;
+
+		if ( isExternalChange ) {
+			prevDataRef.current = data;
+			const obj = keyValuePairsToObject( list );
+			if ( dataString !== JSON.stringify( obj || {} ) ) {
+				updateList( Object.entries( data || {} ) );
+			}
+			return;
+		}
+
+		if ( dataString !== prevDataString ) {
+			prevDataRef.current = data;
+		}
+
 		const obj = keyValuePairsToObject( list );
-		if ( JSON.stringify( data ) !== JSON.stringify( obj ) ) {
+		if ( dataString !== JSON.stringify( obj || {} ) ) {
+			lastEmittedRef.current = obj;
+			isInternalUpdate.current = true;
 			onChange( obj );
 		}
-	}, [ list ] );
+	}, [ list, data, onChange ] );
 
 	// Listen for external resets/changes
 	useEffect( () => {
+		if ( isInternalUpdate.current ) {
+			isInternalUpdate.current = false;
+			return;
+		}
 		const obj = keyValuePairsToObject( list );
-		if ( JSON.stringify( data ) !== JSON.stringify( obj ) ) {
+		if ( JSON.stringify( data || {} ) !== JSON.stringify( obj || {} ) ) {
 			updateList( Object.entries( data || {} ) );
 		}
-	}, [ data ] );
+	}, [ data, list ] );
 
 	const handleAdd = () => {
 		addKeyValuePair( list, updateList );
@@ -121,12 +141,13 @@ export default function KeyValueEditor( {
 	};
 
 	const handleRemove = () => {
-		removeKeyValuePair( list, updateList, selectedIndex );
+		if ( selectedIndex !== undefined ) {
+			removeKeyValuePair( list, updateList, selectedIndex );
+		}
 		setSelectedIndex( undefined );
 		setIsOpen( false );
 	};
 
-	// Cleanup on dialog close
 	const handleClose = () => {
 		setSelectedIndex( undefined );
 		setIsOpen( false );
@@ -136,34 +157,30 @@ export default function KeyValueEditor( {
 
 	return (
 		<>
-			<VStack spacing={ 4 }>
+			<Stack direction="column" gap="md">
 				{ list.map( ( [ key, value ], index ) => (
-					<HStack
+					<Stack
 						key={ index }
+						direction="row"
 						justify="space-between"
-						alignment="center"
+						align="center"
+						gap="sm"
 					>
-						<InputControl
-							label={ __(
-								'Name',
-								'wp-playground-blueprint-editor'
-							) }
+						<TextControl
+							label={ __( 'Name', 'visual-blueprint-builder' ) }
 							value={ key }
 							__next40pxDefaultSize
-							__unstableInputWidth="100%"
+							__nextHasNoMarginBottom
 							style={ { minWidth: '150px' } }
 							onChange={ ( val ) =>
 								handleUpdate( index, 'key', val )
 							}
 						/>
-						<InputControl
-							label={ __(
-								'Value',
-								'wp-playground-blueprint-editor'
-							) }
+						<TextControl
+							label={ __( 'Value', 'visual-blueprint-builder' ) }
 							value={ value }
 							__next40pxDefaultSize
-							__unstableInputWidth="100%"
+							__nextHasNoMarginBottom
 							style={ { minWidth: '150px' } }
 							onChange={ ( val ) =>
 								handleUpdate( index, 'value', val )
@@ -179,7 +196,7 @@ export default function KeyValueEditor( {
 							} }
 							style={ { width: '40px', marginTop: '24px' } }
 						/>
-					</HStack>
+					</Stack>
 				) ) }
 				<Button
 					icon={ plus }
@@ -188,15 +205,44 @@ export default function KeyValueEditor( {
 					onClick={ handleAdd }
 					disabled={ isAddButtonDisabled }
 				/>
-			</VStack>
+			</Stack>
 
-			<ConfirmDialog
-				isOpen={ isOpen }
-				onConfirm={ handleRemove }
-				onCancel={ handleClose }
-			>
-				{ __( 'Delete this item?', 'wp-playground-blueprint-editor' ) }
-			</ConfirmDialog>
+			{ isOpen && (
+				<Modal
+					title={ __(
+						'Confirm Deletion',
+						'visual-blueprint-builder'
+					) }
+					onRequestClose={ handleClose }
+					size="small"
+				>
+					<Stack direction="column" gap="lg">
+						<p>
+							{ __(
+								'Are you sure you want to delete this item?',
+								'visual-blueprint-builder'
+							) }
+						</p>
+						<Stack
+							direction="row"
+							justify="flex-end"
+							align="center"
+							gap="xs"
+						>
+							<Button variant="tertiary" onClick={ handleClose }>
+								{ __( 'Cancel', 'visual-blueprint-builder' ) }
+							</Button>
+							<Button
+								isDestructive
+								variant="primary"
+								onClick={ handleRemove }
+							>
+								{ __( 'Delete', 'visual-blueprint-builder' ) }
+							</Button>
+						</Stack>
+					</Stack>
+				</Modal>
+			) }
 		</>
 	);
 }

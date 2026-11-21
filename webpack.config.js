@@ -1,11 +1,9 @@
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
-const { getWebpackEntryPoints } = require( '@wordpress/scripts/utils/config' );
 const path = require( 'path' );
 const glob = require( 'glob' );
 
 const entries = {
-	...getWebpackEntryPoints(),
-	editor: './src/editor/index.js',
+	editor: path.resolve( __dirname, 'src/editor/index.js' ),
 };
 
 glob.sync( './src/steps/**/index.js' ).forEach( ( filePath ) => {

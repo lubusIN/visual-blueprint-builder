@@ -11,13 +11,9 @@ import {
 	Card,
 	CardBody,
 	Spinner,
-	__experimentalText as Text,
-	__experimentalHeading as Heading,
-	__experimentalGrid as Grid,
-	__experimentalVStack as VStack,
-	__experimentalInputControl as InputControl,
+	SearchControl,
 } from '@wordpress/components';
-import { search as searchIcon } from '@wordpress/icons';
+import { EmptyState, Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies
@@ -31,11 +27,12 @@ import {
 /**
  * Blueprints Gallery component.
  *
- * @param {object} props - Component props.
- * @param {JSX.Element} props.icon - Icon to display in the button.
- * @param {function} props.handleClose - Callback function to close the modal.
+ * @param {Object} props Component props.
+ * @param {JSX.Element} [props.icon] Icon to display in the button.
+ * @param {Function} [props.handleClose] Callback function to close the modal.
+ * @return {JSX.Element} Gallery component.
  */
-function Gallery( { icon = null, handleClose } ) {
+export default function Gallery( { icon = null, handleClose } ) {
 	const { updateBlueprintConfig } = useBlueprintData();
 	const { createNotice } = useDispatch( noticesStore );
 
@@ -43,29 +40,20 @@ function Gallery( { icon = null, handleClose } ) {
 	const [ isFetchingList, setIsFetchingList ] = useState( false );
 	const [ blueprintList, setBlueprintList ] = useState( null );
 	const [ importingBlueprint, setImportingBlueprint ] = useState( null );
-
 	const [ searchTerm, setSearchTerm ] = useState( '' );
-	const [ debouncedTerm, setDebouncedTerm ] = useState( '' );
 
-	// Debounce search input (200ms)
 	useEffect( () => {
-		const t = setTimeout(
-			() => setDebouncedTerm( searchTerm.trim().toLowerCase() ),
-			200
-		);
-		return () => clearTimeout( t );
-	}, [ searchTerm ] );
+		if ( ! isModalOpen ) {
+			return;
+		}
 
-	/**
-	 * Fetches the list of blueprints from the remote JSON file.
-	 */
-	useEffect( () => {
 		const fetchBlueprintList = async () => {
 			setIsFetchingList( true );
 			try {
 				const response = await fetch( BLUEPRINTS_GALLERY_API_URL );
-				if ( ! response.ok )
+				if ( ! response.ok ) {
 					throw new Error( 'Failed to fetch blueprints' );
+				}
 				const data = await response.json();
 				setBlueprintList( data );
 			} catch ( error ) {
@@ -73,29 +61,28 @@ function Gallery( { icon = null, handleClose } ) {
 					'error',
 					`${ __(
 						'Error fetching blueprint list',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }: ${ error.message }`
 				);
 			} finally {
 				setIsFetchingList( false );
 			}
 		};
-		fetchBlueprintList();
-	}, [] );
 
-	/**
-	 * Fetch details for a selected blueprint.
-	 */
+		fetchBlueprintList();
+	}, [ isModalOpen, createNotice ] );
+
 	const fetchBlueprintDetails = async ( blueprintName ) => {
 		setImportingBlueprint( blueprintName );
 
 		const blueprintUrl = `${ BLUEPRINTS_GALLERY_BASE_URL }${ blueprintName }`;
 		try {
 			const response = await fetch( blueprintUrl );
-			if ( ! response.ok )
+			if ( ! response.ok ) {
 				throw new Error(
 					`Failed to fetch blueprint details: ${ response.statusText }`
 				);
+			}
 			const data = await response.json();
 
 			if ( ! Array.isArray( data.steps ) || data.steps.length === 0 ) {
@@ -103,7 +90,7 @@ function Gallery( { icon = null, handleClose } ) {
 					'warning',
 					__(
 						'The imported blueprint does not contain any steps. Please check the sidebar for shorthands and other settings.',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					)
 				);
 			}
@@ -123,21 +110,22 @@ function Gallery( { icon = null, handleClose } ) {
 				'error',
 				`${ __(
 					'Error fetching blueprint from Gallery',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				) }: ${ error.message }`
 			);
 		} finally {
 			setImportingBlueprint( null );
 			setModalOpen( false );
-			if ( handleClose ) handleClose();
+			if ( handleClose ) {
+				handleClose();
+			}
 		}
 	};
 
-	/**
-	 * Flatten index map array and filter by debounced term.
-	 */
 	const filteredBlueprints = useMemo( () => {
-		if ( ! blueprintList ) return [];
+		if ( ! blueprintList ) {
+			return [];
+		}
 		const items = Object.entries( blueprintList ).map(
 			( [ fileName, meta ] ) => ( {
 				fileName,
@@ -147,20 +135,21 @@ function Gallery( { icon = null, handleClose } ) {
 			} )
 		);
 
-		if ( ! debouncedTerm ) return items;
+		const normalizedSearch = searchTerm.trim().toLowerCase();
+		if ( ! normalizedSearch ) {
+			return items;
+		}
 
-		const tokens = debouncedTerm.split( /\s+/ ).filter( Boolean );
-
+		const tokens = normalizedSearch.split( /\s+/ ).filter( Boolean );
 		const norm = ( s ) => ( s || '' ).toString().toLowerCase();
 
 		return items.filter( ( item ) => {
 			const haystack = `${ norm( item.title ) } ${ norm(
 				item.author
 			) } ${ norm( item.description ) } ${ norm( item.fileName ) }`;
-			// All tokens must be present (simple AND search)
 			return tokens.every( ( tk ) => haystack.includes( tk ) );
 		} );
-	}, [ blueprintList, debouncedTerm ] );
+	}, [ blueprintList, searchTerm ] );
 
 	return (
 		<>
@@ -169,67 +158,52 @@ function Gallery( { icon = null, handleClose } ) {
 				onClick={ () => setModalOpen( true ) }
 				icon={ icon }
 			>
-				{ __( 'Gallery', 'wp-playground-blueprint-editor' ) }
+				{ __( 'Gallery', 'visual-blueprint-builder' ) }
 			</Button>
 
 			{ isModalOpen && (
 				<Modal
 					title={ __(
 						'Blueprint Gallery',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 					onRequestClose={ () => setModalOpen( false ) }
 					shouldCloseOnClickOutside
 					shouldCloseOnEsc
 					size="large"
 				>
-					<VStack spacing={ 6 } justify="space-between">
-						<InputControl
-							__next40pxDefaultSize
+					<Stack direction="column" gap="xl" justify="space-between">
+						<SearchControl
+							__nextHasNoMarginBottom
 							placeholder={ __(
 								'Search by name or author',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							) }
 							value={ searchTerm }
 							onChange={ setSearchTerm }
-							suffix={
-								<Button
-									variant="link"
-									onClick={ () =>
-										setDebouncedTerm(
-											searchTerm.trim().toLowerCase()
-										)
-									}
-									style={ { textDecoration: 'none' } }
-									icon={ searchIcon }
-									aria-label={ __(
-										'Search',
-										'wp-playground-blueprint-editor'
-									) }
-								/>
-							}
 						/>
 
 						{ isFetchingList && (
-							<VStack
-								alignment="center"
-								spacing={ 3 }
+							<Stack
+								direction="column"
+								align="center"
+								gap="md"
 								style={ { marginTop: 16 } }
 							>
 								<Spinner />
-								<Text>
+								<p>
 									{ __(
-										'Loading blueprints...',
-										'wp-playground-blueprint-editor'
+										'Loading blueprints…',
+										'visual-blueprint-builder'
 									) }
-								</Text>
-							</VStack>
+								</p>
+							</Stack>
 						) }
 
 						{ ! isFetchingList &&
 							blueprintList &&
 							filteredBlueprints.length > 0 && (
-								<Grid columns={ 2 } gap={ 6 }>
+								<div className="vbb-cards-grid">
 									{ filteredBlueprints.map(
 										( blueprintDetails, index ) => (
 											<Card
@@ -244,40 +218,52 @@ function Gallery( { icon = null, handleClose } ) {
 														flexDirection: 'column',
 													} }
 												>
-													<VStack
-														align="start"
-														spacing={ 4 }
+													<Stack
+														direction="column"
+														align="flex-start"
+														gap="md"
 													>
-														<Heading level={ 4 }>
+														<h4
+															style={ {
+																margin: 0,
+															} }
+														>
 															{
 																blueprintDetails.title
 															}
-														</Heading>
-														<Text>
+														</h4>
+														<span
+															style={ {
+																fontSize:
+																	'13px',
+																color: '#555',
+															} }
+														>
 															{ __(
 																'By',
-																'wp-playground-blueprint-editor'
+																'visual-blueprint-builder'
 															) }{ ' ' }
 															{
 																blueprintDetails.author
 															}
-														</Text>
-														<Text
-															lineHeight={
-																'1.5em'
-															}
-															size={ 15 }
-															color="#777"
+														</span>
+														<p
 															style={ {
+																lineHeight:
+																	'1.5em',
+																fontSize:
+																	'14px',
+																color: '#777',
 																wordBreak:
 																	'break-word',
+																margin: 0,
 															} }
 														>
 															{
 																blueprintDetails.description
 															}
-														</Text>
-													</VStack>
+														</p>
+													</Stack>
 
 													<Button
 														variant="secondary"
@@ -302,14 +288,14 @@ function Gallery( { icon = null, handleClose } ) {
 															<>
 																<Spinner />{ ' ' }
 																{ __(
-																	'Importing...',
-																	'wp-playground-blueprint-editor'
+																	'Importing…',
+																	'visual-blueprint-builder'
 																) }
 															</>
 														) : (
 															__(
 																'Import',
-																'wp-playground-blueprint-editor'
+																'visual-blueprint-builder'
 															)
 														) }
 													</Button>
@@ -317,33 +303,57 @@ function Gallery( { icon = null, handleClose } ) {
 											</Card>
 										)
 									) }
-								</Grid>
+								</div>
 							) }
 
 						{ ! isFetchingList &&
 							blueprintList &&
 							filteredBlueprints.length === 0 && (
-								<Text>
-									{ __(
-										'No blueprints found for your search.',
-										'wp-playground-blueprint-editor'
-									) }
-								</Text>
+								<EmptyState.Root
+									style={ {
+										padding: '24px 0',
+										margin: '0 auto',
+									} }
+								>
+									<EmptyState.Title>
+										{ __(
+											'No blueprints found',
+											'visual-blueprint-builder'
+										) }
+									</EmptyState.Title>
+									<EmptyState.Description>
+										{ __(
+											'No blueprints found for your search.',
+											'visual-blueprint-builder'
+										) }
+									</EmptyState.Description>
+								</EmptyState.Root>
 							) }
 
 						{ ! isFetchingList && ! blueprintList && (
-							<Text>
-								{ __(
-									'Unable to load blueprints.',
-									'wp-playground-blueprint-editor'
-								) }
-							</Text>
+							<EmptyState.Root
+								style={ {
+									padding: '24px 0',
+									margin: '0 auto',
+								} }
+							>
+								<EmptyState.Title>
+									{ __(
+										'Unable to load blueprints',
+										'visual-blueprint-builder'
+									) }
+								</EmptyState.Title>
+								<EmptyState.Description>
+									{ __(
+										'Unable to load blueprints from gallery.',
+										'visual-blueprint-builder'
+									) }
+								</EmptyState.Description>
+							</EmptyState.Root>
 						) }
-					</VStack>
+					</Stack>
 				</Modal>
 			) }
 		</>
 	);
 }
-
-export default Gallery;

@@ -4,65 +4,42 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { brush } from '@wordpress/icons';
-import {
-	ToggleControl,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
 import metadata from './block.json';
 import { StepWrapper, ResourceSelector } from '../../components';
+import { getResourceSummary } from '../../components/resource-selector';
 
 /**
- * Edit function for the theme installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for install-theme block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { themeData, options } = attributes;
-	const { resource, path, url, slug, ref } = themeData;
+	const { themeData = {}, options = {} } = attributes;
+	const { resource = 'wordpress.org/themes' } = themeData;
 	const { activate, importStarterContent } = options;
 
-	const getResourceInfo = ( resource ) => {
-		switch ( resource ) {
-			case 'url':
-				return url;
-			case 'vfs':
-				return path;
-			case 'git:directory':
-				return `${ ref || 'latest' }${ path ? ` > ${ path }` : '' }`;
-			default:
-				return slug;
-		}
-	};
+	const summary = `${ resource } > ${ getResourceSummary(
+		'theme',
+		themeData
+	) } > ${
+		activate
+			? __( 'Activate', 'visual-blueprint-builder' )
+			: __( 'Install and keep Inactive', 'visual-blueprint-builder' )
+	} > ${
+		importStarterContent
+			? __( 'with starter content', 'visual-blueprint-builder' )
+			: __( 'without starter content', 'visual-blueprint-builder' )
+	}`;
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ brush }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>{ `${ resource } > ${
-					getResourceInfo( resource ) || 'undefined'
-				} > ${
-					activate
-						? __( 'Activate', 'wp-playground-blueprint-editor' )
-						: __(
-								'Install and keep Inactive',
-								'wp-playground-blueprint-editor'
-						  )
-				} > ${
-					importStarterContent
-						? __( 'with', 'wp-playground-blueprint-editor' )
-						: __( 'without', 'wp-playground-blueprint-editor' )
-				} ${ __(
-					'starter content',
-					'wp-playground-blueprint-editor'
-				) }` }</Text>
-			}
+			summary={ summary }
 		>
 			<>
 				<ResourceSelector
@@ -74,7 +51,8 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				/>
 
 				<ToggleControl
-					label={ __( 'Activate', 'wp-playground-blueprint-editor' ) }
+					__nextHasNoMarginBottom
+					label={ __( 'Activate', 'visual-blueprint-builder' ) }
 					checked={ activate }
 					onChange={ () =>
 						setAttributes( {
@@ -87,9 +65,10 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				/>
 
 				<ToggleControl
+					__nextHasNoMarginBottom
 					label={ __(
 						'Import Starter Content',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 					checked={ importStarterContent }
 					onChange={ () =>
@@ -106,9 +85,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: brush,
 	edit: Edit,

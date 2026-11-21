@@ -1,14 +1,11 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { postAuthor } from '@wordpress/icons';
-import {
-	__experimentalInputControl as InputControl,
-	__experimentalVStack as VStack,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { TextControl } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -17,10 +14,7 @@ import metadata from './block.json';
 import { StepWrapper, KeyValueEditor } from '../../components';
 
 /**
- * Edit function for the plugin installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for update-user-meta block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { meta, userId } = attributes;
@@ -31,66 +25,70 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ postAuthor }
 			isSelected={ isSelected }
 			summary={
-				<VStack>
-					<Text weight={ 600 }>
-						{ meta ? (
-							<pre style={ { whiteSpace: 'pre-wrap' } }>
+				<div>
+					<div>
+						{ meta && Object.keys( meta ).length > 0 ? (
+							<pre
+								style={ {
+									whiteSpace: 'pre-wrap',
+									margin: 0,
+								} }
+							>
 								{ JSON.stringify( meta, null, ' ' ) }
 							</pre>
 						) : (
-							<span>
-								{ __(
-									'{config user meta}',
-									'wp-playground-blueprint-editor'
-								) }
-							</span>
+							__(
+								'{config user meta}',
+								'visual-blueprint-builder'
+							)
 						) }
-					</Text>
-					<Text weight={ 600 }>
+					</div>
+					<div>
 						{ userId
-							? `${ __(
-									'for UserId',
-									'wp-playground-blueprint-editor'
-							  ) } ${ userId }`
-							: __(
-									'{user Id}',
-									'wp-playground-blueprint-editor'
-							  ) }
-					</Text>
-				</VStack>
+							? sprintf(
+									/* translators: %d: user id */
+									__(
+										'for UserId %d',
+										'visual-blueprint-builder'
+									),
+									userId
+							  )
+							: __( '{user Id}', 'visual-blueprint-builder' ) }
+					</div>
+				</div>
 			}
 		>
-			<VStack spacing={ 4 }>
+			<Stack direction="column" gap="lg">
 				<KeyValueEditor
 					data={ meta }
 					onChange={ ( val ) => setAttributes( { meta: val } ) }
 					addButtonLabel={ __(
 						'Add Item',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 					deleteButtonLabel={ __(
 						'Delete Item',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 				/>
-				<InputControl
-					label={ __( 'User Id', 'wp-playground-blueprint-editor' ) }
+				<TextControl
+					label={ __( 'User Id', 'visual-blueprint-builder' ) }
 					type="number"
-					value={ userId }
+					value={ userId !== undefined ? String( userId ) : '' }
 					__next40pxDefaultSize
-					__unstableInputWidth="120px"
+					__nextHasNoMarginBottom
+					style={ { maxWidth: '160px' } }
 					onChange={ ( value ) =>
-						setAttributes( { userId: Number( value ) } )
+						setAttributes( {
+							userId: value === '' ? undefined : Number( value ),
+						} )
 					}
 				/>
-			</VStack>
+			</Stack>
 		</StepWrapper>
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: postAuthor,
 	edit: Edit,

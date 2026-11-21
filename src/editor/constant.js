@@ -37,6 +37,7 @@ export const BLUEPRINTS_GALLERY_BASE_URL =
  */
 export const PHP_VERSIONS = [
 	{ label: 'Latest', value: 'latest' },
+	{ label: '8.4', value: '8.4' },
 	{ label: '8.3', value: '8.3' },
 	{ label: '8.2', value: '8.2' },
 	{ label: '8.1', value: '8.1' },
@@ -49,11 +50,12 @@ export const PHP_VERSIONS = [
 ];
 
 /**
- * Wordpress versions.
+ * WordPress versions.
  */
 export const WP_VERSIONS = [
 	{ label: 'WordPress nightly', value: 'nightly' },
 	{ label: 'Latest', value: 'latest' },
+	{ label: '6.8', value: '6.8' },
 	{ label: '6.7', value: '6.7' },
 	{ label: '6.6', value: '6.6' },
 	{ label: '6.5', value: '6.5' },
@@ -88,5 +90,6 @@ export const STEP_DOCS_MAP = {
 	'playground-step/unzip': 'UnzipStep',
 	'playground-step/set-site-options': 'SetSiteOptionsStep',
 	'playground-step/set-site-language': 'SetSiteLanguageStep',
-	'playground-step/import-theme-starter-content': 'ImportThemeStarterContentStep',
+	'playground-step/import-theme-starter-content':
+		'ImportThemeStarterContentStep',
 };

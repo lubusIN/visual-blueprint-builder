@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { globe } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,10 +13,7 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for define-site-url block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { siteUrl } = attributes;
@@ -27,28 +23,18 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			title={ metadata.title }
 			icon={ globe }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ `${
-						siteUrl ||
-						__( 'Site Url', 'wp-playground-blueprint-editor' )
-					}` }
-				</Text>
-			}
+			summary={ siteUrl || __( 'Site Url', 'visual-blueprint-builder' ) }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'siteUrl',
-						label: __(
-							'Site Url',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Site URL', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'e.g., https://example.com',
-							'wp-playground-blueprint-editor'
+							'The URL of the site',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -61,9 +47,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: globe,
 	edit: Edit,

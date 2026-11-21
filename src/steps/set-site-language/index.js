@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { language } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,45 +13,35 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for set-site-language block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { language: lang } = attributes;
+	const summary = lang
+		? sprintf(
+				/* translators: %s: language code */
+				__( 'to %s', 'visual-blueprint-builder' ),
+				lang
+		  )
+		: __( 'to {language code}', 'visual-blueprint-builder' );
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ language }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __( 'to', 'wp-playground-blueprint-editor' ) }{ ' ' }
-					{ ` ${
-						lang ||
-						__(
-							'{language code}',
-							'wp-playground-blueprint-editor'
-						)
-					}` }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'language',
-						label: __(
-							'Language',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'Language', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							"e.g. 'en_US'",
-							'wp-playground-blueprint-editor'
+							'Enter the language code to set as the site language (e.g. "en_US")',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -65,9 +54,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: language,
 	edit: Edit,

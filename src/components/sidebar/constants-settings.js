@@ -14,11 +14,10 @@ import KeyValueEditor from '../key-value-editor';
 /**
  * Constants Settings Component
  *
- * @param {Object} props - The props for the component.
- * @param {Object} props.attributes - The block's attributes, containing `constants.
- * @param {Function} props.setAttributes - Function to update the block's attributes.
- *
- * @returns {JSX.Element} The ConstantsSettings component.
+ * @param {Object} props The props for the component.
+ * @param {Object} props.attributes The block attributes, containing `constants`.
+ * @param {Function} props.setAttributes Function to update the attributes.
+ * @return {JSX.Element} The ConstantsSettings component.
  */
 function ConstantsSettings( { attributes = {}, setAttributes } ) {
 	const { constants } = attributes;
@@ -37,13 +36,20 @@ function ConstantsSettings( { attributes = {}, setAttributes } ) {
 
 	return (
 		<>
-			{ /* Trigger Button */ }
-			<Button icon={ cog } iconSize={ 30 } onClick={ handleOpen } />
+			<Button
+				icon={ cog }
+				iconSize={ 30 }
+				onClick={ handleOpen }
+				label={ __(
+					'Configure Constants',
+					'visual-blueprint-builder'
+				) }
+			/>
 			{ isModalOpen && (
 				<Modal
 					title={ __(
 						'WP Config Constants',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 					onRequestClose={ saveOptions }
 					size="medium"
@@ -53,11 +59,11 @@ function ConstantsSettings( { attributes = {}, setAttributes } ) {
 						onChange={ setLocalConstants }
 						addButtonLabel={ __(
 							'Add Constant',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 						deleteButtonLabel={ __(
 							'Delete Constant',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 					/>
 				</Modal>

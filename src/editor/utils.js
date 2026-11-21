@@ -21,17 +21,23 @@ import Ajv from 'ajv';
 
 /**
  * Utility function to convert a camelCase string to kebab-case with special handling for "WordPress".
+ *
+ * @param {string} str Input string.
+ * @return {string} Converted kebab-case string.
  */
 export const convertToKebabCase = ( str ) => {
 	return str
-		.replace( /WordPress/g, 'Wordpress' ) // Temporarily normalize "WordPress" casing
-		.replace( /([a-z])([A-Z])/g, '$1-$2' ) // Convert camelCase to kebab-case
-		.replace( /Wordpress/g, 'wordpress' ) // Convert "Wordpress" back to "wordpress"
-		.toLowerCase(); // Convert the entire string to lowercase
+		.replace( /WordPress/g, 'Wordpress' )
+		.replace( /([a-z])([A-Z])/g, '$1-$2' )
+		.replace( /Wordpress/g, 'wordpress' )
+		.toLowerCase();
 };
 
 /**
  * Validates steps from a JSON schema and creates valid WordPress blocks.
+ *
+ * @param {Array} steps Steps array.
+ * @return {Object} Valid blocks and invalid steps.
  */
 export const validateBlueprintSteps = ( steps = [] ) => {
 	const validBlocks = [];
@@ -39,7 +45,7 @@ export const validateBlueprintSteps = ( steps = [] ) => {
 
 	( steps || [] ).forEach( ( step, index ) => {
 		const blockType = `playground-step/${ convertToKebabCase(
-			step.step
+			step.step || ''
 		) }`;
 		try {
 			const block = createBlock( blockType, step || {} );
@@ -59,6 +65,9 @@ export const validateBlueprintSteps = ( steps = [] ) => {
 /**
  * Updates deprecated fields in blueprint steps before validation.
  * Replaces `pluginZipFile` with `pluginData` and `themeZipFile` with `themeData`.
+ *
+ * @param {Object} jsonData Raw JSON data.
+ * @return {Object} Normalized JSON data.
  */
 const updateDeprecatedFields = ( jsonData ) => {
 	if ( ! jsonData || ! jsonData.steps ) {
@@ -67,18 +76,18 @@ const updateDeprecatedFields = ( jsonData ) => {
 
 	const updatedSteps = jsonData.steps.map( ( step ) => {
 		if ( step.step === 'installPlugin' && step.pluginZipFile ) {
+			const { pluginZipFile, ...rest } = step;
 			return {
-				...step,
-				pluginData: step.pluginZipFile,
-				pluginZipFile: undefined, // Remove deprecated field
+				...rest,
+				pluginData: pluginZipFile,
 			};
 		}
 
 		if ( step.step === 'installTheme' && step.themeZipFile ) {
+			const { themeZipFile, ...rest } = step;
 			return {
-				...step,
-				themeData: step.themeZipFile,
-				themeZipFile: undefined, // Remove deprecated field
+				...rest,
+				themeData: themeZipFile,
 			};
 		}
 
@@ -93,7 +102,10 @@ const updateDeprecatedFields = ( jsonData ) => {
 
 /**
  * Validates a JSON blueprint against a schema.
- * Whether the data is valid.
+ *
+ * @param {Object} data Blueprint data.
+ * @param {Function} createNotice Notice creation function.
+ * @return {Promise<boolean>} True if valid, false otherwise.
  */
 const validateAgainstSchema = async ( data, createNotice ) => {
 	try {
@@ -104,9 +116,9 @@ const validateAgainstSchema = async ( data, createNotice ) => {
 		const schema = await response.json();
 
 		const ajv = new Ajv( {
-			allErrors: true, // Collect all errors instead of stopping at the first
-			strict: false, // Disable strict mode
-			allowMatchingProperties: true, // Allow properties to overlap (optional)
+			allErrors: true,
+			strict: false,
+			allowMatchingProperties: true,
 		} );
 
 		const validate = ajv.compile( schema );
@@ -118,9 +130,12 @@ const validateAgainstSchema = async ( data, createNotice ) => {
 				.join( ', ' );
 			createNotice(
 				'error',
-				`${ __( 'Schema validation failed:' ) } ${ errors }`,
+				`${ __(
+					'Schema validation failed:',
+					'visual-blueprint-builder'
+				) } ${ errors }`,
 				{
-					id: 'wp-playground-blueprint-editor',
+					id: 'visual-blueprint-builder',
 				}
 			);
 			return false;
@@ -130,9 +145,12 @@ const validateAgainstSchema = async ( data, createNotice ) => {
 	} catch ( error ) {
 		createNotice(
 			'error',
-			`${ __( 'Error validating against schema:' ) } ${ error.message }`,
+			`${ __(
+				'Error validating against schema:',
+				'visual-blueprint-builder'
+			) } ${ error.message }`,
 			{
-				id: 'wp-playground-blueprint-editor',
+				id: 'visual-blueprint-builder',
 			}
 		);
 		return false;
@@ -140,211 +158,19 @@ const validateAgainstSchema = async ( data, createNotice ) => {
 };
 
 /**
- * Processes JSON blueprint data, validates it, and inserts valid blocks into the WordPress editor.
- * jsonData - The parsed JSON data from the openJson and Gallery.
- * createNotice - Function to create notices in the WordPress admin.
- *  onSubmitData - Optional callback for additional data handling.
- * @param {Function} updateBlueprintConfig - Function to update blueprint config in post meta.
- */
-
-export const handleBlueprintData = async (
-	jsonData,
-	createNotice,
-	updateBlueprintConfig
-) => {
-	if ( ! jsonData ) {
-		createNotice(
-			'error',
-			__( 'Invalid blueprint schema.', 'wp-playground-blueprint-editor' )
-		);
-		return;
-	}
-
-	try {
-		// Update deprecated fields in steps
-		const updatedData = updateDeprecatedFields( jsonData );
-
-		// Validate updated JSON against schema
-		const isValid = await validateAgainstSchema(
-			updatedData,
-			createNotice
-		);
-		if ( ! isValid ) {
-			return;
-		}
-
-		const { meta, ...filteredData } = updatedData; // Exclude metadata
-		const steps = Array.isArray( filteredData.steps )
-			? filteredData.steps
-			: [];
-
-		const { validBlocks, invalidSteps } = validateBlueprintSteps( steps );
-
-		if ( validBlocks.length > 0 ) {
-			dispatch( 'core/block-editor' ).insertBlocks(
-				validBlocks,
-				undefined,
-				undefined,
-				false,
-				null
-			);
-			createNotice(
-				'success',
-				__(
-					'Blueprint imported successfully.',
-					'wp-playground-blueprint-editor'
-				),
-				{
-					type: 'snackbar',
-				}
-			);
-		}
-
-		if ( invalidSteps.length > 0 ) {
-			const errorDetails = invalidSteps
-				.map(
-					( { stepIndex, stepData, error } ) =>
-						`Step ${ stepIndex }: ${ stepData.step } (${ error })`
-				)
-				.join( ', ' );
-			createNotice(
-				'warning',
-				__(
-					`Some steps are invalid: ${ errorDetails }.`,
-					'wp-playground-blueprint-editor'
-				)
-			);
-		}
-		handleJsonDataSubmit(
-			filteredData,
-			updateBlueprintConfig,
-			createNotice
-		);
-	} catch ( err ) {
-		return err;
-	}
-};
-
-/**
- * React hook to retrieve and manage the blueprint configuration from post meta.
- * @returns {{
- *   schema: Object,
- *   prepareSchema: Function,
- *   updateBlueprintConfig: Function,
- *   blueprint_config: Object
- * }}
- */
-export const useBlueprintData = () => {
-	const { editPost } = useDispatch( 'core/editor' );
-	const blocks = useSelect(
-		( select ) => select( 'core/block-editor' ).getBlocks(),
-		[]
-	);
-	const blueprint_config = useSelect( ( select ) => {
-		return (
-			select( 'core/editor' ).getEditedPostAttribute( 'meta' )[
-				'_blueprint_config'
-			] || {}
-		);
-	} );
-
-	const schema = {
-		$schema: PLAYGROUND_BLUEPRINT_SCHEMA_URL,
-		landingPage: blueprint_config.landing_page,
-		preferredVersions: {
-			php: blueprint_config.php_version,
-			wp: blueprint_config.wp_version,
-		},
-		features: blueprint_config.networking ? { networking: true } : {},
-		login: blueprint_config.login,
-		siteOptions: blueprint_config.siteOptions,
-		extraLibraries: blueprint_config.extraLibraries,
-		plugins: blueprint_config.plugins,
-		steps: [],
-	};
-
-	/**
-	 * Prepares the schema by extracting attributes from blocks.
-	 * Blocks' metadata is excluded to keep the schema clean.
-	 */
-
-	const prepareSchema = useCallback( () => {
-		const blockAttributes = blocks.map( ( block ) => {
-			const { metadata, ...rest } = block.attributes;
-			return rest;
-		} );
-
-		schema.steps = blockAttributes;
-
-		// Add constants as a defineWpConfigConsts step if they exist
-		if (
-			blueprint_config.constants &&
-			Object.keys( blueprint_config.constants ).length > 0
-		) {
-			schema.steps.push( {
-				step: 'defineWpConfigConsts',
-				consts: blueprint_config.constants,
-			} );
-		}
-
-		const cleanedSchema = {
-			...schema,
-			login: blueprint_config.login,
-			siteOptions:
-				blueprint_config.siteOptions &&
-				Object.keys( blueprint_config.siteOptions ).length > 0
-					? blueprint_config.siteOptions
-					: undefined,
-			extraLibraries: Array.isArray( blueprint_config.extraLibraries )
-				? blueprint_config.extraLibraries
-				: blueprint_config.extraLibraries
-				? [ 'wp-cli' ]
-				: undefined,
-			plugins:
-				blueprint_config.plugins &&
-				Object.keys( blueprint_config.plugins ).length > 0
-					? blueprint_config.plugins
-					: undefined,
-		};
-
-		return JSON.stringify( cleanedSchema, null, 2 );
-	}, [ blocks, schema, blueprint_config ] );
-
-	/**
-	 * Updates the blueprint configuration stored in the post meta.
-	 * @param {Object} updatedValues - Partial blueprint configuration to update.
-	 */
-	const updateBlueprintConfig = ( updatedValues ) => {
-		editPost( {
-			meta: {
-				_blueprint_config: { ...blueprint_config, ...updatedValues },
-			},
-		} );
-	};
-
-	return {
-		schema,
-		prepareSchema,
-		updateBlueprintConfig,
-		blueprint_config,
-	};
-};
-
-/**
- * Updates the post meta with data from parsed JSON and triggers success/failure notices.
+ * Updates the post meta with data from parsed JSON and triggers notices.
  *
- * @param {Object} data - Parsed JSON data from blueprint file.
- * @param {Function} updateBlueprintConfig - Function to save new config.
- * @param {Function} createNotice - Function to show admin notices.
+ * @param {Object} data Parsed JSON data.
+ * @param {Function} updateBlueprintConfig Config updater.
+ * @param {Function} createNotice Notice callback.
  */
-
 const handleJsonDataSubmit = ( data, updateBlueprintConfig, createNotice ) => {
 	if ( ! data ) {
 		createNotice(
 			'error',
 			__(
 				'Failed to update Blueprint configuration.',
-				'wp-playground-blueprint-editor'
+				'visual-blueprint-builder'
 			)
 		);
 		return;
@@ -366,7 +192,179 @@ const handleJsonDataSubmit = ( data, updateBlueprintConfig, createNotice ) => {
 };
 
 /**
+ * Processes JSON blueprint data, validates it, and inserts valid blocks into the editor.
+ *
+ * @param {Object} jsonData Parsed JSON data.
+ * @param {Function} createNotice Notice callback.
+ * @param {Function} updateBlueprintConfig Config updater callback.
+ */
+export const handleBlueprintData = async (
+	jsonData,
+	createNotice,
+	updateBlueprintConfig
+) => {
+	if ( ! jsonData ) {
+		createNotice(
+			'error',
+			__( 'Invalid blueprint schema.', 'visual-blueprint-builder' )
+		);
+		return;
+	}
+
+	try {
+		const updatedData = updateDeprecatedFields( jsonData );
+
+		const isValid = await validateAgainstSchema(
+			updatedData,
+			createNotice
+		);
+		if ( ! isValid ) {
+			return;
+		}
+
+		const { meta, ...filteredData } = updatedData;
+		const steps = Array.isArray( filteredData.steps )
+			? filteredData.steps
+			: [];
+
+		const { validBlocks, invalidSteps } = validateBlueprintSteps( steps );
+
+		if ( validBlocks.length > 0 ) {
+			dispatch( 'core/block-editor' ).insertBlocks(
+				validBlocks,
+				undefined,
+				undefined,
+				false,
+				null
+			);
+			createNotice(
+				'success',
+				__(
+					'Blueprint imported successfully.',
+					'visual-blueprint-builder'
+				),
+				{
+					type: 'snackbar',
+				}
+			);
+		}
+
+		if ( invalidSteps.length > 0 ) {
+			const errorDetails = invalidSteps
+				.map(
+					( { stepIndex, stepData, error } ) =>
+						`Step ${ stepIndex }: ${ stepData.step } (${ error })`
+				)
+				.join( ', ' );
+			createNotice(
+				'warning',
+				`${ __(
+					'Some steps are invalid:',
+					'visual-blueprint-builder'
+				) } ${ errorDetails }.`
+			);
+		}
+
+		handleJsonDataSubmit(
+			filteredData,
+			updateBlueprintConfig,
+			createNotice
+		);
+	} catch ( err ) {
+		return err;
+	}
+};
+
+/**
+ * React hook to retrieve and manage the blueprint configuration from post meta.
+ *
+ * @return {Object} Blueprint data helpers and state.
+ */
+export const useBlueprintData = () => {
+	const { editPost } = useDispatch( 'core/editor' );
+	const blocks = useSelect(
+		( select ) => select( 'core/block-editor' ).getBlocks(),
+		[]
+	);
+	const blueprintConfig = useSelect( ( select ) => {
+		return (
+			select( 'core/editor' ).getEditedPostAttribute( 'meta' )
+				?._blueprint_config || {}
+		);
+	}, [] );
+
+	const prepareSchema = useCallback( () => {
+		const blockAttributes = ( blocks || [] ).map( ( block ) => {
+			const { metadata, ...rest } = block.attributes;
+			return rest;
+		} );
+
+		const steps = [ ...blockAttributes ];
+
+		let extraLibraries;
+		if ( Array.isArray( blueprintConfig.extraLibraries ) ) {
+			extraLibraries = blueprintConfig.extraLibraries;
+		} else if ( blueprintConfig.extraLibraries ) {
+			extraLibraries = [ 'wp-cli' ];
+		}
+
+		const fullSchema = {
+			$schema: PLAYGROUND_BLUEPRINT_SCHEMA_URL,
+			landingPage: blueprintConfig.landing_page,
+			preferredVersions: {
+				php: blueprintConfig.php_version,
+				wp: blueprintConfig.wp_version,
+			},
+			features: blueprintConfig.networking ? { networking: true } : {},
+			login: blueprintConfig.login,
+			constants:
+				blueprintConfig.constants &&
+				Object.keys( blueprintConfig.constants ).length > 0
+					? blueprintConfig.constants
+					: undefined,
+			siteOptions:
+				blueprintConfig.siteOptions &&
+				Object.keys( blueprintConfig.siteOptions ).length > 0
+					? blueprintConfig.siteOptions
+					: undefined,
+			extraLibraries,
+			plugins:
+				blueprintConfig.plugins &&
+				Object.keys( blueprintConfig.plugins ).length > 0
+					? blueprintConfig.plugins
+					: undefined,
+			steps,
+		};
+
+		return JSON.stringify( fullSchema, null, 2 );
+	}, [ blocks, blueprintConfig ] );
+
+	const updateBlueprintConfig = useCallback(
+		( updatedValues ) => {
+			editPost( {
+				meta: {
+					_blueprint_config: {
+						...blueprintConfig,
+						...updatedValues,
+					},
+				},
+			} );
+		},
+		[ editPost, blueprintConfig ]
+	);
+
+	return {
+		prepareSchema,
+		updateBlueprintConfig,
+		blueprintConfig,
+	};
+};
+
+/**
  * Remove empty steps from a prepared schema JSON string.
+ *
+ * @param {string} schemaStr JSON string.
+ * @return {string} Sanitized JSON string.
  */
 export const sanitizePreparedSchemaString = ( schemaStr ) => {
 	try {
@@ -378,7 +376,7 @@ export const sanitizePreparedSchemaString = ( schemaStr ) => {
 			delete obj.steps;
 		}
 		return JSON.stringify( obj );
-	} catch ( e ) {
+	} catch {
 		return schemaStr;
 	}
 };

@@ -1,24 +1,31 @@
 /**
+ * WordPress dependencies
+ */
+import domReady from '@wordpress/dom-ready';
+import { select, subscribe } from '@wordpress/data';
+import { getPlugin, unregisterPlugin } from '@wordpress/plugins';
+
+/**
  * Disable Block Directory plugin for 'blueprint' post type.
  */
-wp.domReady( () => {
-	const select = wp.data?.select;
-	const getPostType = () => select?.( 'core/editor' )?.getCurrentPostType?.();
+domReady( () => {
+	const getPostType = () => select( 'core/editor' )?.getCurrentPostType?.();
 
 	const tryUnregister = () => {
 		const postType = getPostType();
-		if ( ! postType ) return;
-
-		if (
-			postType === 'blueprint' &&
-			wp.plugins.getPlugin?.( 'block-directory' )
-		) {
-			wp.plugins.unregisterPlugin( 'block-directory' );
+		if ( ! postType ) {
+			return;
 		}
-		// We only need to run this once.
-		unsubscribe?.();
+
+		if ( postType === 'blueprint' && getPlugin( 'block-directory' ) ) {
+			unregisterPlugin( 'block-directory' );
+		}
+
+		if ( unsubscribe ) {
+			unsubscribe();
+		}
 	};
 
-	const unsubscribe = wp.data?.subscribe( tryUnregister );
+	const unsubscribe = subscribe( tryUnregister );
 	tryUnregister();
 } );

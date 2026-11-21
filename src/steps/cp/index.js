@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { copy } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,58 +13,52 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for cp block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { fromPath, toPath } = attributes;
+	const summary =
+		fromPath && toPath
+			? sprintf(
+					/* translators: 1: source path, 2: destination path */
+					__(
+						'Copy all files and folders from "%1$s" to "%2$s".',
+						'visual-blueprint-builder'
+					),
+					fromPath,
+					toPath
+			  )
+			: __(
+					'Copy all files and folders from the "From Path" location to the "To Path" location.',
+					'visual-blueprint-builder'
+			  );
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ copy }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ fromPath && toPath
-						? __(
-								`Copy all files and folders from “${ fromPath }” to “${ toPath }”.`,
-								'wp-playground-blueprint-editor'
-						  )
-						: __(
-								'Copy all files and folders from the "From Path" location to the "To Path" location.',
-								'wp-playground-blueprint-editor'
-						  ) }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'fromPath',
-						label: __(
-							'From Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'From Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter source path',
-							'wp-playground-blueprint-editor'
+							'The path to the file or directory to copy',
+							'visual-blueprint-builder'
 						),
 					},
 					{
 						id: 'toPath',
-						label: __(
-							'To Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'To Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter destination path',
-							'wp-playground-blueprint-editor'
+							'The path to the destination directory',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -78,9 +71,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: copy,
 	edit: Edit,

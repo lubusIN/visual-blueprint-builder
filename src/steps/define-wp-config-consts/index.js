@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { cog } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 
 /**
  * Internal dependencies.
@@ -13,10 +12,7 @@ import metadata from './block.json';
 import { StepWrapper, KeyValueEditor } from '../../components';
 
 /**
- * Edit function for the plugin installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for define-wp-config-consts block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { consts } = attributes;
@@ -27,18 +23,13 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ cog }
 			isSelected={ isSelected }
 			summary={
-				<Text weight={ 600 }>
-					{ consts ? (
-						<pre style={ { whiteSpace: 'pre-wrap' } }>
-							{ JSON.stringify( consts, null, ' ' ) }
-						</pre>
-					) : (
-						__(
-							'{config consts}',
-							'wp-playground-blueprint-editor'
-						)
-					) }
-				</Text>
+				consts && Object.keys( consts ).length > 0 ? (
+					<pre style={ { whiteSpace: 'pre-wrap', margin: 0 } }>
+						{ JSON.stringify( consts, null, ' ' ) }
+					</pre>
+				) : (
+					__( '{config consts}', 'visual-blueprint-builder' )
+				)
 			}
 		>
 			<KeyValueEditor
@@ -46,20 +37,17 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 				onChange={ ( val ) => setAttributes( { consts: val } ) }
 				addButtonLabel={ __(
 					'Add Option',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				) }
 				deleteButtonLabel={ __(
 					'Delete Config',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				) }
 			/>
 		</StepWrapper>
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: cog,
 	edit: Edit,
