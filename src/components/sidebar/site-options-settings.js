@@ -11,11 +11,10 @@ import TreeEditor from '../tree-editor';
 /**
  * Site Options Settings Component
  *
- * @param {Object} props - The props for the component.
- * @param {Object} props.attributes - The block's attributes, containing `siteOptions`.
- * @param {Function} props.setAttributes - Function to update the block's attributes.
- *
- * @returns {JSX.Element} The SiteOptionsSettings component.
+ * @param {Object} props The props for the component.
+ * @param {Object} props.attributes The block attributes, containing `siteOptions`.
+ * @param {Function} props.setAttributes Function to update the attributes.
+ * @return {JSX.Element} The SiteOptionsSettings component.
  */
 function SiteOptionsSettings( { attributes = {}, setAttributes } ) {
 	const { siteOptions } = attributes;
@@ -34,14 +33,18 @@ function SiteOptionsSettings( { attributes = {}, setAttributes } ) {
 
 	return (
 		<>
-			{ /* Trigger Button */ }
-			<Button icon={ cog } iconSize={ 30 } onClick={ handleOpen } />
+			<Button
+				icon={ cog }
+				iconSize={ 30 }
+				onClick={ handleOpen }
+				label={ __(
+					'Configure Site Options',
+					'visual-blueprint-builder'
+				) }
+			/>
 			{ isModalOpen && (
 				<Modal
-					title={ __(
-						'Site Options',
-						'wp-playground-blueprint-editor'
-					) }
+					title={ __( 'Site Options', 'visual-blueprint-builder' ) }
 					onRequestClose={ saveOptions }
 					size="large"
 				>

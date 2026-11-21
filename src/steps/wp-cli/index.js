@@ -4,10 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { listItem } from '@wordpress/icons';
-import {
-	TextareaControl,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { TextareaControl } from '@wordpress/components';
 
 /**
  * Internal dependencies.
@@ -16,10 +13,7 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for wp-cli block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { command } = attributes;
@@ -30,18 +24,12 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			icon={ listItem }
 			isSelected={ isSelected }
 			summary={
-				<Text weight={ 600 }>
-					{ command ||
-						__(
-							'{command to run}',
-							'wp-playground-blueprint-editor'
-						) }
-				</Text>
+				command || __( '{command to run}', 'visual-blueprint-builder' )
 			}
 		>
 			<TextareaControl
 				__nextHasNoMarginBottom
-				label={ __( 'Command', 'wp-playground-blueprint-editor' ) }
+				label={ __( 'Command', 'visual-blueprint-builder' ) }
 				onChange={ ( value ) => setAttributes( { command: value } ) }
 				placeholder=""
 				value={ command }
@@ -50,9 +38,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: listItem,
 	edit: Edit,

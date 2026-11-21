@@ -8,12 +8,8 @@ import {
 	PluginPostStatusInfo,
 } from '@wordpress/editor';
 import { DataForm } from '@wordpress/dataviews';
-import {
-	ToggleControl,
-	__experimentalGrid as Grid,
-	__experimentalText as Text,
-	__experimentalHStack as HStack,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
+import { Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -53,50 +49,52 @@ const ToggleEdit = ( { field, onChange, data, hideLabelFromVision } ) => {
  * Sidebar Setting Row wrapper.
  */
 const SidebarSettingRow = ( { label, children } ) => (
-	<HStack
-		style={ {
-			justifyContent: 'space-between',
-			marginTop: '6px',
-		} }
+	<Stack
+		direction="row"
+		justify="space-between"
+		align="center"
+		style={ { marginTop: '6px' } }
 	>
-		<Text>{ label }</Text>
+		<Text variant="body-md" className="vbb-sidebar-label">
+			{ label }
+		</Text>
 		{ children }
-	</HStack>
+	</Stack>
 );
 
 /**
  * Main component for displaying blueprint sidebar setting.
  */
 function BlueprintSidebarSettings() {
-	const { updateBlueprintConfig, blueprint_config } = useBlueprintData();
+	const { updateBlueprintConfig, blueprintConfig } = useBlueprintData();
 
 	return (
 		<>
 			<PluginPostStatusInfo className="playground-blueprint-sidebar">
-				<Grid columns={ 2 }>
+				<div className="vbb-sidebar-top-actions">
 					<OpenJson />
 					<Gallery />
-				</Grid>
+				</div>
 			</PluginPostStatusInfo>
 			<PluginDocumentSettingPanel
 				name="playground-settings"
 				title={ __(
 					'Playground Settings',
-					'wp-playground-blueprint-editor'
+					'visual-blueprint-builder'
 				) }
 			>
 				<DataForm
 					data={ {
-						php_version: blueprint_config.php_version,
-						wp_version: blueprint_config.wp_version,
-						landing_page: blueprint_config.landing_page,
-						networking: blueprint_config.networking || false,
-						login: blueprint_config.login || false,
+						php_version: blueprintConfig.php_version,
+						wp_version: blueprintConfig.wp_version,
+						landing_page: blueprintConfig.landing_page,
+						networking: blueprintConfig.networking || false,
+						login: blueprintConfig.login || false,
 						extraLibraries: Array.isArray(
-							blueprint_config.extraLibraries
+							blueprintConfig.extraLibraries
 						)
-							? blueprint_config.extraLibraries.length > 0
-							: Boolean( blueprint_config.extraLibraries ),
+							? blueprintConfig.extraLibraries.length > 0
+							: Boolean( blueprintConfig.extraLibraries ),
 					} }
 					fields={ [
 						{
@@ -104,7 +102,7 @@ function BlueprintSidebarSettings() {
 							id: 'php_version',
 							label: __(
 								'PHP Version',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							),
 							type: 'text',
 						},
@@ -113,7 +111,7 @@ function BlueprintSidebarSettings() {
 							id: 'wp_version',
 							label: __(
 								'WP Version',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							),
 							type: 'text',
 						},
@@ -121,7 +119,7 @@ function BlueprintSidebarSettings() {
 							id: 'landing_page',
 							label: __(
 								'Landing Page',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							),
 							type: 'text',
 						},
@@ -129,17 +127,14 @@ function BlueprintSidebarSettings() {
 							id: 'networking',
 							label: __(
 								'Networking',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							),
 							type: 'integer',
 							Edit: ToggleEdit,
 						},
 						{
 							id: 'login',
-							label: __(
-								'Login',
-								'wp-playground-blueprint-editor'
-							),
+							label: __( 'Login', 'visual-blueprint-builder' ),
 							type: 'integer',
 							Edit: ToggleEdit,
 						},
@@ -147,7 +142,7 @@ function BlueprintSidebarSettings() {
 							id: 'extraLibraries',
 							label: __(
 								'Extra Libraries (WP-CLI)',
-								'wp-playground-blueprint-editor'
+								'visual-blueprint-builder'
 							),
 							type: 'integer',
 							Edit: ToggleEdit,
@@ -179,34 +174,33 @@ function BlueprintSidebarSettings() {
 					onChange={ updateBlueprintConfig }
 				/>
 				<SidebarSettingRow
-					label={ __(
-						'Site Options',
-						'wp-playground-blueprint-editor'
-					) }
+					label={ __( 'Site Options', 'visual-blueprint-builder' ) }
 				>
 					<SiteOptionsSettings
 						attributes={ {
-							siteOptions: blueprint_config.siteOptions,
+							siteOptions: blueprintConfig.siteOptions,
 						} }
 						setAttributes={ updateBlueprintConfig }
 					/>
 				</SidebarSettingRow>
 				<SidebarSettingRow
-					label={ __( 'Plugins', 'wp-playground-blueprint-editor' ) }
+					label={ __( 'Plugins', 'visual-blueprint-builder' ) }
 				>
 					<PluginSettings
-						attributes={ { plugins: blueprint_config.plugins } }
+						attributes={ { plugins: blueprintConfig.plugins } }
 						setAttributes={ updateBlueprintConfig }
 					/>
 				</SidebarSettingRow>
 				<SidebarSettingRow
 					label={ __(
 						'WP Config Constants',
-						'wp-playground-blueprint-editor'
+						'visual-blueprint-builder'
 					) }
 				>
 					<ConstantsSettings
-						attributes={ { constants: blueprint_config.constants } }
+						attributes={ {
+							constants: blueprintConfig.constants,
+						} }
 						setAttributes={ updateBlueprintConfig }
 					/>
 				</SidebarSettingRow>

@@ -6,11 +6,7 @@ import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { registerPlugin } from '@wordpress/plugins';
 import { code, gallery, plus } from '@wordpress/icons';
-import {
-	Button,
-	Modal,
-	__experimentalGrid as Grid,
-} from '@wordpress/components';
+import { Button, Modal } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -18,9 +14,9 @@ import {
 import { Gallery, OpenJson } from '../components/sidebar';
 
 /**
- * OnboardingModal is a modal that is displayed when a user creates a new post and adds no blocks.
- * It gives the user the option to start from a JSON file, a gallery, or a blank post.
- * @returns {JSX.Element} The onboarding modal.
+ * OnboardingModal is displayed when a user creates a new blueprint post without blocks.
+ *
+ * @return {JSX.Element|null} The onboarding modal.
  */
 const OnboardingModal = () => {
 	const [ showModal, setShowModal ] = useState( false );
@@ -28,8 +24,8 @@ const OnboardingModal = () => {
 	const { isNewPost, blocks } = useSelect( ( select ) => {
 		const editor = select( 'core/editor' );
 		return {
-			isNewPost: editor.isCleanNewPost(),
-			blocks: editor.getBlocks(),
+			isNewPost: editor?.isCleanNewPost ? editor.isCleanNewPost() : false,
+			blocks: editor?.getBlocks ? editor.getBlocks() : [],
 		};
 	}, [] );
 
@@ -41,27 +37,26 @@ const OnboardingModal = () => {
 
 	const handleClose = () => setShowModal( false );
 
-	if ( ! showModal ) return null;
+	if ( ! showModal ) {
+		return null;
+	}
 
 	return (
 		<Modal
-			title={ __(
-				'Start Blueprint From',
-				'wp-playground-blueprint-editor'
-			) }
+			title={ __( 'Start Blueprint From', 'visual-blueprint-builder' ) }
 			className="wp-playground-onboarding-modal"
 			onRequestClose={ handleClose }
 			shouldCloseOnClickOutside
 			shouldCloseOnEsc
 			size="medium"
 		>
-			<Grid columns={ 3 } spacing={ 4 }>
+			<div className="vbb-onboarding-grid">
 				<OpenJson icon={ code } handleClose={ handleClose } />
 				<Gallery icon={ gallery } handleClose={ handleClose } />
 				<Button onClick={ handleClose } icon={ plus }>
-					{ __( 'Blank', 'wp-playground-blueprint-editor' ) }
+					{ __( 'Blank', 'visual-blueprint-builder' ) }
 				</Button>
-			</Grid>
+			</div>
 		</Modal>
 	);
 };

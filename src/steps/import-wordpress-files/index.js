@@ -4,7 +4,6 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { wordpress } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,14 +13,11 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * Edit function for the plugin installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for import-wordpress-files block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { wordPressFilesZip } = attributes;
-	const { url } = wordPressFilesZip;
+	const { url } = wordPressFilesZip || {};
 
 	const handleInputChange = ( value ) => {
 		setAttributes( {
@@ -37,27 +33,18 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			title={ metadata.title }
 			icon={ wordpress }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __(
-						`from ${ url || '{zip url}' }`,
-						'wp-playground-blueprint-editor'
-					) }
-				</Text>
-			}
+			summary={ url || __( '{ZIP URL}', 'visual-blueprint-builder' ) }
 		>
 			<DataForm
-				data={ {
-					url,
-				} }
+				data={ { url } }
 				fields={ [
 					{
 						id: 'url',
-						label: __( 'Url', 'wp-playground-blueprint-editor' ),
+						label: __( 'File URL', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter the URL of the zip file',
-							'wp-playground-blueprint-editor'
+							'Enter the URL of the WordPress files ZIP',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -70,9 +57,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: wordpress,
 	edit: Edit,

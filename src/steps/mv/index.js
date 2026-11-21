@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { moveTo } from '@wordpress/icons';
-import { __experimentalText as Text } from '@wordpress/components';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -14,53 +13,46 @@ import metadata from './block.json';
 import { StepWrapper } from '../../components';
 
 /**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @return {Element} Element to render.
+ * Edit function for mv block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { fromPath, toPath } = attributes;
+	const summary =
+		fromPath && toPath
+			? sprintf(
+					/* translators: 1: from path, 2: to path */
+					__( 'from %1$s to %2$s', 'visual-blueprint-builder' ),
+					fromPath,
+					toPath
+			  )
+			: __( 'from {from path} to {to path}', 'visual-blueprint-builder' );
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ moveTo }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ __( 'from', 'wp-playground-blueprint-editor' ) }{ ' ' }
-					{ ` ${ fromPath || '{from path}' }` }{ ' ' }
-					{ __( 'to', 'wp-playground-blueprint-editor' ) }{ ' ' }
-					{ ` ${ toPath || '{to path}' }` }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<DataForm
 				data={ attributes }
 				fields={ [
 					{
 						id: 'fromPath',
-						label: __(
-							'From Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'From Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter the current path of the file or directory',
-							'wp-playground-blueprint-editor'
+							'The path to the file or directory to move',
+							'visual-blueprint-builder'
 						),
 					},
 					{
 						id: 'toPath',
-						label: __(
-							'To Path',
-							'wp-playground-blueprint-editor'
-						),
+						label: __( 'To Path', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter the new path where the file or directory should be moved',
-							'wp-playground-blueprint-editor'
+							'The path to the destination directory',
+							'visual-blueprint-builder'
 						),
 					},
 				] }
@@ -73,9 +65,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: moveTo,
 	edit: Edit,

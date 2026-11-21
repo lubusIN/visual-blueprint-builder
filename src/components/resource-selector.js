@@ -6,7 +6,6 @@ import {
 	TextControl,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	__experimentalInputControl as InputControl,
 } from '@wordpress/components';
 
 /**
@@ -15,13 +14,43 @@ import {
 import Picker from './picker';
 
 /**
+ * Formats a summary string for a given resource data object.
+ *
+ * @param {string} type 'plugin' or 'theme'.
+ * @param {Object} data The current resource data.
+ * @return {string} Formatted summary text.
+ */
+export const getResourceSummary = ( type, data = {} ) => {
+	const { resource, path, url, slug, ref } = data;
+	switch ( resource ) {
+		case 'url':
+			return url || __( '{ZIP URL}', 'visual-blueprint-builder' );
+		case 'vfs':
+			return path || __( '{VFS Path}', 'visual-blueprint-builder' );
+		case 'git:directory':
+			if ( path && ref ) {
+				return `${ path } (Ref: ${ ref })`;
+			}
+			if ( path ) {
+				return path;
+			}
+			if ( ref ) {
+				return `Ref: ${ ref }`;
+			}
+			return __( 'Git Repository', 'visual-blueprint-builder' );
+		default:
+			return slug || __( '{slug}', 'visual-blueprint-builder' );
+	}
+};
+
+/**
  * Resource Selector Component for themes and plugins.
  *
  * @param {Object} props Component properties.
  * @param {string} props.type 'plugin' or 'theme'.
  * @param {Object} props.data The current resource data.
  * @param {Function} props.onChange Callback when data changes.
- * @return {Element} Element to render.
+ * @return {JSX.Element} Element to render.
  */
 export default function ResourceSelector( { type, data, onChange } ) {
 	const { resource, path, url, slug, ref } = data;
@@ -56,10 +85,44 @@ export default function ResourceSelector( { type, data, onChange } ) {
 		} );
 	};
 
+	const vfsPlaceholder =
+		type === 'plugin'
+			? __(
+					'Enter the file path for the plugin ZIP',
+					'visual-blueprint-builder'
+			  )
+			: __(
+					'Enter the file path for the theme ZIP',
+					'visual-blueprint-builder'
+			  );
+
+	let urlPlaceholder;
+	if ( resource === 'git:directory' ) {
+		urlPlaceholder = __(
+			'Enter Repository URL (https://, ssh git@…, etc.)',
+			'visual-blueprint-builder'
+		);
+	} else if ( type === 'plugin' ) {
+		urlPlaceholder = __(
+			'Enter the URL of the plugin ZIP file',
+			'visual-blueprint-builder'
+		);
+	} else {
+		urlPlaceholder = __(
+			'Enter the URL of the theme ZIP file',
+			'visual-blueprint-builder'
+		);
+	}
+
+	const slugPlaceholder =
+		type === 'plugin'
+			? __( 'Enter plugin slug', 'visual-blueprint-builder' )
+			: __( 'Enter theme slug', 'visual-blueprint-builder' );
+
 	return (
 		<>
 			<ToggleGroupControl
-				label={ __( 'Resource', 'wp-playground-blueprint-editor' ) }
+				label={ __( 'Resource', 'visual-blueprint-builder' ) }
 				__nextHasNoMarginBottom
 				value={ resource }
 				isBlock
@@ -67,38 +130,32 @@ export default function ResourceSelector( { type, data, onChange } ) {
 			>
 				<ToggleGroupControlOption
 					value="url"
-					label={ __( 'URL', 'wp-playground-blueprint-editor' ) }
+					label={ __( 'URL', 'visual-blueprint-builder' ) }
 				/>
 				<ToggleGroupControlOption
 					value={ orgType }
 					label={
 						type === 'plugin'
-							? __( 'Plugin', 'wp-playground-blueprint-editor' )
-							: __( 'Theme', 'wp-playground-blueprint-editor' )
+							? __( 'Plugin', 'visual-blueprint-builder' )
+							: __( 'Theme', 'visual-blueprint-builder' )
 					}
 				/>
 				<ToggleGroupControlOption
 					value="vfs"
-					label={ __( 'VFS', 'wp-playground-blueprint-editor' ) }
+					label={ __( 'VFS', 'visual-blueprint-builder' ) }
 				/>
 				<ToggleGroupControlOption
 					value="git:directory"
-					label={ __(
-						'Git Directory',
-						'wp-playground-blueprint-editor'
-					) }
+					label={ __( 'Git Directory', 'visual-blueprint-builder' ) }
 				/>
 			</ToggleGroupControl>
 
 			{ resource === 'vfs' && (
 				<TextControl
-					label={ __( 'Path', 'wp-playground-blueprint-editor' ) }
+					label={ __( 'Path', 'visual-blueprint-builder' ) }
 					__next40pxDefaultSize
 					value={ path }
-					placeholder={ __(
-						`Enter the file path for the ${ type } ZIP`,
-						'wp-playground-blueprint-editor'
-					) }
+					placeholder={ vfsPlaceholder }
 					onChange={ ( newPath ) =>
 						handleInputChange( 'path', newPath )
 					}
@@ -106,53 +163,47 @@ export default function ResourceSelector( { type, data, onChange } ) {
 			) }
 			{ ( resource === 'url' || resource === 'git:directory' ) && (
 				<TextControl
-					label={ __( 'Url', 'wp-playground-blueprint-editor' ) }
+					label={ __( 'Url', 'visual-blueprint-builder' ) }
 					__next40pxDefaultSize
 					value={ url }
-					placeholder={ __(
-						resource === 'git:directory'
-							? 'Enter Repository URL (https://, ssh git@..., etc.)'
-							: `Enter the URL of the ${ type } ZIP file`,
-						'wp-playground-blueprint-editor'
-					) }
+					placeholder={ urlPlaceholder }
 					onChange={ ( newPath ) =>
 						handleInputChange( 'url', newPath )
 					}
 				/>
 			) }
 			{ resource === orgType && (
-				<InputControl
-					style={ { width: '100%', paddingBottom: '8px' } }
-					__next40pxDefaultSize
-					label={ __( 'Slug', 'wp-playground-blueprint-editor' ) }
-					value={ slug }
-					placeholder={ __(
-						`Enter ${ type } slug`,
-						'wp-playground-blueprint-editor'
-					) }
-					onChange={ ( value ) => handleInputChange( 'slug', value ) }
-					suffix={
-						<Picker
-							type={ pluralType }
-							onSelect={ ( selectedSlug ) =>
-								handleInputChange( 'slug', selectedSlug )
-							}
-						/>
-					}
-				/>
+				<div className="vbb-resource-slug-row">
+					<TextControl
+						label={ __( 'Slug', 'visual-blueprint-builder' ) }
+						__next40pxDefaultSize
+						value={ slug }
+						placeholder={ slugPlaceholder }
+						onChange={ ( value ) =>
+							handleInputChange( 'slug', value )
+						}
+					/>
+					<Picker
+						type={ pluralType }
+						selectedSlug={ slug }
+						onSelect={ ( selectedSlug ) =>
+							handleInputChange( 'slug', selectedSlug )
+						}
+					/>
+				</div>
 			) }
 			{ resource === 'git:directory' && (
 				<>
 					<TextControl
 						label={ __(
 							'Reference (Optional branch, tag, or commit SHA)',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 						__next40pxDefaultSize
 						value={ ref }
 						placeholder={ __(
 							'Enter the git reference (branch, tag, or commit SHA)',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 						onChange={ ( newRef ) =>
 							handleInputChange( 'ref', newRef )
@@ -161,13 +212,13 @@ export default function ResourceSelector( { type, data, onChange } ) {
 					<TextControl
 						label={ __(
 							'Directory Path (Optional subdirectory inside the repository)',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 						__next40pxDefaultSize
 						value={ path }
 						placeholder={ __(
 							'Enter the directory path inside the repository',
-							'wp-playground-blueprint-editor'
+							'visual-blueprint-builder'
 						) }
 						onChange={ ( newPath ) =>
 							handleInputChange( 'path', newPath )

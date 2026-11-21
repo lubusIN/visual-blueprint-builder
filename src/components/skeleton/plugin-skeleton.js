@@ -1,12 +1,8 @@
 /**
  * WordPress dependencies.
  */
-import {
-	Card,
-	CardBody,
-	__experimentalVStack as VStack,
-	__experimentalHStack as HStack,
-} from '@wordpress/components';
+import { Card, CardBody } from '@wordpress/components';
+import { Stack } from '@wordpress/ui';
 
 /**
  * Skeleton dependencies.
@@ -21,23 +17,24 @@ function PluginSkeleton() {
 	return (
 		<Card size="small">
 			<CardBody>
-				<VStack
-					justify={ 'space-between' }
-					spacing={ 4 }
+				<Stack
+					direction="column"
+					justify="space-between"
+					gap="md"
 					style={ { height: '100%' } }
 				>
-					<HStack expanded spacing={ 8 }>
+					<Stack direction="row" gap="md" style={ { width: '100%' } }>
 						<Skeleton
 							width={ 70 }
 							height={ 70 }
 							style={ { borderRadius: '4px' } }
 						/>
-						<VStack style={ { width: '100%' } }>
+						<Stack direction="column" style={ { width: '100%' } }>
 							<Skeleton height={ 20 } width="60%" />
-						</VStack>
-					</HStack>
+						</Stack>
+					</Stack>
 					<Skeleton height={ 16 } width="90%" />
-					<HStack justify="space-between">
+					<Stack direction="row" justify="space-between">
 						<Skeleton
 							containerClassName={ 'custom-skeleton' }
 							height={ 10 }
@@ -48,15 +45,15 @@ function PluginSkeleton() {
 							height={ 10 }
 							width="100%"
 						/>
-					</HStack>
-					<HStack justify="right">
+					</Stack>
+					<Stack direction="row" justify="flex-end">
 						<Skeleton
 							width={ 80 }
 							height={ 32 }
 							style={ { borderRadius: '4px' } }
 						/>
-					</HStack>
-				</VStack>
+					</Stack>
+				</Stack>
 			</CardBody>
 		</Card>
 	);

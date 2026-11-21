@@ -4,62 +4,38 @@
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { plugins } from '@wordpress/icons';
-import {
-	ToggleControl,
-	__experimentalText as Text,
-} from '@wordpress/components';
+import { ToggleControl } from '@wordpress/components';
 
 /**
  * Internal dependencies.
  */
 import metadata from './block.json';
 import { StepWrapper, ResourceSelector } from '../../components';
+import { getResourceSummary } from '../../components/resource-selector';
 
 /**
- * Edit function for the plugin installation block.
- *
- * @param {Object} props Component properties.
- * @return {Element} Element to render.
+ * Edit function for install-plugin block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { pluginData, options } = attributes;
-	const { resource, path, url, slug, ref } = pluginData;
+	const { pluginData = {}, options = {} } = attributes;
+	const { resource = 'wordpress.org/plugins' } = pluginData;
 	const { activate } = options;
 
-	const getResourceInfo = ( resource ) => {
-		switch ( resource ) {
-			case 'url':
-				return url;
-			case 'vfs':
-				return path;
-			case 'git:directory':
-				return path
-					? `${ path } (Ref: ${ ref || 'default branch' })`
-					: ref
-					? `Ref: ${ ref }`
-					: 'Git Repository';
-			default:
-				return slug;
-		}
-	};
+	const summary = `${ resource } > ${ getResourceSummary(
+		'plugin',
+		pluginData
+	) } > ${
+		activate
+			? __( 'Activate', 'visual-blueprint-builder' )
+			: __( 'Install and keep Inactive', 'visual-blueprint-builder' )
+	}`;
 
 	return (
 		<StepWrapper
 			title={ metadata.title }
 			icon={ plugins }
 			isSelected={ isSelected }
-			summary={
-				<Text weight={ 600 }>
-					{ `${ resource } > ${ getResourceInfo( resource ) } > ${
-						activate
-							? __( 'Activate', 'wp-playground-blueprint-editor' )
-							: __(
-									'Install and keep Inactive',
-									'wp-playground-blueprint-editor'
-							  )
-					}` }
-				</Text>
-			}
+			summary={ summary }
 		>
 			<>
 				<ResourceSelector
@@ -70,7 +46,8 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 					}
 				/>
 				<ToggleControl
-					label={ __( 'Activate', 'wp-playground-blueprint-editor' ) }
+					__nextHasNoMarginBottom
+					label={ __( 'Activate', 'visual-blueprint-builder' ) }
 					checked={ activate }
 					onChange={ () =>
 						setAttributes( {
@@ -86,9 +63,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	);
 }
 
-/**
- * Every block starts by registering a new block type definition.
- */
 registerBlockType( metadata.name, {
 	icon: plugins,
 	edit: Edit,
