@@ -14,7 +14,7 @@ module.exports = [
 	},
 	...wpConfig,
 	{
-		files: [ '**/test/**', '**/*.test.js' ],
+		files: [ '**/test/**', '**/*.test.js', '**/tests/**', '**/*.spec.js' ],
 		languageOptions: {
 			globals: {
 				...globals.jest,

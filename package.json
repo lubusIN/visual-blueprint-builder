@@ -22,6 +22,8 @@
 		"test": "wp-scripts test-unit-js",
 		"test:unit": "wp-scripts test-unit-js",
 		"test:unit:watch": "wp-scripts test-unit-js --watch",
+		"test:e2e": "wp-scripts test-playwright",
+		"test:e2e:debug": "wp-scripts test-playwright --debug",
 		"serve": "npx @wp-playground/cli@latest server --auto-mount --blueprint=./_playground/blueprint-local.json --blueprint-may-read-adjacent-files",
 		"setup": "npm install && npm run build && composer install",
 		"prepare": "husky"
@@ -29,6 +31,8 @@
 	"author": "lubus",
 	"license": "ISC",
 	"devDependencies": {
+		"@playwright/test": "^1.65.1",
+		"@wordpress/e2e-test-utils-playwright": "^3.3.0",
 		"@wordpress/scripts": "^32.0.0",
 		"eslint": "^10.15.0",
 		"glob": "^13.0.6",
