@@ -83,7 +83,7 @@ class EnqueueScripts
         wp_set_script_translations(
             'blueprint-editor', // script handle
             'visual-blueprint-builder', // Text domain for translations*
-            plugin_dir_path(__FILE__) . 'languages'   // Path to the language files
+            VBB_PLUGIN_DIR . 'languages' // Path to the language files
         );
     }
 }
