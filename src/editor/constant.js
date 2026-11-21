@@ -37,16 +37,15 @@ export const BLUEPRINTS_GALLERY_BASE_URL =
  */
 export const PHP_VERSIONS = [
 	{ label: 'Latest', value: 'latest' },
+	{ label: '8.5', value: '8.5' },
 	{ label: '8.4', value: '8.4' },
 	{ label: '8.3', value: '8.3' },
 	{ label: '8.2', value: '8.2' },
 	{ label: '8.1', value: '8.1' },
 	{ label: '8.0', value: '8.0' },
 	{ label: '7.4', value: '7.4' },
-	{ label: '7.3', value: '7.3' },
-	{ label: '7.2', value: '7.2' },
-	{ label: '7.1', value: '7.1' },
-	{ label: '7.0', value: '7.0' },
+	{ label: '5.2 (Legacy)', value: '5.2' },
+	{ label: 'Next (Dev)', value: 'next' },
 ];
 
 /**
@@ -55,6 +54,7 @@ export const PHP_VERSIONS = [
 export const WP_VERSIONS = [
 	{ label: 'WordPress nightly', value: 'nightly' },
 	{ label: 'Latest', value: 'latest' },
+	{ label: 'Beta', value: 'beta' },
 	{ label: '6.8', value: '6.8' },
 	{ label: '6.7', value: '6.7' },
 	{ label: '6.6', value: '6.6' },

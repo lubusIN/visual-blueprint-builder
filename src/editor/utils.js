@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
-import { useCallback } from '@wordpress/element';
+import { useCallback, useState, useEffect } from '@wordpress/element';
 import { dispatch, useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -12,6 +12,8 @@ import { dispatch, useSelect, useDispatch } from '@wordpress/data';
 import {
 	PLAYGROUND_BLUEPRINT_SCHEMA_URL,
 	PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH,
+	PHP_VERSIONS,
+	WP_VERSIONS,
 } from './constant';
 
 /**
@@ -100,6 +102,138 @@ const updateDeprecatedFields = ( jsonData ) => {
 	};
 };
 
+let schemaCachePromise = null;
+
+/**
+ * Fetches and caches the upstream Playground Blueprint JSON schema.
+ *
+ * @return {Promise<Object>} The Blueprint schema object.
+ */
+export const fetchBlueprintSchema = async () => {
+	if ( ! schemaCachePromise ) {
+		schemaCachePromise = fetch( PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH )
+			.then( ( res ) => {
+				if ( ! res.ok ) {
+					throw new Error( 'Failed to fetch schema.' );
+				}
+				return res.json();
+			} )
+			.catch( ( err ) => {
+				schemaCachePromise = null;
+				throw err;
+			} );
+	}
+	return schemaCachePromise;
+};
+
+/**
+ * Extracts supported PHP versions from the Playground blueprint schema definitions.
+ *
+ * @param {Object} schema Blueprint schema.
+ * @return {Array<{label: string, value: string}>} Array of PHP version options.
+ */
+export const extractPhpVersionsFromSchema = ( schema ) => {
+	const supportedEnum = schema?.definitions?.SupportedPHPVersion?.enum || [];
+	const legacyEnum = schema?.definitions?.LegacyPHPVersion?.enum || [];
+	const hasNext = schema?.definitions?.PHPNextVersion?.const;
+
+	if ( ! supportedEnum.length ) {
+		return PHP_VERSIONS;
+	}
+
+	const versions = [ { label: 'Latest', value: 'latest' } ];
+
+	supportedEnum.forEach( ( version ) => {
+		versions.push( { label: version, value: version } );
+	} );
+
+	legacyEnum.forEach( ( version ) => {
+		versions.push( { label: `${ version } (Legacy)`, value: version } );
+	} );
+
+	if ( hasNext ) {
+		versions.push( { label: 'Next (Dev)', value: hasNext } );
+	}
+
+	return versions;
+};
+
+/**
+ * Hook to dynamically resolve supported Playground PHP and WordPress versions.
+ *
+ * Uses the upstream blueprint schema definitions as source of truth for PHP versions,
+ * and server-provided release catalog or localized data for WordPress versions,
+ * falling back gracefully to curated constants.
+ *
+ * @param {Object} currentConfig Current blueprint configuration.
+ * @return {{phpVersions: Array, wpVersions: Array}} Supported version options.
+ */
+export const usePlaygroundVersions = ( currentConfig = {} ) => {
+	const [ phpVersions, setPhpVersions ] = useState( PHP_VERSIONS );
+	const [ wpVersions, setWpVersions ] = useState( () => {
+		if ( window?.vbbSettings?.wpVersions?.length ) {
+			return window.vbbSettings.wpVersions;
+		}
+		return WP_VERSIONS;
+	} );
+
+	useEffect( () => {
+		let isMounted = true;
+
+		fetchBlueprintSchema()
+			.then( ( schema ) => {
+				if ( ! isMounted ) {
+					return;
+				}
+				const dynamicPhpVersions =
+					extractPhpVersionsFromSchema( schema );
+				if ( dynamicPhpVersions.length > 0 ) {
+					if (
+						currentConfig.php_version &&
+						! dynamicPhpVersions.some(
+							( opt ) => opt.value === currentConfig.php_version
+						)
+					) {
+						dynamicPhpVersions.push( {
+							label: currentConfig.php_version,
+							value: currentConfig.php_version,
+						} );
+					}
+					setPhpVersions( dynamicPhpVersions );
+				}
+			} )
+			.catch( () => {
+				// Keep fallback PHP_VERSIONS on error or offline
+			} );
+
+		return () => {
+			isMounted = false;
+		};
+	}, [ currentConfig.php_version ] );
+
+	useEffect( () => {
+		if (
+			currentConfig.wp_version &&
+			! wpVersions.some(
+				( opt ) => opt.value === currentConfig.wp_version
+			)
+		) {
+			setWpVersions( ( prev ) => [
+				...prev,
+				{
+					label: currentConfig.wp_version,
+					value: currentConfig.wp_version,
+				},
+			] );
+		}
+	}, [ currentConfig.wp_version, wpVersions ] );
+
+	return {
+		phpVersions,
+		wpVersions,
+	};
+};
+
 /**
  * Validates a JSON blueprint against a schema.
  *
@@ -109,11 +243,7 @@ const updateDeprecatedFields = ( jsonData ) => {
  */
 const validateAgainstSchema = async ( data, createNotice ) => {
 	try {
-		const response = await fetch( PLAYGROUND_BLUEPRINT_SCHEMA_URL_FETCH );
-		if ( ! response.ok ) {
-			throw new Error( 'Failed to fetch schema.' );
-		}
-		const schema = await response.json();
+		const schema = await fetchBlueprintSchema();
 
 		const ajv = new Ajv( {
 			allErrors: true,
