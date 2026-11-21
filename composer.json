@@ -44,11 +44,13 @@
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
-		"wp-coding-standards/wpcs": "^3.1"
+		"wp-coding-standards/wpcs": "^3.1",
+		"szepeviktor/phpstan-wordpress": "^2.0"
 	},
 	"scripts": {
 		"lint": "phpcs",
-		"format": "phpcbf"
+		"format": "phpcbf",
+		"phpstan": "phpstan analyse --memory-limit 512M"
 	},
 	"autoload": {
 		"classmap": [

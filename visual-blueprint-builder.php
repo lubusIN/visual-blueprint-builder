@@ -40,7 +40,7 @@ if ( ! class_exists( 'VisualBlueprintBuilder' ) ) {
 		/**
 		 * The single instance of the class.
 		 *
-		 * @var VisualBlueprintBuilder
+		 * @var VisualBlueprintBuilder|null
 		 */
 		protected static $instance = null;
 

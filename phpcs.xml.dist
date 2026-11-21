@@ -5,6 +5,7 @@
 	<!-- Scan all files in directory and subdirectories -->
 	<file>visual-blueprint-builder.php</file>
 	<file>inc</file>
+	<file>tests</file>
 
 	<!-- Exclude paths -->
 	<exclude-pattern>*/build/*</exclude-pattern>

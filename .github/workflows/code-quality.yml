@@ -77,3 +77,6 @@ jobs:
 
       - name: Check WordPress Coding Standards (PHPCS)
         run: composer lint
+
+      - name: Run PHPStan static analysis
+        run: composer run phpstan

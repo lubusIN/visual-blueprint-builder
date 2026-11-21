@@ -1,0 +1,11 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 5
+    treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - tests/phpstan/bootstrap.php
+    paths:
+        - visual-blueprint-builder.php
+        - inc/
