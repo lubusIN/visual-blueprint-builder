@@ -54,6 +54,19 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			}
 		>
 			<Stack direction="column" gap="lg">
+				<TextControl
+					label={ __( 'User Id', 'visual-blueprint-builder' ) }
+					type="number"
+					value={ userId !== undefined ? String( userId ) : '' }
+					__next40pxDefaultSize
+					style={ { maxWidth: '160px' } }
+					onChange={ ( value ) =>
+						setAttributes( {
+							userId: value === '' ? undefined : Number( value ),
+						} )
+					}
+				/>
+
 				<KeyValueEditor
 					data={ meta }
 					onChange={ ( val ) => setAttributes( { meta: val } ) }
@@ -65,19 +78,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 						'Delete Item',
 						'visual-blueprint-builder'
 					) }
-				/>
-				<TextControl
-					label={ __( 'User Id', 'visual-blueprint-builder' ) }
-					type="number"
-					value={ userId !== undefined ? String( userId ) : '' }
-					__next40pxDefaultSize
-					__nextHasNoMarginBottom
-					style={ { maxWidth: '160px' } }
-					onChange={ ( value ) =>
-						setAttributes( {
-							userId: value === '' ? undefined : Number( value ),
-						} )
-					}
 				/>
 			</Stack>
 		</StepWrapper>

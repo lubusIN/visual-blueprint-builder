@@ -88,13 +88,24 @@ function TreeRow( {
 							align="center"
 							gap="xs"
 							className="vpb-tree-children-key"
+							style={ {
+								paddingInlineStart:
+									level > 1
+										? `${ ( level - 1 ) * 20 }px`
+										: undefined,
+							} }
 						>
 							{ level > 1 && (
 								<span
 									aria-hidden="true"
-									style={ { display: 'flex' } }
+									style={ {
+										display: 'flex',
+										color: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
+										userSelect: 'none',
+										flexShrink: 0,
+									} }
 								>
-									&nbsp;&nbsp;&nbsp;&nbsp;├{ ' ' }
+									├{ ' ' }
 								</span>
 							) }
 							<TextControl
