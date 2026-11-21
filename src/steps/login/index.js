@@ -3,9 +3,9 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { key, login } from '@wordpress/icons';
+import { login } from '@wordpress/icons';
 import { DataForm } from '@wordpress/dataviews';
-import { Icon, Stack, Text } from '@wordpress/ui';
+import { Stack, Text } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
@@ -17,7 +17,7 @@ import { StepWrapper } from '../../components';
  * Edit function for login block.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { username, password } = attributes;
+	const { username = 'admin' } = attributes;
 
 	return (
 		<StepWrapper
@@ -26,24 +26,13 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			isSelected={ isSelected }
 			summary={
 				<Stack direction="row" align="center" gap="xs">
-					<Text variant="body-md">
-						{ username ||
-							__( 'Username', 'visual-blueprint-builder' ) }
-					</Text>
-					<Icon
-						icon={ key }
-						size={ 16 }
-						style={ {
-							fill: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
-						} }
-					/>
+					<Text variant="body-md">{ username || 'admin' }</Text>
 				</Stack>
 			}
 		>
 			<DataForm
 				data={ {
 					username,
-					password,
 				} }
 				fields={ [
 					{
@@ -51,22 +40,13 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 						label: __( 'Username', 'visual-blueprint-builder' ),
 						type: 'text',
 						placeholder: __(
-							'Enter username',
-							'visual-blueprint-builder'
-						),
-					},
-					{
-						id: 'password',
-						label: __( 'Password', 'visual-blueprint-builder' ),
-						type: 'text',
-						placeholder: __(
-							'Enter password',
+							'Enter username (defaults to admin)',
 							'visual-blueprint-builder'
 						),
 					},
 				] }
 				form={ {
-					fields: [ 'username', 'password' ],
+					fields: [ 'username' ],
 				} }
 				onChange={ setAttributes }
 			/>

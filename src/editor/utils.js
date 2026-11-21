@@ -147,6 +147,33 @@ export const updateDeprecatedFields = ( jsonData ) => {
 				s = rest;
 			}
 
+			if ( s.step === 'runSql' && typeof s.sql === 'string' ) {
+				s = {
+					...s,
+					sql: {
+						resource: 'literal',
+						name: 'query.sql',
+						contents: s.sql,
+					},
+				};
+			}
+
+			if (
+				s.step === 'writeFiles' &&
+				s.filesTree &&
+				typeof s.filesTree === 'object' &&
+				s.filesTree.resource !== 'git:directory' &&
+				! s.filesTree.name
+			) {
+				s = {
+					...s,
+					filesTree: {
+						...s.filesTree,
+						name: 'files',
+					},
+				};
+			}
+
 			return s;
 		} );
 	}
@@ -570,6 +597,74 @@ export const useBlueprintData = () => {
 			}
 			if ( cleanStep.step === 'unzip' ) {
 				delete cleanStep.zipPath;
+			}
+			if (
+				cleanStep.step === 'resetData' &&
+				( ! cleanStep.contentTypes ||
+					cleanStep.contentTypes.length === 0 )
+			) {
+				delete cleanStep.contentTypes;
+			}
+			if (
+				( cleanStep.step === 'installPlugin' ||
+					cleanStep.step === 'installTheme' ) &&
+				! cleanStep.ifAlreadyInstalled
+			) {
+				delete cleanStep.ifAlreadyInstalled;
+			}
+			if ( cleanStep.options && typeof cleanStep.options === 'object' ) {
+				cleanStep.options = { ...cleanStep.options };
+				if ( ! cleanStep.options.onError ) {
+					delete cleanStep.options.onError;
+				}
+				if ( ! cleanStep.options.targetFolderName ) {
+					delete cleanStep.options.targetFolderName;
+				}
+			}
+			if (
+				cleanStep.step === 'importWordPressFiles' &&
+				! cleanStep.pathInZip
+			) {
+				delete cleanStep.pathInZip;
+			}
+			if (
+				( cleanStep.step === 'wp-cli' ||
+					cleanStep.step === 'enableMultisite' ) &&
+				! cleanStep.wpCliPath
+			) {
+				delete cleanStep.wpCliPath;
+			}
+			if ( cleanStep.step === 'runSql' ) {
+				if ( ! cleanStep.sql || typeof cleanStep.sql !== 'object' ) {
+					cleanStep.sql = {
+						resource: 'literal',
+						name: 'query.sql',
+						contents: '',
+					};
+				}
+			}
+			if ( cleanStep.step === 'writeFiles' ) {
+				if ( ! cleanStep.writeToPath ) {
+					cleanStep.writeToPath = '/wordpress';
+				}
+				if (
+					! cleanStep.filesTree ||
+					typeof cleanStep.filesTree !== 'object'
+				) {
+					cleanStep.filesTree = {
+						name: 'files',
+						files: {},
+					};
+				} else if (
+					cleanStep.filesTree.resource !== 'git:directory' &&
+					! cleanStep.filesTree.name
+				) {
+					cleanStep.filesTree = {
+						...cleanStep.filesTree,
+						name: 'files',
+						files: cleanStep.filesTree.files || {},
+					};
+				}
 			}
 
 			return cleanStep;

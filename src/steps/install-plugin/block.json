@@ -34,6 +34,10 @@
 				}
 			}
 		},
+		"ifAlreadyInstalled": {
+			"type": "string",
+			"enum": [ "overwrite", "skip", "error" ]
+		},
 		"options": {
 			"type": "object",
 			"default": {
@@ -42,6 +46,13 @@
 			"properties": {
 				"activate": {
 					"type": "boolean"
+				},
+				"onError": {
+					"type": "string",
+					"enum": [ "skip-plugin", "throw" ]
+				},
+				"targetFolderName": {
+					"type": "string"
 				}
 			}
 		}

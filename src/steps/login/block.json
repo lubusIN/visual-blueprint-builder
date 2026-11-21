@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Login",
 	"category": "config",
-	"description": "Logs in to Playground. Under the hood, this function submits the wp-login.php form just like a user would.",
+	"description": "Logs in to Playground. Under the hood, this sets the PLAYGROUND_AUTO_LOGIN_AS_USER constant to authenticate the user on the first load.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -19,11 +19,10 @@
 		},
 		"username": {
 			"type": "string",
-			"default": ""
+			"default": "admin"
 		},
 		"password": {
-			"type": "string",
-			"default": ""
+			"type": "string"
 		}
 	},
 	"textdomain": "visual-blueprint-builder",

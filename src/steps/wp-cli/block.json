@@ -18,6 +18,9 @@
 		},
 		"command": {
 			"type": "string"
+		},
+		"wpCliPath": {
+			"type": "string"
 		}
 	},
 	"textdomain": "visual-blueprint-builder",

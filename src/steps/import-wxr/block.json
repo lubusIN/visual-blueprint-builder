@@ -28,8 +28,36 @@
 				},
 				"url": {
 					"type": "string"
+				},
+				"path": {
+					"type": "string"
 				}
 			}
+		},
+		"fetchAttachments": {
+			"type": "boolean",
+			"default": true
+		},
+		"rewriteUrls": {
+			"type": "boolean",
+			"default": true
+		},
+		"importComments": {
+			"type": "boolean",
+			"default": true
+		},
+		"defaultAuthorUsername": {
+			"type": "string",
+			"default": "admin"
+		},
+		"authorsMode": {
+			"type": "string",
+			"default": "default-author",
+			"enum": [ "default-author", "create", "map" ]
+		},
+		"importUsers": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"textdomain": "visual-blueprint-builder",
