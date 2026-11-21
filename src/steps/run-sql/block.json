@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Run SQL",
 	"category": "scripts",
-	"description": "Runs SQL queries directly against the WordPress database.",
+	"description": "Run one or more SQL queries using WP_MySQL_Naive_Query_Stream and $wpdb.",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -20,7 +20,7 @@
 			"type": "object",
 			"default": {
 				"resource": "literal",
-				"name": "query.sql",
+				"name": "schema.sql",
 				"contents": ""
 			}
 		}

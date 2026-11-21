@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies.
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { database } from '@wordpress/icons';
 import {
@@ -20,77 +20,51 @@ import { StepWrapper } from '../../components';
 
 /**
  * Edit function for run-sql block.
- *
- * @param {Object} props Component props.
- * @param {Object} props.attributes Block attributes.
- * @param {Function} props.setAttributes Attributes updater.
- * @param {boolean} props.isSelected Whether block is selected.
- * @return {JSX.Element} Edit component.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { sql = {} } = attributes;
+	const resource = sql.resource || 'literal';
+	const contents = sql.contents || '';
+	const path = sql.path || '';
+	const url = sql.url || '';
 
-	const resourceType = sql?.resource || 'literal';
-	const literalContents =
-		resourceType === 'literal' ? sql?.contents || '' : '';
-	const urlValue = resourceType === 'url' ? sql?.url || '' : '';
-	const vfsValue = resourceType === 'vfs' ? sql?.path || '' : '';
-
-	const handleResourceTypeChange = ( newType ) => {
-		if ( newType === resourceType ) {
-			return;
-		}
-
-		if ( newType === 'literal' ) {
+	const handleResourceChange = ( newResource ) => {
+		if ( newResource === 'literal' ) {
 			setAttributes( {
 				sql: {
 					resource: 'literal',
-					name: 'query.sql',
-					contents: literalContents,
+					name: sql.name || 'schema.sql',
+					contents: contents || '',
 				},
 			} );
-		} else if ( newType === 'url' ) {
-			setAttributes( {
-				sql: {
-					resource: 'url',
-					url: urlValue,
-				},
-			} );
-		} else if ( newType === 'vfs' ) {
+		} else if ( newResource === 'vfs' ) {
 			setAttributes( {
 				sql: {
 					resource: 'vfs',
-					path: vfsValue,
+					path: path || '',
+				},
+			} );
+		} else if ( newResource === 'url' ) {
+			setAttributes( {
+				sql: {
+					resource: 'url',
+					url: url || '',
 				},
 			} );
 		}
 	};
 
-	let summary = __( '{SQL Query}', 'visual-blueprint-builder' );
-	if ( resourceType === 'literal' && literalContents.trim() ) {
-		const firstLine = literalContents
-			.trim()
-			.split( '\n' )
-			.find(
-				( line ) =>
-					line.trim().length > 0 && ! line.trim().startsWith( '--' )
-			);
-		summary = firstLine || literalContents.trim().split( '\n' )[ 0 ];
-		if ( summary.length > 50 ) {
-			summary = `${ summary.substring( 0, 47 ) }...`;
-		}
-	} else if ( resourceType === 'url' && urlValue ) {
-		summary = sprintf(
-			/* translators: %s: SQL file URL */
-			__( 'URL: %s', 'visual-blueprint-builder' ),
-			urlValue
-		);
-	} else if ( resourceType === 'vfs' && vfsValue ) {
-		summary = sprintf(
-			/* translators: %s: SQL file path */
-			__( 'VFS: %s', 'visual-blueprint-builder' ),
-			vfsValue
-		);
+	let summary = __( 'SQL Query', 'visual-blueprint-builder' );
+	if ( resource === 'literal' && contents ) {
+		const firstLine = contents.trim().split( '\n' )[ 0 ];
+		summary =
+			firstLine.length > 40
+				? `${ firstLine.substring( 0, 40 ) }...`
+				: firstLine;
+	} else if ( resource === 'vfs' ) {
+		summary = path || __( '{VFS Path}', 'visual-blueprint-builder' );
+	} else if ( resource === 'url' ) {
+		summary = url || __( '{SQL URL}', 'visual-blueprint-builder' );
 	}
 
 	return (
@@ -102,79 +76,79 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 		>
 			<Stack direction="column" gap="md">
 				<ToggleGroupControl
-					__nextHasNoMarginBottom
+					label={ __( 'Source', 'visual-blueprint-builder' ) }
+					value={ resource }
 					isBlock
-					label={ __( 'SQL Source', 'visual-blueprint-builder' ) }
-					value={ resourceType }
-					onChange={ handleResourceTypeChange }
+					onChange={ handleResourceChange }
+					__nextHasNoMarginBottom
 				>
 					<ToggleGroupControlOption
 						value="literal"
-						label={ __( 'Inline SQL', 'visual-blueprint-builder' ) }
-					/>
-					<ToggleGroupControlOption
-						value="url"
-						label={ __( 'File URL', 'visual-blueprint-builder' ) }
+						label={ __( 'Query', 'visual-blueprint-builder' ) }
 					/>
 					<ToggleGroupControlOption
 						value="vfs"
-						label={ __( 'VFS Path', 'visual-blueprint-builder' ) }
+						label={ __( 'VFS File', 'visual-blueprint-builder' ) }
+					/>
+					<ToggleGroupControlOption
+						value="url"
+						label={ __( 'URL', 'visual-blueprint-builder' ) }
 					/>
 				</ToggleGroupControl>
 
-				{ resourceType === 'literal' && (
-					<TextareaControl
-						__nextHasNoMarginBottom
-						label={ __(
-							'SQL Queries',
-							'visual-blueprint-builder'
-						) }
-						help={ __(
-							'Each non-empty line must contain a valid SQL query.',
-							'visual-blueprint-builder'
-						) }
-						placeholder="UPDATE wp_options SET option_value = 'My Site' WHERE option_name = 'blogname';"
-						value={ literalContents }
-						onChange={ ( val ) =>
-							setAttributes( {
-								sql: {
-									resource: 'literal',
-									name: sql?.name || 'query.sql',
-									contents: val,
-								},
-							} )
-						}
-						rows={ 6 }
-					/>
+				{ resource === 'literal' && (
+					<>
+						<TextControl
+							label={ __(
+								'File Name (Optional)',
+								'visual-blueprint-builder'
+							) }
+							value={ sql.name || 'schema.sql' }
+							onChange={ ( val ) =>
+								setAttributes( {
+									sql: {
+										...sql,
+										name: val || 'schema.sql',
+									},
+								} )
+							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+						/>
+						<TextareaControl
+							label={ __(
+								'SQL Queries',
+								'visual-blueprint-builder'
+							) }
+							value={ contents }
+							placeholder="DELETE FROM wp_posts WHERE post_type = 'post';"
+							help={ __(
+								'Supports multiline queries, comments, and queries separated by semicolons. Executed using $wpdb.',
+								'visual-blueprint-builder'
+							) }
+							onChange={ ( val ) =>
+								setAttributes( {
+									sql: {
+										...sql,
+										resource: 'literal',
+										contents: val,
+									},
+								} )
+							}
+							rows={ 6 }
+							__nextHasNoMarginBottom
+						/>
+					</>
 				) }
 
-				{ resourceType === 'url' && (
+				{ resource === 'vfs' && (
 					<TextControl
-						__nextHasNoMarginBottom
 						label={ __(
-							'SQL File URL',
+							'VFS File Path',
 							'visual-blueprint-builder'
 						) }
-						type="url"
-						placeholder="https://example.com/queries.sql"
-						value={ urlValue }
-						onChange={ ( val ) =>
-							setAttributes( {
-								sql: {
-									resource: 'url',
-									url: val,
-								},
-							} )
-						}
-					/>
-				) }
-
-				{ resourceType === 'vfs' && (
-					<TextControl
-						__nextHasNoMarginBottom
-						label={ __( 'VFS Path', 'visual-blueprint-builder' ) }
-						placeholder="/wordpress/queries.sql"
-						value={ vfsValue }
+						value={ path }
+						placeholder="/wordpress/schema.sql"
 						onChange={ ( val ) =>
 							setAttributes( {
 								sql: {
@@ -183,6 +157,29 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 								},
 							} )
 						}
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
+					/>
+				) }
+
+				{ resource === 'url' && (
+					<TextControl
+						label={ __(
+							'SQL File URL',
+							'visual-blueprint-builder'
+						) }
+						value={ url }
+						placeholder="https://example.com/database.sql"
+						onChange={ ( val ) =>
+							setAttributes( {
+								sql: {
+									resource: 'url',
+									url: val,
+								},
+							} )
+						}
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
 					/>
 				) }
 			</Stack>

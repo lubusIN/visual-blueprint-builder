@@ -6,92 +6,85 @@ import { registerBlockType } from '@wordpress/blocks';
 import { folder } from '@wordpress/icons';
 import {
 	TextControl,
+	TextareaControl,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { Stack } from '@wordpress/ui';
 
 /**
  * Internal dependencies.
  */
 import metadata from './block.json';
-import { StepWrapper, TreeEditor } from '../../components';
+import { StepWrapper } from '../../components';
 
 /**
  * Edit function for write-files block.
- *
- * @param {Object} props Component props.
- * @param {Object} props.attributes Block attributes.
- * @param {Function} props.setAttributes Attributes updater.
- * @param {boolean} props.isSelected Whether block is selected.
- * @return {JSX.Element} Edit component.
  */
 function Edit( { attributes, setAttributes, isSelected } ) {
-	const { writeToPath = '', filesTree = {} } = attributes;
+	const { writeToPath = '', filesTree = { name: 'directory', files: {} } } =
+		attributes;
 
-	const isGit = filesTree?.resource === 'git:directory';
-	const treeType = isGit ? 'git' : 'inline';
-
-	const handleTreeTypeChange = ( newType ) => {
-		if ( newType === treeType ) {
-			return;
+	const isGit = filesTree.resource === 'git:directory';
+	const [ rawFilesJson, setRawFilesJson ] = useState( () => {
+		try {
+			return JSON.stringify( filesTree.files || {}, null, 2 );
+		} catch {
+			return '{}';
 		}
+	} );
 
-		if ( newType === 'git' ) {
+	const handleSourceChange = ( newSource ) => {
+		if ( newSource === 'git:directory' ) {
 			setAttributes( {
 				filesTree: {
 					resource: 'git:directory',
-					url: '',
-					ref: 'trunk',
-					path: '',
+					url: filesTree.url || '',
+					ref: filesTree.ref || 'HEAD',
+					path: filesTree.path || '',
 				},
 			} );
 		} else {
+			let parsedFiles = {};
+			try {
+				parsedFiles = JSON.parse( rawFilesJson );
+			} catch {
+				parsedFiles = {};
+			}
+
 			setAttributes( {
 				filesTree: {
-					name: 'files',
-					files: {},
+					name: filesTree.name || 'directory',
+					files: parsedFiles,
 				},
 			} );
 		}
 	};
 
-	const handleFilesChange = ( newFiles ) => {
-		setAttributes( {
-			filesTree: {
-				...filesTree,
-				name: filesTree?.name || 'files',
-				files: newFiles,
-			},
-		} );
-	};
-
-	const handleNameChange = ( newName ) => {
-		setAttributes( {
-			filesTree: {
-				...filesTree,
-				name: newName,
-			},
-		} );
-	};
-
-	const handleGitChange = ( field, val ) => {
-		setAttributes( {
-			filesTree: {
-				...filesTree,
-				resource: 'git:directory',
-				[ field ]: val,
-			},
-		} );
+	const handleFilesJsonChange = ( value ) => {
+		setRawFilesJson( value );
+		try {
+			const parsed = JSON.parse( value );
+			setAttributes( {
+				filesTree: {
+					...filesTree,
+					name: filesTree.name || 'directory',
+					files: parsed,
+				},
+			} );
+		} catch {
+			// Leave invalid JSON in rawFilesJson without corrupting filesTree
+		}
 	};
 
 	const summary = writeToPath
 		? sprintf(
 				/* translators: %s: target directory path */
-				__( 'write files to %s', 'visual-blueprint-builder' ),
+				__( 'write directory tree to %s', 'visual-blueprint-builder' ),
 				writeToPath
 		  )
-		: __( '{write to path}', 'visual-blueprint-builder' );
+		: __( 'Write Directory Tree', 'visual-blueprint-builder' );
 
 	return (
 		<StepWrapper
@@ -102,98 +95,141 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 		>
 			<Stack direction="column" gap="md">
 				<TextControl
-					__nextHasNoMarginBottom
-					label={ __( 'Write To Path', 'visual-blueprint-builder' ) }
-					help={ __(
-						'The directory path where files should be written.',
+					label={ __(
+						'Destination Path',
 						'visual-blueprint-builder'
 					) }
-					placeholder="/wordpress/wp-content/plugins/my-plugin"
 					value={ writeToPath }
+					placeholder="/wordpress/wp-content/plugins/my-plugin"
+					help={ __(
+						'The directory inside Playground to write the files to.',
+						'visual-blueprint-builder'
+					) }
 					onChange={ ( val ) =>
 						setAttributes( { writeToPath: val } )
 					}
+					__next40pxDefaultSize
+					__nextHasNoMarginBottom
 				/>
 
 				<ToggleGroupControl
-					__nextHasNoMarginBottom
+					label={ __( 'Source', 'visual-blueprint-builder' ) }
+					value={ isGit ? 'git:directory' : 'inline' }
 					isBlock
-					label={ __( 'Source Type', 'visual-blueprint-builder' ) }
-					value={ treeType }
-					onChange={ handleTreeTypeChange }
+					onChange={ handleSourceChange }
+					__nextHasNoMarginBottom
 				>
 					<ToggleGroupControlOption
 						value="inline"
 						label={ __(
-							'Inline Tree',
+							'Inline Directory Tree',
 							'visual-blueprint-builder'
 						) }
 					/>
 					<ToggleGroupControlOption
-						value="git"
+						value="git:directory"
 						label={ __(
-							'Git Repository',
+							'Git Directory',
 							'visual-blueprint-builder'
 						) }
 					/>
 				</ToggleGroupControl>
 
-				{ treeType === 'inline' && (
+				{ ! isGit && (
 					<>
 						<TextControl
-							__nextHasNoMarginBottom
 							label={ __(
 								'Root Directory Name',
 								'visual-blueprint-builder'
 							) }
+							value={ filesTree.name || '' }
 							placeholder="my-plugin"
-							value={ filesTree?.name || '' }
-							onChange={ handleNameChange }
+							onChange={ ( val ) =>
+								setAttributes( {
+									filesTree: {
+										...filesTree,
+										name: val,
+									},
+								} )
+							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
 						/>
-						<TreeEditor
-							data={ filesTree?.files || {} }
-							onChange={ handleFilesChange }
+						<TextareaControl
+							label={ __(
+								'Files Mapping (JSON format)',
+								'visual-blueprint-builder'
+							) }
+							value={ rawFilesJson }
+							placeholder={
+								'{\n  "index.php": "<?php echo \\"Hello World!\\"; ?>",\n  "public": {\n    "style.css": "body { color: red; }"\n  }\n}'
+							}
+							help={ __(
+								'Maps file names to string content or nested subdirectory objects.',
+								'visual-blueprint-builder'
+							) }
+							onChange={ handleFilesJsonChange }
+							rows={ 8 }
+							__nextHasNoMarginBottom
 						/>
 					</>
 				) }
 
-				{ treeType === 'git' && (
+				{ isGit && (
 					<>
 						<TextControl
-							__nextHasNoMarginBottom
 							label={ __(
 								'Git Repository URL',
 								'visual-blueprint-builder'
 							) }
-							placeholder="https://github.com/WordPress/theme-experiments.git"
-							value={ filesTree?.url || '' }
+							value={ filesTree.url || '' }
+							placeholder="https://github.com/WordPress/wordpress-playground.git"
 							onChange={ ( val ) =>
-								handleGitChange( 'url', val )
+								setAttributes( {
+									filesTree: {
+										...filesTree,
+										url: val,
+									},
+								} )
 							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
 						/>
 						<TextControl
-							__nextHasNoMarginBottom
 							label={ __(
-								'Branch, Tag, or Commit',
+								'Git Ref (Branch, tag, or commit)',
 								'visual-blueprint-builder'
 							) }
-							placeholder="trunk"
-							value={ filesTree?.ref || '' }
+							value={ filesTree.ref || '' }
+							placeholder="HEAD"
 							onChange={ ( val ) =>
-								handleGitChange( 'ref', val )
+								setAttributes( {
+									filesTree: {
+										...filesTree,
+										ref: val,
+									},
+								} )
 							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
 						/>
 						<TextControl
-							__nextHasNoMarginBottom
 							label={ __(
-								'Path in Repository (Optional)',
+								'Subdirectory in Repo (Optional)',
 								'visual-blueprint-builder'
 							) }
-							placeholder="plugins/my-plugin"
-							value={ filesTree?.path || '' }
+							value={ filesTree.path || '' }
+							placeholder="wp-content/plugins/hello-dolly"
 							onChange={ ( val ) =>
-								handleGitChange( 'path', val )
+								setAttributes( {
+									filesTree: {
+										...filesTree,
+										path: val,
+									},
+								} )
 							}
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
 						/>
 					</>
 				) }
