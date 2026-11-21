@@ -1,0 +1,11 @@
+build/
+vendor/
+node_modules/
+package-lock.json
+composer.lock
+.github/
+_playground/
+assets/
+languages/
+*.min.js
+*.min.css
