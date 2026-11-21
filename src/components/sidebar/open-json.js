@@ -81,6 +81,7 @@ const OpenJson = ( { icon = null, handleClose } ) => {
 			accept="application/json"
 			onChange={ handleFileSelection }
 			icon={ null }
+			__next40pxDefaultSize
 		>
 			{ ! isUploadingJson && (
 				<>
