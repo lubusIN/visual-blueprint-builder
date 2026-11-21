@@ -18,6 +18,9 @@
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --blocks-manifest",
+		"test": "wp-scripts test-unit-js",
+		"test:unit": "wp-scripts test-unit-js",
+		"test:unit:watch": "wp-scripts test-unit-js --watch",
 		"serve": "npx @wp-playground/cli@latest server --auto-mount --blueprint=./_playground/blueprint-local.json --blueprint-may-read-adjacent-files",
 		"setup": "npm install && npm run build && composer install",
 		"prepare": "husky"

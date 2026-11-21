@@ -38,6 +38,9 @@ jobs:
       - name: Lint CSS
         run: npm run lint:css
 
+      - name: Run unit tests
+        run: npm run test:unit
+
       - name: Build assets
         run: npm run build
 
