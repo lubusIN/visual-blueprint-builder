@@ -1,13 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from '@wordpress/element';
-import { plus, trash } from '@wordpress/icons';
+import { pencil, plus, trash } from '@wordpress/icons';
 import {
 	Button,
+	Modal,
 	SelectControl,
 	TextControl,
+	TextareaControl,
 	__experimentalTreeGrid as TreeGrid,
 	__experimentalTreeGridRow as TreeGridRow,
 	__experimentalTreeGridCell as TreeGridCell,
@@ -72,7 +74,25 @@ function TreeRow( {
 	onDelete,
 	onTypeChange,
 	onAddChild,
+	typeOptions,
+	placeholders,
+	addChildButtonLabel,
+	deleteButtonLabel,
+	valueModal,
+	onOpenValueModal,
+	valueModalButtonLabel,
 } ) {
+	let buttonLabel;
+	if ( typeof valueModalButtonLabel === 'function' ) {
+		buttonLabel = valueModalButtonLabel( item );
+	} else if ( valueModalButtonLabel ) {
+		buttonLabel = valueModalButtonLabel;
+	} else if ( item.value ) {
+		buttonLabel = __( 'Edit Content', 'visual-blueprint-builder' );
+	} else {
+		buttonLabel = __( 'Add Content', 'visual-blueprint-builder' );
+	}
+
 	return (
 		<>
 			<TreeGridRow
@@ -111,10 +131,10 @@ function TreeRow( {
 							<TextControl
 								{ ...props }
 								value={ item.key }
-								placeholder={ __(
-									'Name',
-									'visual-blueprint-builder'
-								) }
+								placeholder={
+									placeholders?.key ||
+									__( 'Name', 'visual-blueprint-builder' )
+								}
 								onChange={ ( value ) =>
 									onUpdate( item.id, 'key', value )
 								}
@@ -128,11 +148,27 @@ function TreeRow( {
 					{ ( props ) => (
 						<SelectControl
 							{ ...props }
+							label={ __( 'Type', 'visual-blueprint-builder' ) }
+							hideLabelFromVision
 							value={ item.type }
-							options={ [
-								{ label: 'String', value: 'string' },
-								{ label: 'Object', value: 'object' },
-							] }
+							options={
+								typeOptions || [
+									{
+										label: __(
+											'String',
+											'visual-blueprint-builder'
+										),
+										value: 'string',
+									},
+									{
+										label: __(
+											'Object',
+											'visual-blueprint-builder'
+										),
+										value: 'object',
+									},
+								]
+							}
 							onChange={ ( value ) =>
 								onTypeChange( item.id, value )
 							}
@@ -142,61 +178,98 @@ function TreeRow( {
 					) }
 				</TreeGridCell>
 				<TreeGridCell>
-					{ ( props ) =>
-						item.type === 'string' ? (
+					{ ( props ) => {
+						if ( item.type !== 'string' ) {
+							return (
+								<Stack
+									direction="row"
+									align="center"
+									gap="sm"
+									style={ { minHeight: '40px' } }
+								>
+									<Text
+										variant="body-sm"
+										style={ {
+											color: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
+										} }
+										{ ...props }
+									>
+										{ item.children.length }{ ' ' }
+										{ item.children.length === 1
+											? __(
+													'item',
+													'visual-blueprint-builder'
+											  )
+											: __(
+													'items',
+													'visual-blueprint-builder'
+											  ) }
+									</Text>
+									<Button
+										variant="tertiary"
+										size="small"
+										icon={ plus }
+										onClick={ () => onAddChild( item.id ) }
+										label={
+											addChildButtonLabel ||
+											__(
+												'Add Child',
+												'visual-blueprint-builder'
+											)
+										}
+									/>
+								</Stack>
+							);
+						}
+
+						if ( valueModal ) {
+							return (
+								<Button
+									{ ...props }
+									variant="secondary"
+									icon={ pencil }
+									onClick={ () => onOpenValueModal( item ) }
+									label={ buttonLabel }
+									__next40pxDefaultSize
+								>
+									{ buttonLabel }
+								</Button>
+							);
+						}
+
+						return (
 							<TextControl
 								{ ...props }
 								value={ item.value }
-								placeholder={ __(
-									'Value',
-									'visual-blueprint-builder'
-								) }
+								placeholder={
+									placeholders?.value ||
+									__( 'Value', 'visual-blueprint-builder' )
+								}
 								onChange={ ( value ) =>
 									onUpdate( item.id, 'value', value )
 								}
 								__next40pxDefaultSize
 								__nextHasNoMarginBottom
 							/>
-						) : (
-							<Stack direction="row" align="center" gap="sm">
-								<Text
-									variant="body-sm"
-									style={ {
-										color: 'var(--wpds-color-fg-content-neutral-weak, #757575)',
-									} }
-									{ ...props }
-								>
-									{ item.children.length }{ ' ' }
-									{ item.children.length === 1
-										? 'item'
-										: 'items' }
-								</Text>
-								<Button
-									variant="tertiary"
-									size="small"
-									icon={ plus }
-									onClick={ () => onAddChild( item.id ) }
-									label={ __(
-										'Add Child',
-										'visual-blueprint-builder'
-									) }
-								/>
-							</Stack>
-						)
-					}
+						);
+					} }
 				</TreeGridCell>
-				<TreeGridCell style={ { width: '40px' } }>
+				<TreeGridCell>
 					{ ( props ) => (
 						<Button
 							{ ...props }
 							isDestructive
 							variant="tertiary"
-							label={ __(
-								'Delete Option',
-								'visual-blueprint-builder'
-							) }
+							label={
+								deleteButtonLabel ||
+								__(
+									'Delete Option',
+									'visual-blueprint-builder'
+								)
+							}
 							icon={ trash }
 							onClick={ () => onDelete( item.id ) }
+							__next40pxDefaultSize
 						/>
 					) }
 				</TreeGridCell>
@@ -213,6 +286,13 @@ function TreeRow( {
 						onDelete={ onDelete }
 						onTypeChange={ onTypeChange }
 						onAddChild={ onAddChild }
+						typeOptions={ typeOptions }
+						placeholders={ placeholders }
+						addChildButtonLabel={ addChildButtonLabel }
+						deleteButtonLabel={ deleteButtonLabel }
+						valueModal={ valueModal }
+						onOpenValueModal={ onOpenValueModal }
+						valueModalButtonLabel={ valueModalButtonLabel }
 					/>
 				) ) }
 		</>
@@ -228,10 +308,29 @@ function TreeRow( {
  * @param {Function} props.onChange Callback fired when the object changes.
  * @return {JSX.Element} TreeEditor component.
  */
-export default function TreeEditor( { data, onChange } ) {
+export default function TreeEditor( {
+	data,
+	onChange,
+	headerLabels = {
+		key: __( 'Name', 'visual-blueprint-builder' ),
+		type: __( 'Type', 'visual-blueprint-builder' ),
+		value: __( 'Value', 'visual-blueprint-builder' ),
+	},
+	typeOptions,
+	placeholders,
+	addButtonLabel,
+	addChildButtonLabel,
+	deleteButtonLabel,
+	valueModal = false,
+	valueModalTitle,
+	valueModalButtonLabel,
+	valueModalSaveLabel,
+} ) {
 	const [ treeData, setTreeData ] = useState( () =>
 		objectToTreeData( data || {} )
 	);
+	const [ activeModalItem, setActiveModalItem ] = useState( null );
+	const [ modalValue, setModalValue ] = useState( '' );
 	const isInternalUpdate = useRef( false );
 	const prevDataRef = useRef( data );
 	const lastEmittedRef = useRef( null );
@@ -396,59 +495,178 @@ export default function TreeEditor( { data, onChange } ) {
 		setTreeData( [ ...treeData, newItem ] );
 	};
 
+	const handleOpenValueModal = ( item ) => {
+		setActiveModalItem( item );
+		setModalValue( item.value || '' );
+	};
+
+	const handleCloseValueModal = () => {
+		setActiveModalItem( null );
+		setModalValue( '' );
+	};
+
+	const handleSaveValueModal = () => {
+		if ( activeModalItem ) {
+			updateTreeItem( activeModalItem.id, 'value', modalValue );
+		}
+		setActiveModalItem( null );
+		setModalValue( '' );
+	};
+
 	return (
-		<Stack direction="column" gap="md">
-			<TreeGrid style={ { width: '100%' } } className="vpb-object-tree">
-				<TreeGridRow
-					level={ 1 }
-					positionInSet={ 1 }
-					setSize={ treeData.length + 1 }
+		<>
+			<Stack direction="column" gap="md">
+				<TreeGrid
+					style={ { width: '100%' } }
+					className="vpb-object-tree"
 				>
-					<TreeGridCell>
-						{ ( props ) => (
-							<span { ...props } style={ { fontWeight: 600 } }>
-								{ __( 'Name', 'visual-blueprint-builder' ) }
-							</span>
-						) }
-					</TreeGridCell>
-					<TreeGridCell>
-						{ ( props ) => (
-							<span { ...props } style={ { fontWeight: 600 } }>
-								{ __( 'Type', 'visual-blueprint-builder' ) }
-							</span>
-						) }
-					</TreeGridCell>
-					<TreeGridCell>
-						{ ( props ) => (
-							<span { ...props } style={ { fontWeight: 600 } }>
-								{ __( 'Value', 'visual-blueprint-builder' ) }
-							</span>
-						) }
-					</TreeGridCell>
-					<TreeGridCell>
-						{ ( props ) => <span { ...props }></span> }
-					</TreeGridCell>
-				</TreeGridRow>
-				{ treeData.map( ( item, index ) => (
-					<TreeRow
-						key={ item.id }
-						item={ item }
+					<TreeGridRow
 						level={ 1 }
-						positionInSet={ index + 1 }
-						setSize={ treeData.length }
-						onUpdate={ updateTreeItem }
-						onDelete={ deleteTreeItem }
-						onTypeChange={ changeItemType }
-						onAddChild={ addChildItem }
-					/>
-				) ) }
-			</TreeGrid>
-			<Button
-				icon={ plus }
-				variant="secondary"
-				label={ __( 'Add Option', 'visual-blueprint-builder' ) }
-				onClick={ addNewItem }
-			/>
-		</Stack>
+						positionInSet={ 1 }
+						setSize={ treeData.length + 1 }
+					>
+						<TreeGridCell>
+							{ ( props ) => (
+								<span
+									{ ...props }
+									style={ { fontWeight: 600 } }
+								>
+									{ headerLabels?.key ||
+										__(
+											'Name',
+											'visual-blueprint-builder'
+										) }
+								</span>
+							) }
+						</TreeGridCell>
+						<TreeGridCell>
+							{ ( props ) => (
+								<span
+									{ ...props }
+									style={ { fontWeight: 600 } }
+								>
+									{ headerLabels?.type ||
+										__(
+											'Type',
+											'visual-blueprint-builder'
+										) }
+								</span>
+							) }
+						</TreeGridCell>
+						<TreeGridCell>
+							{ ( props ) => (
+								<span
+									{ ...props }
+									style={ { fontWeight: 600 } }
+								>
+									{ headerLabels?.value ||
+										__(
+											'Value',
+											'visual-blueprint-builder'
+										) }
+								</span>
+							) }
+						</TreeGridCell>
+						<TreeGridCell>
+							{ ( props ) => <span { ...props }></span> }
+						</TreeGridCell>
+					</TreeGridRow>
+					{ treeData.map( ( item, index ) => (
+						<TreeRow
+							key={ item.id }
+							item={ item }
+							level={ 1 }
+							positionInSet={ index + 1 }
+							setSize={ treeData.length }
+							onUpdate={ updateTreeItem }
+							onDelete={ deleteTreeItem }
+							onTypeChange={ changeItemType }
+							onAddChild={ addChildItem }
+							typeOptions={ typeOptions }
+							placeholders={ placeholders }
+							addChildButtonLabel={ addChildButtonLabel }
+							deleteButtonLabel={ deleteButtonLabel }
+							valueModal={ valueModal }
+							onOpenValueModal={ handleOpenValueModal }
+							valueModalButtonLabel={ valueModalButtonLabel }
+						/>
+					) ) }
+				</TreeGrid>
+				<Button
+					icon={ plus }
+					variant="secondary"
+					label={
+						addButtonLabel ||
+						__( 'Add Option', 'visual-blueprint-builder' )
+					}
+					onClick={ addNewItem }
+				/>
+			</Stack>
+
+			{ activeModalItem && (
+				<Modal
+					title={
+						typeof valueModalTitle === 'function'
+							? valueModalTitle( activeModalItem )
+							: valueModalTitle ||
+							  sprintf(
+									/* translators: %s: file or item name */
+									__(
+										'Edit Content: %s',
+										'visual-blueprint-builder'
+									),
+									activeModalItem.key ||
+										__(
+											'Untitled',
+											'visual-blueprint-builder'
+										)
+							  )
+					}
+					onRequestClose={ handleCloseValueModal }
+					size="large"
+					className="vbb-content-modal"
+				>
+					<Stack direction="column" gap="md">
+						<TextareaControl
+							label={
+								headerLabels?.value ||
+								__( 'Content', 'visual-blueprint-builder' )
+							}
+							hideLabelFromVision
+							value={ modalValue }
+							onChange={ setModalValue }
+							rows={ 16 }
+							className="vbb-content-modal-textarea"
+							placeholder={
+								placeholders?.value ||
+								__(
+									'Enter file content…',
+									'visual-blueprint-builder'
+								)
+							}
+							__nextHasNoMarginBottom
+						/>
+						<Stack direction="row" justify="flex-end" gap="sm">
+							<Button
+								variant="tertiary"
+								onClick={ handleCloseValueModal }
+							>
+								{ __( 'Cancel', 'visual-blueprint-builder' ) }
+							</Button>
+							<Button
+								variant="primary"
+								onClick={ handleSaveValueModal }
+							>
+								{ valueModalSaveLabel ||
+									__(
+										'Save Content',
+										'visual-blueprint-builder'
+									) }
+							</Button>
+						</Stack>
+					</Stack>
+				</Modal>
+			) }
+		</>
 	);
 }
