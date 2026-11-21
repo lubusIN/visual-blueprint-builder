@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { blockMeta } from '@wordpress/icons';
+import { sites } from '@wordpress/icons';
 
 /**
  * Internal dependencies.
@@ -18,7 +18,7 @@ function Edit( { isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ blockMeta }
+			icon={ sites }
 			isSelected={ isSelected }
 			summary={ __(
 				'Activate Multisite Network',
@@ -29,6 +29,6 @@ function Edit( { isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: blockMeta,
+	icon: sites,
 	edit: Edit,
 } );

@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { listItem } from '@wordpress/icons';
+import { tool } from '@wordpress/icons';
 import { TextareaControl } from '@wordpress/components';
 
 /**
@@ -21,7 +21,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ listItem }
+			icon={ tool }
 			isSelected={ isSelected }
 			summary={
 				command || __( '{command to run}', 'visual-blueprint-builder' )
@@ -39,6 +39,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: listItem,
+	icon: tool,
 	edit: Edit,
 } );

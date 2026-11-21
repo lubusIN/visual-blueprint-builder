@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { file } from '@wordpress/icons';
+import { folder } from '@wordpress/icons';
 import { DataForm } from '@wordpress/dataviews';
 
 /**
@@ -28,7 +28,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ file }
+			icon={ folder }
 			isSelected={ isSelected }
 			summary={ summary }
 		>
@@ -55,6 +55,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: file,
+	icon: folder,
 	edit: Edit,
 } );

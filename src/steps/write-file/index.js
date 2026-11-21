@@ -3,7 +3,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { page } from '@wordpress/icons';
+import { file } from '@wordpress/icons';
 import {
 	TextControl,
 	TextareaControl,
@@ -65,7 +65,7 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	return (
 		<StepWrapper
 			title={ metadata.title }
-			icon={ page }
+			icon={ file }
 			isSelected={ isSelected }
 			summary={ summary }
 		>
@@ -132,6 +132,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 }
 
 registerBlockType( metadata.name, {
-	icon: page,
+	icon: file,
 	edit: Edit,
 } );

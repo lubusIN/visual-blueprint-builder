@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { cog } from '@wordpress/icons';
+import { code } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 import { Modal, Button } from '@wordpress/components';
 
@@ -37,8 +37,8 @@ function ConstantsSettings( { attributes = {}, setAttributes } ) {
 	return (
 		<>
 			<Button
-				icon={ cog }
-				iconSize={ 30 }
+				size="compact"
+				icon={ code }
 				onClick={ handleOpen }
 				label={ __(
 					'Configure Constants',
