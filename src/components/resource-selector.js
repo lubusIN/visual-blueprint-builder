@@ -124,6 +124,7 @@ export default function ResourceSelector( { type, data, onChange } ) {
 		<>
 			<ToggleGroupControl
 				label={ __( 'Resource', 'visual-blueprint-builder' ) }
+				__next40pxDefaultSize
 				__nextHasNoMarginBottom
 				value={ resource }
 				isBlock

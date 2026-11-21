@@ -21,6 +21,9 @@ module.exports = [
 				...globals.node,
 			},
 		},
+		rules: {
+			'import/no-extraneous-dependencies': 'off',
+		},
 	},
 	{
 		languageOptions: {

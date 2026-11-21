@@ -6,7 +6,7 @@ const { test, expect } = require( '@wordpress/e2e-test-utils-playwright' );
 test.describe( 'Visual Blueprint Builder', () => {
 	test.beforeEach( async ( { admin } ) => {
 		// Create a new Blueprint post
-		await admin.createNewPost( { postType: 'wp_blueprint' } );
+		await admin.createNewPost( { postType: 'blueprint' } );
 	} );
 
 	test( 'loads the blueprint editor canvas without errors', async ( {
