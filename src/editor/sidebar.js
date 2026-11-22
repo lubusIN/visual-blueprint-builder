@@ -90,7 +90,10 @@ function BlueprintSidebarSettings() {
 						php_version: blueprintConfig.php_version,
 						wp_version: blueprintConfig.wp_version,
 						landing_page: blueprintConfig.landing_page,
-						networking: blueprintConfig.networking || false,
+						networking:
+							blueprintConfig.networking !== undefined
+								? Boolean( blueprintConfig.networking )
+								: true,
 						intl: blueprintConfig.intl || false,
 						login: blueprintConfig.login || false,
 						extraLibraries: Array.isArray(

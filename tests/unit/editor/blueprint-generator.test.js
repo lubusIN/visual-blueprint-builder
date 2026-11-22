@@ -268,6 +268,35 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 			);
 			expect( updateMock ).not.toHaveBeenCalled();
 		} );
+
+		it( 'preserves omitted features.networking as undefined and retains false when set', () => {
+			const updateMock = jest.fn();
+			const noticeMock = jest.fn();
+
+			// Test omitted networking
+			handleJsonDataSubmit(
+				{ preferredVersions: { php: '8.2', wp: '6.6' } },
+				updateMock,
+				noticeMock
+			);
+			expect( updateMock ).toHaveBeenLastCalledWith(
+				expect.objectContaining( {
+					networking: undefined,
+				} )
+			);
+
+			// Test explicit false networking
+			handleJsonDataSubmit(
+				{ features: { networking: false } },
+				updateMock,
+				noticeMock
+			);
+			expect( updateMock ).toHaveBeenLastCalledWith(
+				expect.objectContaining( {
+					networking: false,
+				} )
+			);
+		} );
 	} );
 
 	describe( 'validateAgainstSchema', () => {
