@@ -9,3 +9,8 @@ parameters:
     paths:
         - visual-blueprint-builder.php
         - inc/
+    ignoreErrors:
+        -
+            identifier: require.fileNotFound
+            path: inc/admin/class-enqueue-scripts.php
+            reportUnmatched: false
