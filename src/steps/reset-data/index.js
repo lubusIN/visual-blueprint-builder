@@ -2,6 +2,7 @@
  * WordPress dependencies.
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { useEffect } from '@wordpress/element';
 import { registerBlockType } from '@wordpress/blocks';
 import { database } from '@wordpress/icons';
 import { ToggleControl } from '@wordpress/components';
@@ -25,11 +26,23 @@ import metadata from './block.json';
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { contentTypes } = attributes;
 
+	// Normalize legacy empty contentTypes array to undefined (all-content default)
+	const normalizedContentTypes =
+		Array.isArray( contentTypes ) && contentTypes.length === 0
+			? undefined
+			: contentTypes;
+
+	useEffect( () => {
+		if ( Array.isArray( contentTypes ) && contentTypes.length === 0 ) {
+			setAttributes( { contentTypes: undefined } );
+		}
+	}, [ contentTypes, setAttributes ] );
+
 	// When contentTypes is undefined, null, or not an array, it represents "all content types"
 	const isAll =
-		contentTypes === undefined ||
-		contentTypes === null ||
-		! Array.isArray( contentTypes );
+		normalizedContentTypes === undefined ||
+		normalizedContentTypes === null ||
+		! Array.isArray( normalizedContentTypes );
 
 	const handleToggleAll = ( checked ) => {
 		if ( checked ) {
@@ -40,8 +53,8 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 	};
 
 	const handleToggleType = ( type, checked ) => {
-		const current = Array.isArray( contentTypes )
-			? [ ...contentTypes ]
+		const current = Array.isArray( normalizedContentTypes )
+			? [ ...normalizedContentTypes ]
 			: [];
 		let next;
 		if ( checked ) {
@@ -63,16 +76,11 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			'Delete all posts, pages, custom post types, and comments',
 			'visual-blueprint-builder'
 		);
-	} else if ( contentTypes.length === 0 ) {
-		summary = __(
-			'Delete all content (Default)',
-			'visual-blueprint-builder'
-		);
 	} else {
 		summary = sprintf(
 			/* translators: %s: Comma-separated content types */
 			__( 'Delete only: %s', 'visual-blueprint-builder' ),
-			contentTypes.join( ', ' )
+			normalizedContentTypes.join( ', ' )
 		);
 	}
 
@@ -101,7 +109,9 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 					<Stack direction="column" gap="xs">
 						<ToggleControl
 							label={ __( 'Posts', 'visual-blueprint-builder' ) }
-							checked={ contentTypes.includes( 'posts' ) }
+							checked={ ( normalizedContentTypes || [] ).includes(
+								'posts'
+							) }
 							onChange={ ( checked ) =>
 								handleToggleType( 'posts', checked )
 							}
@@ -109,7 +119,9 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 						/>
 						<ToggleControl
 							label={ __( 'Pages', 'visual-blueprint-builder' ) }
-							checked={ contentTypes.includes( 'pages' ) }
+							checked={ ( normalizedContentTypes || [] ).includes(
+								'pages'
+							) }
 							onChange={ ( checked ) =>
 								handleToggleType( 'pages', checked )
 							}
@@ -120,7 +132,9 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 								'Comments',
 								'visual-blueprint-builder'
 							) }
-							checked={ contentTypes.includes( 'comments' ) }
+							checked={ ( normalizedContentTypes || [] ).includes(
+								'comments'
+							) }
 							onChange={ ( checked ) =>
 								handleToggleType( 'comments', checked )
 							}

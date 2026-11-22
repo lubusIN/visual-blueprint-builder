@@ -21,11 +21,12 @@ let uniqueNodeId = 0;
 /**
  * Convert object to tree structure for TreeGrid
  */
-export function objectToTreeData( obj, parentPath = '' ) {
+export function objectToTreeData( obj, parentPath = '', parentSegments = [] ) {
 	const treeData = [];
 
 	Object.entries( obj || {} ).forEach( ( [ key, value ] ) => {
 		const currentPath = parentPath ? `${ parentPath }.${ key }` : key;
+		const currentSegments = [ ...parentSegments, key ];
 		const isObject =
 			typeof value === 'object' &&
 			value !== null &&
@@ -37,8 +38,11 @@ export function objectToTreeData( obj, parentPath = '' ) {
 			value: isObject ? '' : value,
 			type: isObject ? 'object' : 'string',
 			path: currentPath,
+			pathSegments: currentSegments,
 			hasChildren: isObject,
-			children: isObject ? objectToTreeData( value, currentPath ) : [],
+			children: isObject
+				? objectToTreeData( value, currentPath, currentSegments )
+				: [],
 		} );
 	} );
 
@@ -300,7 +304,65 @@ function TreeRow( {
 }
 
 /**
- * Find an item in the tree by its id or path.
+ * Search the entire tree for an item matching the given ID.
+ *
+ * @param {Array}  items Tree nodes to search.
+ * @param {string} id    Node ID to find.
+ * @return {Object|null} Matching tree item or null.
+ */
+export function findItemById( items, id ) {
+	if ( ! id || ! Array.isArray( items ) ) {
+		return null;
+	}
+	for ( const item of items ) {
+		if ( item.id === id ) {
+			return item;
+		}
+		if ( item.children && item.children.length > 0 ) {
+			const found = findItemById( item.children, id );
+			if ( found ) {
+				return found;
+			}
+		}
+	}
+	return null;
+}
+
+/**
+ * Resolve an item in the tree by its structural key segments.
+ *
+ * @param {Array} items    Tree nodes to search.
+ * @param {Array} segments Array of key strings from root to target.
+ * @return {Object|null} Matching tree item or null.
+ */
+export function findItemBySegments( items, segments ) {
+	if (
+		! Array.isArray( items ) ||
+		! Array.isArray( segments ) ||
+		segments.length === 0
+	) {
+		return null;
+	}
+
+	let currentItems = items;
+	let currentItem = null;
+
+	for ( let i = 0; i < segments.length; i++ ) {
+		const seg = segments[ i ];
+		currentItem = currentItems.find( ( item ) => item.key === seg );
+		if ( ! currentItem ) {
+			return null;
+		}
+		if ( i < segments.length - 1 ) {
+			currentItems = currentItem.children || [];
+		}
+	}
+
+	return currentItem;
+}
+
+/**
+ * Find an item in the tree by its id or structural path.
  *
  * @param {Array}  items      Tree nodes to search.
  * @param {Object} targetItem Target item with id or path.
@@ -310,21 +372,88 @@ export function findTreeItem( items, targetItem ) {
 	if ( ! targetItem || ! Array.isArray( items ) ) {
 		return null;
 	}
-	for ( const item of items ) {
-		if (
-			item.id === targetItem.id ||
-			( targetItem.path && item.path === targetItem.path )
-		) {
-			return item;
-		}
-		if ( item.children && item.children.length > 0 ) {
-			const found = findTreeItem( item.children, targetItem );
-			if ( found ) {
-				return found;
-			}
+
+	// 1. Search the entire tree for a matching ID first.
+	if ( targetItem.id ) {
+		const itemById = findItemById( items, targetItem.id );
+		if ( itemById ) {
+			return itemById;
 		}
 	}
+
+	const hasStructuralIdentity =
+		Array.isArray( targetItem.pathSegments ) ||
+		Array.isArray( targetItem.path );
+
+	// 2. When IDs have been regenerated and structural identity is present, resolve by key segments.
+	if ( hasStructuralIdentity ) {
+		const segments = Array.isArray( targetItem.pathSegments )
+			? targetItem.pathSegments
+			: targetItem.path;
+
+		if ( segments && segments.length > 0 ) {
+			const itemBySegments = findItemBySegments( items, segments );
+			if ( itemBySegments ) {
+				return itemBySegments;
+			}
+		}
+
+		return null;
+	}
+
+	// 3. Fallback check for legacy targets without structural identity.
+	if ( typeof targetItem.path === 'string' && targetItem.path.length > 0 ) {
+		const segments = targetItem.path.split( '.' );
+		if ( segments.length > 0 ) {
+			const itemBySegments = findItemBySegments( items, segments );
+			if ( itemBySegments ) {
+				return itemBySegments;
+			}
+		}
+
+		const findByPath = ( nodes ) => {
+			for ( const node of nodes ) {
+				if ( node.path === targetItem.path ) {
+					return node;
+				}
+				if ( node.children && node.children.length > 0 ) {
+					const found = findByPath( node.children );
+					if ( found ) {
+						return found;
+					}
+				}
+			}
+			return null;
+		};
+		const itemByPath = findByPath( items );
+		if ( itemByPath ) {
+			return itemByPath;
+		}
+	}
+
 	return null;
+}
+
+/**
+ * Recursively synchronize the path and pathSegments of an item and all its descendants.
+ *
+ * @param {Object} item           Tree node.
+ * @param {string} parentPath     Parent path string.
+ * @param {Array}  parentSegments Parent key segments.
+ * @return {Object} Synchronized tree node.
+ */
+function syncDescendantPaths( item, parentPath = '', parentSegments = [] ) {
+	const currentPath = parentPath ? `${ parentPath }.${ item.key }` : item.key;
+	const currentSegments = [ ...parentSegments, item.key ];
+
+	return {
+		...item,
+		path: currentPath,
+		pathSegments: currentSegments,
+		children: ( item.children || [] ).map( ( child ) =>
+			syncDescendantPaths( child, currentPath, currentSegments )
+		),
+	};
 }
 
 /**
@@ -409,18 +538,61 @@ export default function TreeEditor( {
 	}, [ data, treeData ] );
 
 	const updateTreeItem = ( id, field, value ) => {
-		const updateItem = ( items ) => {
+		const updateItem = ( items, parentPath = '', parentSegments = [] ) => {
 			return items.map( ( item ) => {
+				const currentPath = parentPath
+					? `${ parentPath }.${ item.key }`
+					: item.key;
+				const currentSegments = [ ...parentSegments, item.key ];
+
 				if ( item.id === id ) {
+					if ( field === 'key' ) {
+						const newKey = value;
+						const newPath = parentPath
+							? `${ parentPath }.${ newKey }`
+							: newKey;
+						const newSegments = [ ...parentSegments, newKey ];
+
+						return {
+							...item,
+							key: newKey,
+							path: newPath,
+							pathSegments: newSegments,
+							children: ( item.children || [] ).map( ( child ) =>
+								syncDescendantPaths(
+									child,
+									newPath,
+									newSegments
+								)
+							),
+						};
+					}
 					return { ...item, [ field ]: value };
 				}
 				if ( item.children.length > 0 ) {
-					return { ...item, children: updateItem( item.children ) };
+					return {
+						...item,
+						children: updateItem(
+							item.children,
+							item.path || currentPath,
+							item.pathSegments || currentSegments
+						),
+					};
 				}
 				return item;
 			} );
 		};
-		setTreeData( updateItem( treeData ) );
+
+		const nextTreeData = updateItem( treeData );
+		setTreeData( nextTreeData );
+
+		// Keep active modal targeting aligned with the renamed node
+		if ( activeModalItem && field === 'key' ) {
+			const matched = findItemById( nextTreeData, activeModalItem.id );
+			if ( matched ) {
+				setActiveModalItem( matched );
+			}
+		}
 	};
 
 	const changeItemType = ( id, newType ) => {
@@ -444,6 +616,12 @@ export default function TreeEditor( {
 												path: `${
 													item.path
 												}.new_${ Date.now() }`,
+												pathSegments: [
+													...( item.pathSegments || [
+														item.key,
+													] ),
+													'',
+												],
 												hasChildren: false,
 												children: [],
 											},
@@ -493,6 +671,10 @@ export default function TreeEditor( {
 						value: '',
 						type: 'string',
 						path: `${ item.path }.new_${ Date.now() }`,
+						pathSegments: [
+							...( item.pathSegments || [ item.key ] ),
+							'',
+						],
 						hasChildren: false,
 						children: [],
 					};
@@ -517,6 +699,7 @@ export default function TreeEditor( {
 			value: '',
 			type: 'string',
 			path: `new_${ Date.now() }`,
+			pathSegments: [ '' ],
 			hasChildren: false,
 			children: [],
 		};

@@ -106,6 +106,44 @@ describe( 'TreeEditor Component Utilities', () => {
 			expect( findTreeItem( tree, target ) ).toBe( target );
 		} );
 
+		it( 'searches entire tree for matching ID first', () => {
+			const tree = objectToTreeData( {
+				parent: { child: 'test' },
+				other: 'val',
+			} );
+			const targetChild = tree[ 0 ].children[ 0 ];
+			// Pass matching id with a stale/different path
+			const resolved = findTreeItem( tree, {
+				id: targetChild.id,
+				path: 'nonexistent.path',
+				pathSegments: [ 'nonexistent', 'path' ],
+			} );
+
+			expect( resolved ).toBe( targetChild );
+		} );
+
+		it( 'resolves collision-free by key segments when IDs are regenerated and keys have dots', () => {
+			const data = {
+				'a.b': { c: 'first' },
+				a: { 'b.c': 'second' },
+			};
+			const tree1 = objectToTreeData( data );
+			const target1 = tree1[ 0 ].children[ 0 ]; // 'a.b' -> 'c'
+			const target2 = tree1[ 1 ].children[ 0 ]; // 'a' -> 'b.c'
+
+			const tree2 = objectToTreeData( data );
+			const resolved1 = findTreeItem( tree2, target1 );
+			const resolved2 = findTreeItem( tree2, target2 );
+
+			expect( resolved1 ).toBeDefined();
+			expect( resolved1.value ).toBe( 'first' );
+			expect( resolved1.pathSegments ).toEqual( [ 'a.b', 'c' ] );
+
+			expect( resolved2 ).toBeDefined();
+			expect( resolved2.value ).toBe( 'second' );
+			expect( resolved2.pathSegments ).toEqual( [ 'a', 'b.c' ] );
+		} );
+
 		it( 'finds an item by path when tree is regenerated with different ids', () => {
 			const tree1 = objectToTreeData( { site: { title: 'Test' } } );
 			const originalTarget = tree1[ 0 ].children[ 0 ];
@@ -126,6 +164,28 @@ describe( 'TreeEditor Component Utilities', () => {
 
 			const tree2 = objectToTreeData( { other: 'Value' } );
 			expect( findTreeItem( tree2, originalTarget ) ).toBeNull();
+		} );
+
+		it( 'returns null when a dotted-key target is removed, without falling back to a surviving item with the same string path', () => {
+			// Both targets produce the string path 'a.b.c'
+			const originalData = {
+				'a.b': { c: 'first' },
+				a: { 'b.c': 'second' },
+			};
+			const tree1 = objectToTreeData( originalData );
+			// Target is 'a.b' -> 'c' (path: 'a.b.c', pathSegments: ['a.b', 'c'])
+			const target1 = tree1[ 0 ].children[ 0 ];
+
+			// Remove 'a.b' so only 'a' -> 'b.c' survives in the regenerated tree
+			const updatedData = {
+				a: { 'b.c': 'second' },
+			};
+			const tree2 = objectToTreeData( updatedData );
+
+			// ID was regenerated, and target1 has structural identity ('pathSegments')
+			// Lookup for target1 must return null, NOT the surviving node with string path 'a.b.c'
+			const resolved = findTreeItem( tree2, target1 );
+			expect( resolved ).toBeNull();
 		} );
 	} );
 } );

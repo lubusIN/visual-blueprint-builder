@@ -460,7 +460,10 @@ export const handleJsonDataSubmit = (
 		landing_page: data.landingPage,
 		php_version: preferredVersions.php || 'latest',
 		wp_version: preferredVersions.wp ?? 'latest',
-		networking: Boolean( features.networking ),
+		networking:
+			features.networking !== undefined
+				? Boolean( features.networking )
+				: undefined,
 		intl: Boolean( features.intl ),
 		login: data.login || false,
 		siteOptions: data.siteOptions || undefined,
