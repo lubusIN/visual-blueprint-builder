@@ -129,13 +129,6 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 							),
 							value: 'create',
 						},
-						{
-							label: __(
-								'Map author accounts',
-								'visual-blueprint-builder'
-							),
-							value: 'map',
-						},
 					] }
 					onChange={ ( val ) =>
 						setAttributes( { authorsMode: val } )

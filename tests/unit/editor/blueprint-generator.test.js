@@ -53,6 +53,19 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 			expect( schema.login ).toBe( true );
 		} );
 
+		it( 'serializes features.networking as false when networking is explicitly disabled', () => {
+			const blueprintConfig = {
+				networking: false,
+			};
+
+			const jsonStr = buildBlueprintJson( { blueprintConfig } );
+			const schema = JSON.parse( jsonStr );
+
+			expect( schema.features ).toEqual( {
+				networking: false,
+			} );
+		} );
+
 		it( 'handles boolean extraLibraries fallback', () => {
 			const blueprintConfig = {
 				extraLibraries: true,
@@ -197,7 +210,7 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 			expect( schema.steps[ 8 ].sql ).toEqual( {
 				resource: 'literal',
 				name: 'query.sql',
-				contents: '',
+				contents: 'SELECT 1;',
 			} );
 
 			// writeFiles defaults

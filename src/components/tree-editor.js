@@ -300,6 +300,34 @@ function TreeRow( {
 }
 
 /**
+ * Find an item in the tree by its id or path.
+ *
+ * @param {Array}  items      Tree nodes to search.
+ * @param {Object} targetItem Target item with id or path.
+ * @return {Object|null} Matching tree item or null.
+ */
+export function findTreeItem( items, targetItem ) {
+	if ( ! targetItem || ! Array.isArray( items ) ) {
+		return null;
+	}
+	for ( const item of items ) {
+		if (
+			item.id === targetItem.id ||
+			( targetItem.path && item.path === targetItem.path )
+		) {
+			return item;
+		}
+		if ( item.children && item.children.length > 0 ) {
+			const found = findTreeItem( item.children, targetItem );
+			if ( found ) {
+				return found;
+			}
+		}
+	}
+	return null;
+}
+
+/**
  * A reusable component for editing deeply nested JSON object structures
  * via a TreeGrid UI.
  *
@@ -507,7 +535,11 @@ export default function TreeEditor( {
 
 	const handleSaveValueModal = () => {
 		if ( activeModalItem ) {
-			updateTreeItem( activeModalItem.id, 'value', modalValue );
+			const target = findTreeItem( treeData, activeModalItem );
+			if ( ! target ) {
+				return;
+			}
+			updateTreeItem( target.id, 'value', modalValue );
 		}
 		setActiveModalItem( null );
 		setModalValue( '' );

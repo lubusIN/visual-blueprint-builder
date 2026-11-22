@@ -25,6 +25,7 @@
 		"test:e2e": "wp-scripts test-playwright",
 		"test:e2e:debug": "wp-scripts test-playwright --debug",
 		"serve": "npx @wp-playground/cli@latest server --auto-mount --blueprint=./_playground/blueprint-local.json --blueprint-may-read-adjacent-files",
+		"wp-env": "npx @wordpress/env",
 		"setup": "npm install && npm run build && composer install",
 		"prepare": "husky"
 	},

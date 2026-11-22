@@ -27,8 +27,15 @@ use WP\Admin\VisualBlueprintBuilder\{
 
 defined( 'ABSPATH' ) || exit;
 
-require_once 'vendor/autoload.php';
-require_once 'inc/functions.php';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	require_once __DIR__ . '/inc/admin/class-enqueue-scripts.php';
+	require_once __DIR__ . '/inc/admin/class-register-post-type.php';
+	require_once __DIR__ . '/inc/admin/class-register-steps.php';
+	require_once __DIR__ . '/inc/admin/class-register-meta.php';
+}
+require_once __DIR__ . '/inc/functions.php';
 
 if ( ! class_exists( 'VisualBlueprintBuilder' ) ) {
 
