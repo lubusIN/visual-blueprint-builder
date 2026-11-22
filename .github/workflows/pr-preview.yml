@@ -7,4 +7,7 @@ on:
 jobs:
   build-and-preview:
     uses: lubusIN/.github/.github/workflows/pr-preview.yml@main
+    with:
+      landing-page: '/wp-admin/post-new.php?post_type=blueprint'
+      append-to-pr-description: true
     secrets: inherit
