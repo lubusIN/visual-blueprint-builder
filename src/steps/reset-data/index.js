@@ -25,11 +25,11 @@ import metadata from './block.json';
 function Edit( { attributes, setAttributes, isSelected } ) {
 	const { contentTypes } = attributes;
 
-	// When contentTypes is undefined, null, or empty, it represents "all content types"
+	// When contentTypes is undefined, null, or not an array, it represents "all content types"
 	const isAll =
-		! contentTypes ||
-		! Array.isArray( contentTypes ) ||
-		contentTypes.length === 0;
+		contentTypes === undefined ||
+		contentTypes === null ||
+		! Array.isArray( contentTypes );
 
 	const handleToggleAll = ( checked ) => {
 		if ( checked ) {
@@ -50,11 +50,11 @@ function Edit( { attributes, setAttributes, isSelected } ) {
 			next = current.filter( ( t ) => t !== type );
 		}
 
-		if ( next.length === 3 ) {
-			setAttributes( { contentTypes: undefined } );
-		} else {
-			setAttributes( { contentTypes: next } );
+		if ( next.length === 0 ) {
+			return;
 		}
+
+		setAttributes( { contentTypes: next } );
 	};
 
 	let summary;

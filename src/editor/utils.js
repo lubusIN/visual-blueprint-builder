@@ -623,7 +623,13 @@ export const buildBlueprintJson = ( {
 			delete cleanStep.wpCliPath;
 		}
 		if ( cleanStep.step === 'runSql' ) {
-			if ( ! cleanStep.sql || typeof cleanStep.sql !== 'object' ) {
+			if ( typeof cleanStep.sql === 'string' ) {
+				cleanStep.sql = {
+					resource: 'literal',
+					name: 'query.sql',
+					contents: cleanStep.sql,
+				};
+			} else if ( ! cleanStep.sql || typeof cleanStep.sql !== 'object' ) {
 				cleanStep.sql = {
 					resource: 'literal',
 					name: 'query.sql',
@@ -668,8 +674,11 @@ export const buildBlueprintJson = ( {
 	}
 
 	const features = {};
-	if ( blueprintConfig.networking ) {
-		features.networking = true;
+	if (
+		blueprintConfig.networking !== undefined &&
+		blueprintConfig.networking !== null
+	) {
+		features.networking = Boolean( blueprintConfig.networking );
 	}
 	if ( blueprintConfig.intl ) {
 		features.intl = true;

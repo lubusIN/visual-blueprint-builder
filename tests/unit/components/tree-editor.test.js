@@ -4,6 +4,7 @@
 import {
 	objectToTreeData,
 	treeDataToObject,
+	findTreeItem,
 } from '../../../src/components/tree-editor';
 
 describe( 'TreeEditor Component Utilities', () => {
@@ -94,6 +95,37 @@ describe( 'TreeEditor Component Utilities', () => {
 		it( 'handles empty objects gracefully', () => {
 			expect( objectToTreeData( {} ) ).toEqual( [] );
 			expect( treeDataToObject( [] ) ).toEqual( {} );
+		} );
+	} );
+
+	describe( 'findTreeItem', () => {
+		it( 'finds an item by id', () => {
+			const tree = objectToTreeData( { site: { title: 'Test' } } );
+			const target = tree[ 0 ].children[ 0 ];
+
+			expect( findTreeItem( tree, target ) ).toBe( target );
+		} );
+
+		it( 'finds an item by path when tree is regenerated with different ids', () => {
+			const tree1 = objectToTreeData( { site: { title: 'Test' } } );
+			const originalTarget = tree1[ 0 ].children[ 0 ];
+
+			const tree2 = objectToTreeData( {
+				site: { title: 'Test Updated' },
+			} );
+			const resolved = findTreeItem( tree2, originalTarget );
+
+			expect( resolved ).toBeDefined();
+			expect( resolved.path ).toBe( originalTarget.path );
+			expect( resolved.id ).not.toBe( originalTarget.id );
+		} );
+
+		it( 'returns null when target item no longer exists in tree', () => {
+			const tree1 = objectToTreeData( { site: { title: 'Test' } } );
+			const originalTarget = tree1[ 0 ].children[ 0 ];
+
+			const tree2 = objectToTreeData( { other: 'Value' } );
+			expect( findTreeItem( tree2, originalTarget ) ).toBeNull();
 		} );
 	} );
 } );
