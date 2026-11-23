@@ -55,6 +55,9 @@
 			"default": "default-author",
 			"enum": [ "default-author", "create", "map" ]
 		},
+		"authorsMap": {
+			"type": "object"
+		},
 		"importUsers": {
 			"type": "boolean",
 			"default": false
