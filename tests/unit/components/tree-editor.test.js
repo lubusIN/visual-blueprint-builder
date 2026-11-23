@@ -538,5 +538,73 @@ describe( 'TreeEditor Component Utilities', () => {
 				container.querySelector( 'input[value="external"]' )
 			).toBeNull();
 		} );
+
+		it( 'replaces tree data on external change when sibling conflict exists without emitting stale data', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item1: 'val1', item2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			onChangeMock.mockClear();
+
+			// Rename second item to 'item1' (creating sibling conflict)
+			const inputs = container.querySelectorAll(
+				'.vpb-tree-children-key input[type="text"]'
+			);
+			act( () => {
+				const item2Input = inputs[ 1 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( item2Input, 'item1' );
+				item2Input.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Conflict notice should be visible
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed'
+				)
+			).toBe( true );
+			expect( onChangeMock ).not.toHaveBeenCalled();
+
+			// External change passes new data
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { resetItem: 'resetVal' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Conflict notice should disappear and treeData should match new external data
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed'
+				)
+			).toBe( false );
+
+			const updatedKeyInputs = container.querySelectorAll(
+				'.vpb-tree-children-key input[type="text"]'
+			);
+			expect( updatedKeyInputs.length ).toBe( 1 );
+			expect( updatedKeyInputs[ 0 ].value ).toBe( 'resetItem' );
+
+			const valueInput = container.querySelector(
+				'input[value="resetVal"]'
+			);
+			expect( valueInput ).not.toBeNull();
+			expect( onChangeMock ).not.toHaveBeenCalled();
+		} );
 	} );
 } );

@@ -556,13 +556,13 @@ export default function TreeEditor( {
 			dataString !== prevDataString && dataString !== lastEmittedString;
 
 		if ( isExternalChange ) {
-			prevDataRef.current = data;
-			lastEmittedRef.current = data;
 			const newOptions = treeDataToObject( treeData );
 			if (
-				newOptions !== null &&
+				newOptions === null ||
 				dataString !== JSON.stringify( newOptions || {} )
 			) {
+				prevDataRef.current = data;
+				lastEmittedRef.current = data;
 				setTreeData( objectToTreeData( data || {} ) );
 			}
 			return;
