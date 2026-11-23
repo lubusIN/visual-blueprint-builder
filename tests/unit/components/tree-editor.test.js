@@ -464,5 +464,79 @@ describe( 'TreeEditor Component Utilities', () => {
 				)
 			).toBe( false );
 		} );
+
+		it( 'applies external data that matches a previous local emission after an intermediate external change', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item1: 'initial' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Edit value of item1 to 'local_val'
+			const valueInput = container.querySelector(
+				'input[value="initial"]'
+			);
+			act( () => {
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( valueInput, 'local_val' );
+				valueInput.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			expect( onChangeMock ).toHaveBeenCalledWith( {
+				item1: 'local_val',
+			} );
+
+			// Parent updates data to { item1: 'local_val' }
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item1: 'local_val' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// External change: parent passes { item2: 'external' }
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item2: 'external' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			expect(
+				container.querySelector( 'input[value="external"]' )
+			).not.toBeNull();
+
+			// External change again: parent passes { item1: 'local_val' } which matched previous local emission
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item1: 'local_val' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Should update to { item1: 'local_val' } rather than ignoring it as an echo
+			expect(
+				container.querySelector( 'input[value="local_val"]' )
+			).not.toBeNull();
+			expect(
+				container.querySelector( 'input[value="external"]' )
+			).toBeNull();
+		} );
 	} );
 } );
