@@ -1,11 +1,23 @@
 /**
+ * External dependencies
+ */
+import { act } from 'react';
+
+/**
+ * WordPress dependencies
+ */
+import { createRoot } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
-import {
+import KeyValueEditor, {
 	addKeyValuePair,
 	updateKeyValuePair,
 	removeKeyValuePair,
 	checkAddButtonDisabled,
+	hasDuplicateNames,
+	hasDuplicateKeys,
 	keyValuePairsToObject,
 } from '../../../src/components/key-value-editor';
 
@@ -110,6 +122,54 @@ describe( 'KeyValueEditor Component Utilities', () => {
 		} );
 	} );
 
+	describe( 'hasDuplicateNames', () => {
+		it( 'returns false for unique names or empty lists', () => {
+			expect( hasDuplicateNames( [] ) ).toBe( false );
+			expect(
+				hasDuplicateNames( [
+					[ 'key1', 'val1' ],
+					[ 'key2', 'val2' ],
+				] )
+			).toBe( false );
+			expect( hasDuplicateKeys( [] ) ).toBe( false );
+		} );
+
+		it( 'returns false for multiple blank or whitespace keys', () => {
+			expect(
+				hasDuplicateNames( [
+					[ '', '' ],
+					[ '', '' ],
+				] )
+			).toBe( false );
+			expect(
+				hasDuplicateNames( [
+					[ '   ', 'val1' ],
+					[ '   ', 'val2' ],
+				] )
+			).toBe( false );
+		} );
+
+		it( 'returns true when duplicate names exist', () => {
+			expect(
+				hasDuplicateNames( [
+					[ 'key1', 'val1' ],
+					[ 'key1', 'val2' ],
+				] )
+			).toBe( true );
+			expect(
+				hasDuplicateNames( [
+					[ 'key1', 'val1' ],
+					[ ' key1 ', 'val2' ],
+				] )
+			).toBe( true );
+		} );
+
+		it( 'returns false for invalid inputs', () => {
+			expect( hasDuplicateNames( null ) ).toBe( false );
+			expect( hasDuplicateNames( undefined ) ).toBe( false );
+		} );
+	} );
+
 	describe( 'keyValuePairsToObject', () => {
 		it( 'converts valid pairs array into key-value object', () => {
 			const list = [
@@ -121,6 +181,15 @@ describe( 'KeyValueEditor Component Utilities', () => {
 				siteTitle: 'My Blueprint',
 				postsPerPage: '10',
 			} );
+		} );
+
+		it( 'returns null if duplicate names are detected', () => {
+			const list = [
+				[ 'dupKey', 'val1' ],
+				[ 'dupKey', 'val2' ],
+			];
+
+			expect( keyValuePairsToObject( list ) ).toBeNull();
 		} );
 
 		it( 'discards empty, whitespace-only, null, or undefined keys', () => {
@@ -143,6 +212,94 @@ describe( 'KeyValueEditor Component Utilities', () => {
 			expect( keyValuePairsToObject( null ) ).toEqual( {} );
 			expect( keyValuePairsToObject( undefined ) ).toEqual( {} );
 			expect( keyValuePairsToObject( 'invalid' ) ).toEqual( {} );
+		} );
+	} );
+
+	describe( 'KeyValueEditor Component', () => {
+		let container;
+		let root;
+
+		beforeEach( () => {
+			container = document.createElement( 'div' );
+			document.body.appendChild( container );
+			root = createRoot( container );
+		} );
+
+		afterEach( () => {
+			act( () => {
+				root.unmount();
+			} );
+			container.remove();
+		} );
+
+		it( 'shows duplicate-name error and does not emit when duplicate keys are entered', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'val1', key2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			onChangeMock.mockClear();
+
+			// Inputs are [Name0, Value0, Name1, Value1]
+			const inputs = container.querySelectorAll( 'input[type="text"]' );
+			expect( inputs.length ).toBe( 4 );
+
+			// Update second key input from 'key2' to 'key1' to cause duplicate
+			act( () => {
+				const nameInput1 = inputs[ 2 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( nameInput1, 'key1' );
+				nameInput1.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Duplicate-name error notice should be visible
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( true );
+
+			// onChange should NOT have been called while duplicate exists
+			expect( onChangeMock ).not.toHaveBeenCalled();
+
+			// Now resolve duplicate by renaming second key to 'key3'
+			const updatedInputs =
+				container.querySelectorAll( 'input[type="text"]' );
+			act( () => {
+				const nameInput1 = updatedInputs[ 2 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( nameInput1, 'key3' );
+				nameInput1.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Duplicate-name error notice should disappear
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( false );
+
+			// Normal conversion should resume and emit the unique object
+			expect( onChangeMock ).toHaveBeenCalledWith( {
+				key1: 'val1',
+				key3: 'val2',
+			} );
 		} );
 	} );
 } );

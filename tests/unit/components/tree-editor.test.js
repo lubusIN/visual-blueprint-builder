@@ -1,10 +1,21 @@
 /**
+ * External dependencies
+ */
+import { act } from 'react';
+
+/**
+ * WordPress dependencies
+ */
+import { createRoot } from '@wordpress/element';
+
+/**
  * Internal dependencies
  */
-import {
+import TreeEditor, {
 	objectToTreeData,
 	treeDataToObject,
 	findTreeItem,
+	hasDuplicateSiblingKeys,
 } from '../../../src/components/tree-editor';
 
 describe( 'TreeEditor Component Utilities', () => {
@@ -96,6 +107,158 @@ describe( 'TreeEditor Component Utilities', () => {
 			expect( objectToTreeData( {} ) ).toEqual( [] );
 			expect( treeDataToObject( [] ) ).toEqual( {} );
 		} );
+
+		it( 'returns null when duplicate sibling keys exist at root level', () => {
+			const tree = [
+				{
+					id: '1',
+					key: 'sameKey',
+					value: 'first',
+					hasChildren: false,
+					children: [],
+				},
+				{
+					id: '2',
+					key: 'sameKey',
+					value: 'second',
+					hasChildren: false,
+					children: [],
+				},
+			];
+
+			expect( treeDataToObject( tree ) ).toBeNull();
+		} );
+
+		it( 'returns null when duplicate sibling keys exist in nested children', () => {
+			const tree = [
+				{
+					id: '1',
+					key: 'folder',
+					hasChildren: true,
+					children: [
+						{
+							id: '2',
+							key: 'file.txt',
+							value: 'a',
+							hasChildren: false,
+							children: [],
+						},
+						{
+							id: '3',
+							key: 'file.txt',
+							value: 'b',
+							hasChildren: false,
+							children: [],
+						},
+					],
+				},
+			];
+
+			expect( treeDataToObject( tree ) ).toBeNull();
+		} );
+
+		it( 'allows equal names under different parents', () => {
+			const tree = [
+				{
+					id: '1',
+					key: 'folderA',
+					hasChildren: true,
+					children: [
+						{
+							id: '2',
+							key: 'file.txt',
+							value: 'from A',
+							hasChildren: false,
+							children: [],
+						},
+					],
+				},
+				{
+					id: '3',
+					key: 'folderB',
+					hasChildren: true,
+					children: [
+						{
+							id: '4',
+							key: 'file.txt',
+							value: 'from B',
+							hasChildren: false,
+							children: [],
+						},
+					],
+				},
+			];
+
+			expect( treeDataToObject( tree ) ).toEqual( {
+				folderA: { 'file.txt': 'from A' },
+				folderB: { 'file.txt': 'from B' },
+			} );
+		} );
+	} );
+
+	describe( 'hasDuplicateSiblingKeys', () => {
+		it( 'returns false for unique sibling keys or empty items', () => {
+			expect( hasDuplicateSiblingKeys( [] ) ).toBe( false );
+			expect(
+				hasDuplicateSiblingKeys( [
+					{ key: 'a', children: [] },
+					{ key: 'b', children: [] },
+				] )
+			).toBe( false );
+		} );
+
+		it( 'returns false for multiple blank/whitespace keys', () => {
+			expect(
+				hasDuplicateSiblingKeys( [
+					{ key: '', children: [] },
+					{ key: '  ', children: [] },
+				] )
+			).toBe( false );
+		} );
+
+		it( 'returns true for duplicate sibling keys', () => {
+			expect(
+				hasDuplicateSiblingKeys( [
+					{ key: 'dup', children: [] },
+					{ key: 'dup', children: [] },
+				] )
+			).toBe( true );
+			expect(
+				hasDuplicateSiblingKeys( [
+					{ key: 'dup', children: [] },
+					{ key: ' dup ', children: [] },
+				] )
+			).toBe( true );
+		} );
+
+		it( 'returns true for nested duplicate sibling keys', () => {
+			expect(
+				hasDuplicateSiblingKeys( [
+					{
+						key: 'parent',
+						children: [
+							{ key: 'child', children: [] },
+							{ key: 'child', children: [] },
+						],
+					},
+				] )
+			).toBe( true );
+		} );
+
+		it( 'returns false for equal keys under different parents', () => {
+			expect(
+				hasDuplicateSiblingKeys( [
+					{
+						key: 'dir1',
+						children: [ { key: 'index.js', children: [] } ],
+					},
+					{
+						key: 'dir2',
+						children: [ { key: 'index.js', children: [] } ],
+					},
+				] )
+			).toBe( false );
+		} );
 	} );
 
 	describe( 'findTreeItem', () => {
@@ -186,6 +349,120 @@ describe( 'TreeEditor Component Utilities', () => {
 			// Lookup for target1 must return null, NOT the surviving node with string path 'a.b.c'
 			const resolved = findTreeItem( tree2, target1 );
 			expect( resolved ).toBeNull();
+		} );
+	} );
+
+	describe( 'TreeEditor Component Duplicate Conflict Flow', () => {
+		let container;
+		let root;
+
+		beforeEach( () => {
+			container = document.createElement( 'div' );
+			document.body.appendChild( container );
+			root = createRoot( container );
+		} );
+
+		afterEach( () => {
+			act( () => {
+				root.unmount();
+			} );
+			container.remove();
+		} );
+
+		it( 'shows conflict and prevents lossy emission when sibling node is renamed to an existing sibling name', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ { item1: 'val1', item2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			onChangeMock.mockClear();
+
+			// First column TextControl inputs for the names
+			const inputs = container.querySelectorAll(
+				'.vpb-tree-children-key input[type="text"]'
+			);
+			expect( inputs.length ).toBe( 2 );
+
+			// Rename second item to 'item1' (creating a sibling collision)
+			act( () => {
+				const item2Input = inputs[ 1 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( item2Input, 'item1' );
+				item2Input.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Conflict error notice should be displayed
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed'
+				)
+			).toBe( true );
+
+			// onChange must NOT be called with a lossy object while conflict exists
+			expect( onChangeMock ).not.toHaveBeenCalled();
+
+			// Rename second item to unique 'item3'
+			const updatedInputs = container.querySelectorAll(
+				'.vpb-tree-children-key input[type="text"]'
+			);
+			act( () => {
+				const item2Input = updatedInputs[ 1 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( item2Input, 'item3' );
+				item2Input.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Conflict notice disappears
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed'
+				)
+			).toBe( false );
+
+			// Normal conversion resumes and emits the complete unique object
+			expect( onChangeMock ).toHaveBeenCalledWith( {
+				item1: 'val1',
+				item3: 'val2',
+			} );
+		} );
+
+		it( 'allows equal names under different parents without conflict', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<TreeEditor
+						data={ {
+							dir1: { file: 'content1' },
+							dir2: { file: 'content2' },
+						} }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// No conflict notice should be visible
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed'
+				)
+			).toBe( false );
 		} );
 	} );
 } );

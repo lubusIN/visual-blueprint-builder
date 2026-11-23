@@ -7,6 +7,7 @@ import { pencil, plus, trash } from '@wordpress/icons';
 import {
 	Button,
 	Modal,
+	Notice,
 	SelectControl,
 	TextControl,
 	TextareaControl,
@@ -50,9 +51,50 @@ export function objectToTreeData( obj, parentPath = '', parentSegments = [] ) {
 }
 
 /**
+ * Check if any sibling nodes in treeData have duplicate keys.
+ *
+ * @param {Array} items Tree nodes to inspect.
+ * @return {boolean} True if duplicate sibling keys exist, false otherwise.
+ */
+export function hasDuplicateSiblingKeys( items ) {
+	if ( ! Array.isArray( items ) ) {
+		return false;
+	}
+	const keys = items
+		.map( ( item ) =>
+			item.key !== null && item.key !== undefined
+				? String( item.key ).trim()
+				: ''
+		)
+		.filter( ( k ) => k !== '' );
+
+	if ( new Set( keys ).size !== keys.length ) {
+		return true;
+	}
+
+	for ( const item of items ) {
+		if ( item.children && item.children.length > 0 ) {
+			if ( hasDuplicateSiblingKeys( item.children ) ) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+/**
  * Convert tree data back to object structure
  */
 export function treeDataToObject( treeData ) {
+	if ( ! Array.isArray( treeData ) ) {
+		return {};
+	}
+
+	if ( hasDuplicateSiblingKeys( treeData ) ) {
+		return null;
+	}
+
 	const result = {};
 
 	treeData.forEach( ( item ) => {
@@ -141,6 +183,14 @@ function TreeRow( {
 								}
 								onChange={ ( value ) =>
 									onUpdate( item.id, 'key', value )
+								}
+								help={
+									item.hasConflict
+										? __(
+												'Duplicate name among sibling items.',
+												'visual-blueprint-builder'
+										  )
+										: undefined
 								}
 								__next40pxDefaultSize
 								__nextHasNoMarginBottom
@@ -492,6 +542,8 @@ export default function TreeEditor( {
 	const prevDataRef = useRef( data );
 	const lastEmittedRef = useRef( null );
 
+	const hasConflict = hasDuplicateSiblingKeys( treeData );
+
 	useEffect( () => {
 		const dataString = JSON.stringify( data || {} );
 		const prevDataString = JSON.stringify( prevDataRef.current || {} );
@@ -506,7 +558,10 @@ export default function TreeEditor( {
 		if ( isExternalChange ) {
 			prevDataRef.current = data;
 			const newOptions = treeDataToObject( treeData );
-			if ( dataString !== JSON.stringify( newOptions || {} ) ) {
+			if (
+				newOptions !== null &&
+				dataString !== JSON.stringify( newOptions || {} )
+			) {
 				setTreeData( objectToTreeData( data || {} ) );
 			}
 			return;
@@ -517,7 +572,10 @@ export default function TreeEditor( {
 		}
 
 		const newOptions = treeDataToObject( treeData );
-		if ( dataString !== JSON.stringify( newOptions || {} ) ) {
+		if (
+			newOptions !== null &&
+			dataString !== JSON.stringify( newOptions || {} )
+		) {
 			lastEmittedRef.current = newOptions;
 			isInternalUpdate.current = true;
 			onChange( newOptions );
@@ -531,6 +589,7 @@ export default function TreeEditor( {
 		}
 		const newOptions = treeDataToObject( treeData );
 		if (
+			newOptions !== null &&
 			JSON.stringify( data || {} ) !== JSON.stringify( newOptions || {} )
 		) {
 			setTreeData( objectToTreeData( data || {} ) );
@@ -539,7 +598,7 @@ export default function TreeEditor( {
 
 	const updateTreeItem = ( id, field, value ) => {
 		const updateItem = ( items, parentPath = '', parentSegments = [] ) => {
-			return items.map( ( item ) => {
+			const mappedItems = items.map( ( item ) => {
 				const currentPath = parentPath
 					? `${ parentPath }.${ item.key }`
 					: item.key;
@@ -553,9 +612,20 @@ export default function TreeEditor( {
 							: newKey;
 						const newSegments = [ ...parentSegments, newKey ];
 
+						const trimmedNewKey = String( newKey ).trim();
+						const itemHasConflict =
+							trimmedNewKey !== '' &&
+							items.some(
+								( sibling ) =>
+									sibling.id !== item.id &&
+									String( sibling.key ).trim() ===
+										trimmedNewKey
+							);
+
 						return {
 							...item,
 							key: newKey,
+							hasConflict: itemHasConflict,
 							path: newPath,
 							pathSegments: newSegments,
 							children: ( item.children || [] ).map( ( child ) =>
@@ -569,7 +639,7 @@ export default function TreeEditor( {
 					}
 					return { ...item, [ field ]: value };
 				}
-				if ( item.children.length > 0 ) {
+				if ( item.children && item.children.length > 0 ) {
 					return {
 						...item,
 						children: updateItem(
@@ -581,6 +651,23 @@ export default function TreeEditor( {
 				}
 				return item;
 			} );
+
+			// If renaming a key at this sibling level, update hasConflict for all siblings in mappedItems
+			if ( field === 'key' && items.some( ( i ) => i.id === id ) ) {
+				return mappedItems.map( ( item ) => {
+					const trimmedKey = String( item.key ).trim();
+					const siblingHasConflict =
+						trimmedKey !== '' &&
+						mappedItems.some(
+							( other ) =>
+								other.id !== item.id &&
+								String( other.key ).trim() === trimmedKey
+						);
+					return { ...item, hasConflict: siblingHasConflict };
+				} );
+			}
+
+			return mappedItems;
 		};
 
 		const nextTreeData = updateItem( treeData );
@@ -648,14 +735,25 @@ export default function TreeEditor( {
 
 	const deleteTreeItem = ( id ) => {
 		const removeItem = ( items ) => {
-			return items.filter( ( item ) => {
-				if ( item.id === id ) {
-					return false;
-				}
-				if ( item.children.length > 0 ) {
-					item.children = removeItem( item.children );
-				}
-				return true;
+			const filtered = items.filter( ( item ) => item.id !== id );
+			return filtered.map( ( item ) => {
+				const trimmedKey = String( item.key ).trim();
+				const itemHasConflict =
+					trimmedKey !== '' &&
+					filtered.some(
+						( other ) =>
+							other.id !== item.id &&
+							String( other.key ).trim() === trimmedKey
+					);
+				const updatedChildren =
+					item.children && item.children.length > 0
+						? removeItem( item.children )
+						: item.children;
+				return {
+					...item,
+					hasConflict: itemHasConflict,
+					children: updatedChildren,
+				};
 			} );
 		};
 		setTreeData( removeItem( treeData ) );
@@ -731,6 +829,14 @@ export default function TreeEditor( {
 	return (
 		<>
 			<Stack direction="column" gap="md">
+				{ hasConflict && (
+					<Notice status="error" isDismissible={ false }>
+						{ __(
+							'Duplicate names are not allowed among items with the same parent.',
+							'visual-blueprint-builder'
+						) }
+					</Notice>
+				) }
 				<TreeGrid
 					style={ { width: '100%' } }
 					className="vpb-object-tree"
