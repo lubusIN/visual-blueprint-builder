@@ -301,5 +301,66 @@ describe( 'KeyValueEditor Component Utilities', () => {
 				key3: 'val2',
 			} );
 		} );
+
+		it( 'replaces local list on external change even when local duplicate keys exist', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'val1', key2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			onChangeMock.mockClear();
+
+			const inputs = container.querySelectorAll( 'input[type="text"]' );
+			expect( inputs.length ).toBe( 4 );
+
+			// Update second key input from 'key2' to 'key1' to cause duplicate
+			act( () => {
+				const nameInput1 = inputs[ 2 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( nameInput1, 'key1' );
+				nameInput1.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			// Duplicate-name error notice should be visible
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( true );
+
+			// External update passes new data
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { resetKey: 'resetVal' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Duplicate-name error notice should disappear and list should sync with external data
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( false );
+
+			const updatedInputs =
+				container.querySelectorAll( 'input[type="text"]' );
+			expect( updatedInputs.length ).toBe( 2 );
+			expect( updatedInputs[ 0 ].value ).toBe( 'resetKey' );
+			expect( updatedInputs[ 1 ].value ).toBe( 'resetVal' );
+		} );
 	} );
 } );

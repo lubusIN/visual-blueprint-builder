@@ -128,7 +128,7 @@ export default function KeyValueEditor( {
 		if ( isExternalChange ) {
 			prevDataRef.current = data;
 			const obj = keyValuePairsToObject( list );
-			if ( obj !== null && dataString !== JSON.stringify( obj || {} ) ) {
+			if ( obj === null || dataString !== JSON.stringify( obj || {} ) ) {
 				updateList( Object.entries( data || {} ) );
 			}
 			return;
