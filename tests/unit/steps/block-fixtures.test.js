@@ -147,6 +147,19 @@ describe( 'Step Blocks Fixtures & Serialization Roundtrip', () => {
 					},
 				},
 			},
+			{
+				name: 'playground-step/import-wxr',
+				attributes: {
+					file: {
+						resource: 'url',
+						url: 'https://example.com/export.xml',
+					},
+					authorsMode: 'map',
+					authorsMap: {
+						alice: 'admin',
+					},
+				},
+			},
 		];
 
 		test.each( populatedFixtures )(

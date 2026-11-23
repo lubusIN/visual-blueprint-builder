@@ -220,6 +220,42 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 				files: {},
 			} );
 		} );
+
+		it( 'serializes importWxr authorsMap when authorsMode is map, and removes it otherwise', () => {
+			const blocks = [
+				{
+					attributes: {
+						step: 'importWxr',
+						file: {
+							resource: 'url',
+							url: 'https://example.com/site.xml',
+						},
+						authorsMode: 'map',
+						authorsMap: { alice: 'admin', bob: 'editor' },
+					},
+				},
+				{
+					attributes: {
+						step: 'importWxr',
+						file: {
+							resource: 'url',
+							url: 'https://example.com/site.xml',
+						},
+						authorsMode: 'create',
+						authorsMap: { alice: 'admin' },
+					},
+				},
+			];
+
+			const jsonStr = buildBlueprintJson( { blocks } );
+			const schema = JSON.parse( jsonStr );
+
+			expect( schema.steps[ 0 ].authorsMap ).toEqual( {
+				alice: 'admin',
+				bob: 'editor',
+			} );
+			expect( schema.steps[ 1 ].authorsMap ).toBeUndefined();
+		} );
 	} );
 
 	describe( 'handleJsonDataSubmit', () => {

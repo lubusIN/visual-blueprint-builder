@@ -586,6 +586,13 @@ export const buildBlueprintJson = ( {
 		}
 		if ( cleanStep.step === 'importWxr' ) {
 			delete cleanStep.importer;
+			if (
+				cleanStep.authorsMode !== 'map' ||
+				! cleanStep.authorsMap ||
+				Object.keys( cleanStep.authorsMap ).length === 0
+			) {
+				delete cleanStep.authorsMap;
+			}
 		}
 		if ( cleanStep.step === 'unzip' ) {
 			delete cleanStep.zipPath;
