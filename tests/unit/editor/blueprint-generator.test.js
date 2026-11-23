@@ -400,6 +400,21 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 			expect( isValid ).toBe( true );
 			expect( noticeMock ).not.toHaveBeenCalled();
 		} );
+
+		it( 'returns false and triggers notice when Blueprint V2 data is provided', async () => {
+			const noticeMock = jest.fn();
+			const isValid = await validateAgainstSchema(
+				{ version: 2, landingPage: '/wp-admin/' },
+				noticeMock
+			);
+
+			expect( isValid ).toBe( false );
+			expect( noticeMock ).toHaveBeenCalledWith(
+				'error',
+				expect.stringContaining( 'Blueprint V2 is not supported' ),
+				{ id: 'visual-blueprint-builder' }
+			);
+		} );
 	} );
 
 	describe( 'handleBlueprintData', () => {
@@ -412,6 +427,55 @@ describe( 'Blueprint Generator & Validation Pipeline', () => {
 			expect( noticeMock ).toHaveBeenCalledWith(
 				'error',
 				'Invalid blueprint schema.'
+			);
+		} );
+
+		it( 'rejects Blueprint V2 input before inserting blocks or updating configuration', async () => {
+			const noticeMock = jest.fn();
+			const updateMock = jest.fn();
+
+			await handleBlueprintData(
+				{ version: 2, steps: [ { step: 'login' } ] },
+				noticeMock,
+				updateMock
+			);
+
+			expect( noticeMock ).toHaveBeenCalledWith(
+				'error',
+				expect.stringContaining( 'Blueprint V2 is not supported' ),
+				{ id: 'visual-blueprint-builder' }
+			);
+			expect( updateMock ).not.toHaveBeenCalled();
+		} );
+
+		it( 'keeps V1 Blueprints containing only settings valid', async () => {
+			global.fetch = jest.fn( () =>
+				Promise.resolve( {
+					ok: true,
+					json: () =>
+						Promise.resolve( {
+							$schema: 'http://json-schema.org/draft-07/schema#',
+							type: 'object',
+							properties: {
+								landingPage: { type: 'string' },
+							},
+						} ),
+				} )
+			);
+
+			const noticeMock = jest.fn();
+			const updateMock = jest.fn();
+
+			await handleBlueprintData(
+				{ landingPage: '/wp-admin/' },
+				noticeMock,
+				updateMock
+			);
+
+			expect( updateMock ).toHaveBeenCalledWith(
+				expect.objectContaining( {
+					landing_page: '/wp-admin/',
+				} )
 			);
 		} );
 	} );

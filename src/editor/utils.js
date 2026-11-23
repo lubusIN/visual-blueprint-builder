@@ -397,6 +397,24 @@ export const usePlaygroundVersions = ( currentConfig = {} ) => {
  * @return {Promise<boolean>} True if valid, false otherwise.
  */
 export const validateAgainstSchema = async ( data, createNotice ) => {
+	if (
+		data &&
+		typeof data === 'object' &&
+		( data.version === 2 || data.version === '2' )
+	) {
+		createNotice?.(
+			'error',
+			__(
+				'Blueprint V2 is not supported. Please use a Blueprint V1 schema.',
+				'visual-blueprint-builder'
+			),
+			{
+				id: 'visual-blueprint-builder',
+			}
+		);
+		return false;
+	}
+
 	try {
 		const schema = await fetchBlueprintSchema();
 
