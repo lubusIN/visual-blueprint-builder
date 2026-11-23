@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { plus, trash } from '@wordpress/icons';
-import { Button, Modal, TextControl } from '@wordpress/components';
+import { Button, Modal, Notice, TextControl } from '@wordpress/components';
 import { Stack } from '@wordpress/ui';
 
 /**
@@ -47,6 +47,25 @@ export const checkAddButtonDisabled = ( list ) => {
 	);
 };
 
+export const hasDuplicateNames = ( list ) => {
+	if ( ! Array.isArray( list ) ) {
+		return false;
+	}
+	const keys = list
+		.filter(
+			( item ) =>
+				Array.isArray( item ) &&
+				item.length >= 1 &&
+				item[ 0 ] !== null &&
+				item[ 0 ] !== undefined &&
+				String( item[ 0 ] ).trim() !== ''
+		)
+		.map( ( [ key ] ) => String( key ).trim() );
+	return new Set( keys ).size !== keys.length;
+};
+
+export const hasDuplicateKeys = hasDuplicateNames;
+
 export const keyValuePairsToObject = ( list ) => {
 	if ( ! Array.isArray( list ) ) {
 		return {};
@@ -61,6 +80,11 @@ export const keyValuePairsToObject = ( list ) => {
 		}
 		return String( key ).trim() !== '';
 	} );
+
+	if ( hasDuplicateNames( filtered ) ) {
+		return null;
+	}
+
 	return Object.fromEntries( filtered );
 };
 
@@ -87,6 +111,8 @@ export default function KeyValueEditor( {
 	const prevDataRef = useRef( data );
 	const lastEmittedRef = useRef( null );
 
+	const hasDuplicate = hasDuplicateNames( list );
+
 	// Sync local list to parent object when list changes internally
 	useEffect( () => {
 		const dataString = JSON.stringify( data || {} );
@@ -102,7 +128,7 @@ export default function KeyValueEditor( {
 		if ( isExternalChange ) {
 			prevDataRef.current = data;
 			const obj = keyValuePairsToObject( list );
-			if ( dataString !== JSON.stringify( obj || {} ) ) {
+			if ( obj !== null && dataString !== JSON.stringify( obj || {} ) ) {
 				updateList( Object.entries( data || {} ) );
 			}
 			return;
@@ -113,7 +139,7 @@ export default function KeyValueEditor( {
 		}
 
 		const obj = keyValuePairsToObject( list );
-		if ( dataString !== JSON.stringify( obj || {} ) ) {
+		if ( obj !== null && dataString !== JSON.stringify( obj || {} ) ) {
 			lastEmittedRef.current = obj;
 			isInternalUpdate.current = true;
 			onChange( obj );
@@ -127,7 +153,10 @@ export default function KeyValueEditor( {
 			return;
 		}
 		const obj = keyValuePairsToObject( list );
-		if ( JSON.stringify( data || {} ) !== JSON.stringify( obj || {} ) ) {
+		if (
+			obj !== null &&
+			JSON.stringify( data || {} ) !== JSON.stringify( obj || {} )
+		) {
 			updateList( Object.entries( data || {} ) );
 		}
 	}, [ data, list ] );
@@ -158,6 +187,14 @@ export default function KeyValueEditor( {
 	return (
 		<>
 			<Stack direction="column" gap="md">
+				{ hasDuplicate && (
+					<Notice status="error" isDismissible={ false }>
+						{ __(
+							'Duplicate names are not allowed.',
+							'visual-blueprint-builder'
+						) }
+					</Notice>
+				) }
 				{ list.map( ( [ key, value ], index ) => (
 					<Stack
 						key={ index }
