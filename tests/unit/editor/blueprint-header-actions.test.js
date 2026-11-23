@@ -199,4 +199,73 @@ describe( 'Blueprint Header Actions', () => {
 			{ type: 'snackbar' }
 		);
 	} );
+
+	it( 'detects when live header is inserted or replaced and reruns mount, cleaning up previous element', async () => {
+		// Remove initial header from DOM
+		act( () => {
+			headerSettings.remove();
+		} );
+
+		const plugin = getPlugin( 'blueprint-header-dropdown' );
+		const Component = plugin.render;
+
+		act( () => {
+			root.render(
+				<RegistryProvider value={ registry }>
+					<Component />
+				</RegistryProvider>
+			);
+		} );
+
+		// Header is not in DOM, so no dropdown element yet
+		expect(
+			document.querySelector( '.wp-playground-blueprint-header-dropdown' )
+		).toBeNull();
+
+		// Simulate editor inserting the live header
+		const firstHeader = document.createElement( 'div' );
+		firstHeader.className = 'editor-header__settings';
+		const firstPinned = document.createElement( 'div' );
+		firstPinned.className = 'interface-pinned-items';
+		firstHeader.appendChild( firstPinned );
+
+		await act( async () => {
+			document.body.appendChild( firstHeader );
+			await new Promise( ( resolve ) => setTimeout( resolve, 0 ) );
+		} );
+
+		const firstMountEl = firstPinned.querySelector(
+			'.wp-playground-blueprint-header-dropdown'
+		);
+		expect( firstMountEl ).not.toBeNull();
+
+		// Simulate editor replacing the live header (e.g. template or layout switch)
+		const secondHeader = document.createElement( 'div' );
+		secondHeader.className = 'editor-header__settings';
+		const secondPinned = document.createElement( 'div' );
+		secondPinned.className = 'interface-pinned-items';
+		secondHeader.appendChild( secondPinned );
+
+		await act( async () => {
+			firstHeader.remove();
+			document.body.appendChild( secondHeader );
+			await new Promise( ( resolve ) => setTimeout( resolve, 0 ) );
+		} );
+
+		// The previous element in firstHeader should be cleaned up
+		expect( firstHeader.contains( firstMountEl ) ).toBe( false );
+
+		// The new header should contain the newly mounted dropdown element
+		const secondMountEl = secondPinned.querySelector(
+			'.wp-playground-blueprint-header-dropdown'
+		);
+		expect( secondMountEl ).not.toBeNull();
+		expect( secondMountEl ).not.toBe( firstMountEl );
+
+		// Cleanup
+		await act( async () => {
+			secondHeader.remove();
+			await new Promise( ( resolve ) => setTimeout( resolve, 0 ) );
+		} );
+	} );
 } );

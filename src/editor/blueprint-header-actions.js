@@ -32,30 +32,81 @@ function HeaderBlueprintDropdown() {
 	const isEditorReady = useSelect( ( select ) => {
 		const ed = select( 'core/editor' );
 		const postType = ed?.getEditedPostAttribute?.( 'type' );
-		const header = document.querySelector(
-			'.editor-header__settings .interface-pinned-items'
-		);
-		return !! postType && !! header;
+		return !! postType;
 	}, [] );
 
 	useEffect( () => {
-		const header = document.querySelector(
-			'.editor-header__settings .interface-pinned-items'
-		);
-
-		if ( ! header ) {
+		if ( ! isEditorReady ) {
 			return;
 		}
 
-		const el = document.createElement( 'div' );
-		el.className = 'wp-playground-blueprint-header-dropdown';
-		header.prepend( el );
-		setMount( el );
+		let currentEl = null;
+
+		const updateMount = () => {
+			const header = document.querySelector(
+				'.editor-header__settings .interface-pinned-items'
+			);
+
+			if ( ! header ) {
+				if ( currentEl?.parentNode ) {
+					currentEl.parentNode.removeChild( currentEl );
+				}
+				currentEl = null;
+				setMount( null );
+				return;
+			}
+
+			// If currentEl is already mounted inside the current live header, nothing to do.
+			if ( currentEl && header.contains( currentEl ) ) {
+				return;
+			}
+
+			// Clean up previous element if it exists.
+			if ( currentEl?.parentNode ) {
+				currentEl.parentNode.removeChild( currentEl );
+			}
+
+			// Clean up any stale dropdown element in header.
+			const staleEl = header.querySelector(
+				'.wp-playground-blueprint-header-dropdown'
+			);
+			if ( staleEl ) {
+				staleEl.remove();
+			}
+
+			const el = document.createElement( 'div' );
+			el.className = 'wp-playground-blueprint-header-dropdown';
+			header.prepend( el );
+			currentEl = el;
+			setMount( el );
+		};
+
+		updateMount();
+
+		if ( typeof MutationObserver !== 'undefined' ) {
+			const observer = new MutationObserver( () => {
+				updateMount();
+			} );
+
+			observer.observe( document.body, {
+				childList: true,
+				subtree: true,
+			} );
+
+			return () => {
+				observer.disconnect();
+				if ( currentEl?.parentNode ) {
+					currentEl.parentNode.removeChild( currentEl );
+				}
+				setMount( null );
+			};
+		}
 
 		return () => {
-			if ( el?.parentNode ) {
-				el.parentNode.removeChild( el );
+			if ( currentEl?.parentNode ) {
+				currentEl.parentNode.removeChild( currentEl );
 			}
+			setMount( null );
 		};
 	}, [ isEditorReady ] );
 
