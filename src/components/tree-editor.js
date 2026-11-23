@@ -557,6 +557,7 @@ export default function TreeEditor( {
 
 		if ( isExternalChange ) {
 			prevDataRef.current = data;
+			lastEmittedRef.current = data;
 			const newOptions = treeDataToObject( treeData );
 			if (
 				newOptions !== null &&
