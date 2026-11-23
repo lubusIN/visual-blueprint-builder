@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { createBlock } from '@wordpress/blocks';
+import { createBlock, getBlockType } from '@wordpress/blocks';
 import { useCallback, useState, useEffect } from '@wordpress/element';
 import { dispatch, useSelect, useDispatch } from '@wordpress/data';
 
@@ -51,6 +51,19 @@ export const validateBlueprintSteps = ( steps = [] ) => {
 		const blockType = `playground-step/${ convertToKebabCase(
 			step.step || ''
 		) }`;
+
+		if ( ! getBlockType( blockType ) ) {
+			invalidSteps.push( {
+				stepIndex: index + 1,
+				stepData: step,
+				error: __(
+					'Block type is not registered.',
+					'visual-blueprint-builder'
+				),
+			} );
+			return;
+		}
+
 		try {
 			const block = createBlock( blockType, step || {} );
 			validBlocks.push( block );

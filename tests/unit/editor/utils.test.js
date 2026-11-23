@@ -277,6 +277,27 @@ describe( 'Blueprint Editor Utilities', () => {
 			expect( invalidSteps ).toHaveLength( 0 );
 		} );
 
+		it( 'routes unregistered steps to invalidSteps without creating core/missing blocks', () => {
+			const steps = [
+				{ step: 'testStep', value: '123' },
+				{ step: 'unregisteredStep', value: '456' },
+			];
+
+			const { validBlocks, invalidSteps } =
+				validateBlueprintSteps( steps );
+
+			expect( validBlocks ).toHaveLength( 1 );
+			expect( validBlocks[ 0 ].name ).toBe( testBlockType );
+			expect( invalidSteps ).toHaveLength( 1 );
+			expect( invalidSteps[ 0 ].stepIndex ).toBe( 2 );
+			expect( invalidSteps[ 0 ].stepData.step ).toBe(
+				'unregisteredStep'
+			);
+			expect( invalidSteps[ 0 ].error ).toBe(
+				'Block type is not registered.'
+			);
+		} );
+
 		it( 'skips schema-defined no-op entries such as null and false while processing remaining valid steps', () => {
 			const steps = [
 				null,
