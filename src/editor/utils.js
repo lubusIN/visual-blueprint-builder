@@ -44,6 +44,10 @@ export const validateBlueprintSteps = ( steps = [] ) => {
 	const invalidSteps = [];
 
 	( steps || [] ).forEach( ( step, index ) => {
+		if ( ! step || typeof step !== 'object' ) {
+			return;
+		}
+
 		const blockType = `playground-step/${ convertToKebabCase(
 			step.step || ''
 		) }`;

@@ -276,5 +276,21 @@ describe( 'Blueprint Editor Utilities', () => {
 			expect( validBlocks[ 0 ].name ).toBe( testBlockType );
 			expect( invalidSteps ).toHaveLength( 0 );
 		} );
+
+		it( 'skips schema-defined no-op entries such as null and false while processing remaining valid steps', () => {
+			const steps = [
+				null,
+				false,
+				{ step: 'testStep', value: 'valid' },
+				null,
+			];
+
+			const { validBlocks, invalidSteps } =
+				validateBlueprintSteps( steps );
+
+			expect( validBlocks ).toHaveLength( 1 );
+			expect( validBlocks[ 0 ].name ).toBe( testBlockType );
+			expect( invalidSteps ).toHaveLength( 0 );
+		} );
 	} );
 } );
