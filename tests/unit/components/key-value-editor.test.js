@@ -362,5 +362,205 @@ describe( 'KeyValueEditor Component Utilities', () => {
 			expect( updatedInputs[ 0 ].value ).toBe( 'resetKey' );
 			expect( updatedInputs[ 1 ].value ).toBe( 'resetVal' );
 		} );
+
+		it( 'applies external B after conflict and external C without emitting C through onChange', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'val1' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Emit and acknowledge B: edit value to 'valB'
+			const inputs = container.querySelectorAll( 'input[type="text"]' );
+			act( () => {
+				const valInput = inputs[ 1 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( valInput, 'valB' );
+				valInput.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			expect( onChangeMock ).toHaveBeenCalledWith( {
+				key1: 'valB',
+			} );
+
+			// Parent acknowledges B
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'valB' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			onChangeMock.mockClear();
+
+			// Add a second item with duplicate key 'key1' to create conflict
+			const addButton = container.querySelector(
+				'button[aria-label="Add Item"]'
+			);
+			act( () => {
+				addButton.click();
+			} );
+
+			const inputsAfterAdd =
+				container.querySelectorAll( 'input[type="text"]' );
+			act( () => {
+				const newKeyInput = inputsAfterAdd[ 2 ];
+				const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+					window.HTMLInputElement.prototype,
+					'value'
+				).set;
+				nativeInputValueSetter.call( newKeyInput, 'key1' );
+				newKeyInput.dispatchEvent(
+					new Event( 'input', { bubbles: true } )
+				);
+			} );
+
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( true );
+			expect( onChangeMock ).not.toHaveBeenCalled();
+
+			// Supply external C
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { keyC: 'valC' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			expect(
+				container.textContent.includes(
+					'Duplicate names are not allowed.'
+				)
+			).toBe( false );
+			expect( onChangeMock ).not.toHaveBeenCalled();
+
+			// Supply external B
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'valB' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// List must show B
+			const finalInputs =
+				container.querySelectorAll( 'input[type="text"]' );
+			expect( finalInputs.length ).toBe( 2 );
+			expect( finalInputs[ 0 ].value ).toBe( 'key1' );
+			expect( finalInputs[ 1 ].value ).toBe( 'valB' );
+
+			// onChange must NOT have emitted C
+			expect( onChangeMock ).not.toHaveBeenCalled();
+		} );
+
+		it( 'closes deletion confirmation dialog and resets selectedIndex on external data replacement', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'val1', key2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Click delete button for second item (index 1)
+			const deleteButtons = container.querySelectorAll(
+				'button[aria-label="Delete Item"]'
+			);
+			act( () => {
+				deleteButtons[ 1 ].click();
+			} );
+
+			// Modal should be open
+			expect(
+				document.body.textContent.includes( 'Confirm Deletion' )
+			).toBe( true );
+
+			// Parent supplies replacement data externally
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { newKey: 'newVal' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Modal should be closed
+			expect(
+				document.body.textContent.includes( 'Confirm Deletion' )
+			).toBe( false );
+
+			// The list is replaced by newKey
+			const inputs = container.querySelectorAll( 'input[type="text"]' );
+			expect( inputs.length ).toBe( 2 );
+			expect( inputs[ 0 ].value ).toBe( 'newKey' );
+			expect( inputs[ 1 ].value ).toBe( 'newVal' );
+		} );
+
+		it( 'preserves existing confirmation and deletion flow when no external replacement occurs', () => {
+			const onChangeMock = jest.fn();
+
+			act( () => {
+				root.render(
+					<KeyValueEditor
+						data={ { key1: 'val1', key2: 'val2' } }
+						onChange={ onChangeMock }
+					/>
+				);
+			} );
+
+			// Click delete button for first item (index 0)
+			const deleteButtons = container.querySelectorAll(
+				'button[aria-label="Delete Item"]'
+			);
+			act( () => {
+				deleteButtons[ 0 ].click();
+			} );
+
+			// Confirm dialog should be open
+			expect(
+				document.body.textContent.includes( 'Confirm Deletion' )
+			).toBe( true );
+
+			// Click Delete button inside modal
+			const confirmDeleteButton = Array.from(
+				document.body.querySelectorAll( 'button' )
+			).find( ( btn ) => btn.textContent.trim() === 'Delete' );
+			expect( confirmDeleteButton ).toBeDefined();
+
+			act( () => {
+				confirmDeleteButton.click();
+			} );
+
+			// Dialog should close and item should be deleted
+			expect(
+				document.body.textContent.includes( 'Confirm Deletion' )
+			).toBe( false );
+			expect( onChangeMock ).toHaveBeenCalledWith( {
+				key2: 'val2',
+			} );
+		} );
 	} );
 } );
