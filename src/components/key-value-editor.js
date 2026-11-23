@@ -129,6 +129,9 @@ export default function KeyValueEditor( {
 			prevDataRef.current = data;
 			const obj = keyValuePairsToObject( list );
 			if ( obj === null || dataString !== JSON.stringify( obj || {} ) ) {
+				lastEmittedRef.current = data;
+				setIsOpen( false );
+				setSelectedIndex( undefined );
 				updateList( Object.entries( data || {} ) );
 			}
 			return;
@@ -157,6 +160,8 @@ export default function KeyValueEditor( {
 			obj !== null &&
 			JSON.stringify( data || {} ) !== JSON.stringify( obj || {} )
 		) {
+			setIsOpen( false );
+			setSelectedIndex( undefined );
 			updateList( Object.entries( data || {} ) );
 		}
 	}, [ data, list ] );
