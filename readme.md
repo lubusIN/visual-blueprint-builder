@@ -20,7 +20,7 @@ Visual Blueprint Builder is block based editing experience for building blueprin
 
 ## Requirements
 
--   WordPress 6.4+
+-   WordPress 6.8+
 -   PHP 7.4+
 
 ## Installation
