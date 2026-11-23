@@ -56,12 +56,15 @@ class RegisterCustomMeta {
 						'type'       => 'object',
 						'properties' => [
 							'php_version'    => [ 'type' => 'string' ],
-							'wp_version'     => [ 'type' => 'string' ],
+							'wp_version'     => [ 'type' => [ 'string', 'boolean' ] ],
 							'landing_page'   => [ 'type' => 'string' ],
 							'networking'     => [ 'type' => 'boolean' ],
 							'intl'           => [ 'type' => 'boolean' ],
 							'login'          => [ 'type' => 'boolean' ],
-							'extraLibraries' => [ 'type' => 'boolean' ],
+							'extraLibraries' => [
+								'type'  => [ 'boolean', 'array' ],
+								'items' => [ 'type' => 'string' ],
+							],
 							'siteOptions'    => [
 								'type'                 => 'object',
 								'additionalProperties' => true,
