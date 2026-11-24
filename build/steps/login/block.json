@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "playground-step/login",
+  "version": "0.1.0",
+  "title": "Login",
+  "category": "config",
+  "description": "Logs in to Playground. Under the hood, this sets the PLAYGROUND_AUTO_LOGIN_AS_USER constant to authenticate the user on the first load.",
+  "example": {},
+  "supports": {
+    "html": false,
+    "multiple": false,
+    "customClassName": false
+  },
+  "attributes": {
+    "step": {
+      "type": "string",
+      "default": "login"
+    },
+    "username": {
+      "type": "string",
+      "default": "admin"
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "textdomain": "visual-blueprint-builder",
+  "editorScript": "file:./index.js"
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "playground-step/define-wp-config-consts",
+  "version": "0.1.0",
+  "title": "WP Config",
+  "category": "config",
+  "description": "Defines constants in a wp-config.php file. This step can be called multiple times, and the constants will be merged.",
+  "example": {},
+  "supports": {
+    "html": false,
+    "customClassName": false
+  },
+  "attributes": {
+    "step": {
+      "type": "string",
+      "default": "defineWpConfigConsts"
+    },
+    "consts": {
+      "type": "object",
+      "default": {}
+    },
+    "method": {
+      "type": "string",
+      "default": "rewrite-wp-config",
+      "enum": [
+        "rewrite-wp-config",
+        "define-before-run"
+      ]
+    }
+  },
+  "textdomain": "visual-blueprint-builder",
+  "editorScript": "file:./index.js"
+}
